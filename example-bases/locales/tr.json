@@ -1,0 +1,16 @@
+{
+  "navBar": {
+    "home": "Ana Sayfa",
+    "projects": "Projeler",
+    "login": "Giriş Yap",
+    "language": "Dil"
+  },
+
+  "home": {
+    "title": "Merhaba, ben Berkay Öner 👋",
+    "description": "Tıpkı benimle sohbet eder gibi, kendi kodlamış olduğum Üretken Yapay Zeka modelim ile aşağıdaki alandan sohbet edebilirsiniz.",
+    "chatPlaceholder": "Deneyimlerim, projelerim veya becerilerim hakkında bana istediğiniz her şeyi sorabilirsiniz!",
+    "messagePlaceholder": "Mesajınızı yazın...",
+    "sendButton": "Gönder"
+  }
+}
