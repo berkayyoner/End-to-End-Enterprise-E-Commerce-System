@@ -12,5 +12,6 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 2. Creating a detailed RULES.md file for main goals and expectations from the AI model/agent.
 3. Using a local agent for developing more economically. (I've used Gwen 2.5 Coder 14B Instruct model and created a local API with LM Studio.)
 4. Using a extension for local API connection. (I've used Cline free version.)
+5. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
 
 # Special Thanks to All GTech Team
