@@ -1,2 +1,2 @@
-# End-to-end-Enterprise-E-Commerce-System.
-GTech 2026 Akademisi için yola çıkılarak uçtan-uca geliştirilecek bir e-ticaret sistemidir.
+# End to End Enterprise E-Commerce System
+This project has started due to GTech 2026 Academy project assignment. It will be developed further more.
