@@ -7,6 +7,22 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * Main goal is using AI models/agents to develope a project almost fully automated.
 * I am using my own experiences and the education from GTech Academy.
 
+## Technologies
+* **Front-end:** React.Js
+* **Back-end:** Java Spring Boot (Java 21)
+* **Back-end Dependancy and JVM:** Maven
+* **Caching:** Redis
+* **Containeriastion:** Docker
+* **Main product search:** Elasticsearch
+* **Environments for all projects:** development, production, local
+* **ORM:** Hybernate
+* **Database:** Oracle
+* **Server Management:** Kubernates
+* **Deployment:** Jenkins
+* **Front-end Test Tools:** Selenium
+* **Back-end Test Tools:** Unit Test, Postman
+* **Authentication:** OAuth 2.0
+
 ## Steps
 1. Creating a new project repository.
 2. Creating a detailed RULES.md file for main goals and expectations from the AI model/agent.
