@@ -18,6 +18,22 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 8. Giving prompts to AI to start working.
 
 ## Prompts
-1. "You are a Software Architect and Full-Stack developer with 20 years of experience. Carefully read and analyze the RULES.md file in your working directory from beginning to end. Do not start writing any code. Just confirm that you understand the project and create a step-by-step roadmap (Phase 1, Phase 2, etc.) to implement this architecture."
+1. "You are a Software Architect and Full-Stack developer with 20 years of experience. Your task is to build an Enterprise-level E-Commerce system from scratch.
+
+Please first carefully read and analyze the RULES.md file in my working directory from beginning to end.
+
+DO NOT WRITE ANY CODE FOR NOW. Just perform these steps:
+
+Confirm that you understand the requirements in RULES.md.
+
+To implement this large microservice architecture, divide the project into logical, small 'Phases'. List the actions to be taken in each phase step by step (Step 1, Step 2...).
+
+Save this detailed roadmap in a new file named ANALYSIS.md in your working directory.
+
+Create an empty DONE.md file to track the process and simply write 'Project Start Date: [Today's Date]' inside it.
+
+When creating the ANALYSIS.md file, specify the microservices (Gateway, Registry, Config Server)." Clearly specify in which phases the Docker Containers, React front-ends (Public and Admin panel), database (Oracle, Redis, Elasticsearch) integrations, and Testing (Unit, Selenium) phases will be performed.
+
+When you have completed these preparations, tell me, "Analysis complete, I am waiting for your approval to start Phase 1." If you don't understand anything or see any contradictions in RULES.md, don't hesitate to ask me."
 
 # Special Thanks to All GTech Team
