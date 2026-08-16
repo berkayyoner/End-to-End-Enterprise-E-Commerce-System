@@ -1,0 +1,132 @@
+networks:
+  berkay-net:
+    driver: bridge
+
+volumes:
+  oracle-data:
+  redis-data:
+  es-data:
+
+services:
+  oracle-db:
+    image: gvenzl/oracle-xe:21-slim-faststart
+    container_name: berkay-oracle-db
+    environment:
+      ORACLE_PASSWORD: ${ORACLE_SYSTEM_PASSWORD:-1234}
+      APP_USER: ${DB_USER:-berkay}
+      APP_USER_PASSWORD: ${DB_PASSWORD:-1234}
+    ports:
+      - "1521:1521"
+    volumes:
+      - oracle-data:/opt/oracle/oradata
+    networks:
+      - berkay-net
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 60s
+
+  redis:
+    image: redis:7-alpine
+    container_name: berkay-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+    networks:
+      - berkay-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.15.3
+    container_name: berkay-elasticsearch
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ports:
+      - "9200:9200"
+    volumes:
+      - es-data:/usr/share/elasticsearch/data
+    networks:
+      - berkay-net
+    healthcheck:
+      test: ["CMD-SHELL", "curl -s http://localhost:9200/_cluster/health | grep -q '\"status\"' || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 20
+      start_period: 45s
+
+  api:
+    build:
+      context: ./api
+    container_name: berkay-api
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+    ports:
+      - "8080:8080"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    networks:
+      - berkay-net
+
+  auth-service:
+    build:
+      context: ./auth-service
+    container_name: berkay-auth-service
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+    ports:
+      - "8081:8081"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+    networks:
+      - berkay-net
+
+  product-service:
+    build:
+      context: ./product-service
+    container_name: berkay-product-service
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+    ports:
+      - "8082:8082"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+    networks:
+      - berkay-net
+
+  berkay-public:
+    build:
+      context: ./berkay-public
+    container_name: berkay-public
+    ports:
+      - "4173:80"
+    depends_on:
+      - api
+    networks:
+      - berkay-net
+
+  berkay-personnel:
+    build:
+      context: ./berkay-personnel
+    container_name: berkay-personnel
+    ports:
+      - "4174:80"
+    depends_on:
+      - api
+    networks:
+      - berkay-net
