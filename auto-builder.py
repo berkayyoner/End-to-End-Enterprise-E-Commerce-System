@@ -4,6 +4,7 @@ import sys
 import os
 import json
 import urllib.request
+import urllib.error
 
 # API Keys
 DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY")
@@ -13,7 +14,42 @@ if not DEEPSEEK_KEY and not GEMINI_KEY:
     print("[FATAL ERROR] At least one API key (DEEPSEEK_API_KEY or GEMINI_API_KEY) must be set!")
     sys.exit(1)
 
-CURRENT_PROVIDER = "DEEPSEEK" if DEEPSEEK_KEY else "GEMINI"
+CURRENT_PROVIDER = "GEMINI" if GEMINI_KEY else "DEEPSEEK"
+ACTIVE_GEMINI_MODEL = None
+
+def get_valid_gemini_model():
+    """Gemini 3 Serisi öncelikli olmak üzere çalışan en iyi modeli bulur."""
+    global ACTIVE_GEMINI_MODEL
+    if ACTIVE_GEMINI_MODEL:
+        return ACTIVE_GEMINI_MODEL
+        
+    print("[SYSTEM] Discovering a working Gemini model (Prioritizing Gen 3)...")
+    
+    # 2026 Güncel Model Aday Listesi
+    candidate_models = [
+        "gemini-3.1-pro-preview", # Yazılım mühendisliği ve ajan iş akışları için optimize edilmiş
+        "gemini-3.7-flash",       # Yüksek hızlı akıl yürütme
+        "gemini-2.5-pro",
+        "gemini-1.5-pro-latest"
+    ]
+    
+    for model in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
+        payload = {"contents": [{"parts": [{"text": "ping"}]}]}
+        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={"Content-Type": "application/json"})
+        
+        try:
+            with urllib.request.urlopen(req, timeout=10) as response:
+                if response.status == 200:
+                    ACTIVE_GEMINI_MODEL = model
+                    print(f"[SYSTEM] Successfully locked onto working model: {ACTIVE_GEMINI_MODEL}")
+                    return ACTIVE_GEMINI_MODEL
+        except Exception:
+            continue
+            
+    print("[SYSTEM WARNING] Could not verify Gen 3 models. Falling back to safe default.")
+    ACTIVE_GEMINI_MODEL = "gemini-1.5-flash"
+    return ACTIVE_GEMINI_MODEL
 
 def read_file(filepath):
     try:
@@ -37,26 +73,35 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
         "temperature": 0.0
     }
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    with urllib.request.urlopen(req, timeout=60) as response:
-        result = json.loads(response.read().decode('utf-8'))
-        return result["choices"][0]["message"]["content"].strip()
+    try:
+        with urllib.request.urlopen(req, timeout=60) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            return result["choices"][0]["message"]["content"].strip()
+    except urllib.error.HTTPError as e:
+        error_details = e.read().decode('utf-8')
+        raise Exception(f"HTTP {e.code} - {error_details}")
 
 def call_gemini(prompt):
-    # Google SDK YOK! Doğrudan en güncel REST API uç noktasına bağlanıyoruz
-    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_KEY}"
+    model_name = get_valid_gemini_model()
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_KEY}"
     headers = {
         "Content-Type": "application/json"
     }
     payload = {
         "contents": [{"parts": [{"text": prompt}]}],
         "generationConfig": {
-            "temperature": 0.0
+            "temperature": 0.0 # Kesin mantık ve stabilite için
         }
     }
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    with urllib.request.urlopen(req, timeout=60) as response:
-        result = json.loads(response.read().decode('utf-8'))
-        return result["candidates"][0]["content"]["parts"][0]["text"].strip()
+    
+    try:
+        with urllib.request.urlopen(req, timeout=60) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            return result["candidates"][0]["content"]["parts"][0]["text"].strip()
+    except urllib.error.HTTPError as e:
+        error_details = e.read().decode('utf-8')
+        raise Exception(f"HTTP {e.code} - {error_details}")
 
 def initialize_project_if_needed():
     if os.path.exists("ANALYSIS.md"):
@@ -83,7 +128,7 @@ def initialize_project_if_needed():
     )
 
     global CURRENT_PROVIDER
-    print(f"\n[INIT] Generating project roadmap using {CURRENT_PROVIDER}... Applying RULES.md...")
+    print(f"\n[INIT] Generating project roadmap using {CURRENT_PROVIDER} (Gen 3 Enabled)... Applying RULES.md...")
     
     roadmap_content = None
     
@@ -171,8 +216,11 @@ def run_worker_step(specific_task):
         "5. Commit your changes."
     )
 
-    # Aider'a en güncel Gemini model ismini gönderiyoruz
-    model_flag = "deepseek/deepseek-coder" if CURRENT_PROVIDER == "DEEPSEEK" else "gemini/gemini-1.5-pro-latest"
+    if CURRENT_PROVIDER == "DEEPSEEK":
+        model_flag = "deepseek/deepseek-coder"
+    else:
+        model_name = get_valid_gemini_model()
+        model_flag = f"gemini/{model_name}"
 
     command = [
         "python", "-m", "aider",
@@ -202,7 +250,7 @@ def run_worker_step(specific_task):
 
 def main():
     print("=====================================================")
-    print(f" Rule-Enforced Multi-AI Orchestrator (Primary: {CURRENT_PROVIDER})")
+    print(f" Gen 3 Multi-AI Orchestrator (Primary: {CURRENT_PROVIDER})")
     print("=====================================================\n")
     
     initialize_project_if_needed()
