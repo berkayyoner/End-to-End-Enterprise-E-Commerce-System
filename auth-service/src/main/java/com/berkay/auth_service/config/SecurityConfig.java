@@ -58,7 +58,7 @@ public class SecurityConfig {
 		provider.setPasswordEncoder(passwordEncoder);
 
 		http
-				.securityMatcher("/register", "/login", "/csrf-token")
+				.securityMatcher("/register", "/login", "/csrf-token", "/id-verifications")
 				.authenticationProvider(provider)
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())

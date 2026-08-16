@@ -3,6 +3,7 @@ package com.berkay.auth_service.exception;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -41,6 +42,22 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(errorBody(HttpStatus.FORBIDDEN, "You do not have permission to perform this action"));
+	}
+
+	@ExceptionHandler(InvalidIdVerificationSubmissionException.class)
+	public ResponseEntity<Map<String, Object>> handleInvalidIdVerificationSubmission(InvalidIdVerificationSubmissionException ex) {
+		return ResponseEntity.badRequest().body(errorBody(HttpStatus.BAD_REQUEST, ex.getMessage()));
+	}
+
+	@ExceptionHandler({DuplicatePendingIdVerificationException.class, AlreadyIdVerifiedException.class,
+			IdVerificationAlreadyReviewedException.class})
+	public ResponseEntity<Map<String, Object>> handleIdVerificationConflict(RuntimeException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
+	}
+
+	@ExceptionHandler({IdVerificationApplicationNotFoundException.class, UsernameNotFoundException.class})
+	public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
 	}
 
 	private static Map<String, Object> errorBody(HttpStatus status, Object errors) {
