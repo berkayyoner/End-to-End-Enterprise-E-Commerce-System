@@ -33,6 +33,12 @@ This will be a enterprise e-commerce project which will include all of the main 
 ## Personnel Application Permission Groups
 * Inner permission group system.
 
+## Project Names
+* **Public front-end:** berkay-public
+* **Personnel front-end:** berkay-personnel
+* **API:** api
+* **Generally:** Put all of the different applications in differend folders and name the folders according to the applications created inside.
+
 ## Expectations
 * This will be a microservice enterpise project.
 * No critical or unwanted data will be sent to front-end.
