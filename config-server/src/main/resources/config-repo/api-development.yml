@@ -1,0 +1,8 @@
+# Centrally-managed override for the api gateway's "development" (docker-compose) environment.
+# api's own application-development.yml keeps the local-file value as a fallback for the rare
+# case config-server isn't reachable; when it is, this value wins.
+berkay:
+  cors:
+    personnel-allowed-origins:
+      - http://localhost:5173
+      - http://localhost:4174
