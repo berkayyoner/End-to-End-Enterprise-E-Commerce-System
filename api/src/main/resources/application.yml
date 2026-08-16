@@ -11,3 +11,4 @@ logging:
   level:
     root: INFO
     com.berkay: DEBUG
+    org.springframework.cloud.gateway: DEBUG

@@ -1,14 +1,12 @@
-spring:
-  datasource:
-    url: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
-    username: berkay
-    password: "1234"
-    driver-class-name: oracle.jdbc.OracleDriver
-  jpa:
-    hibernate:
-      ddl-auto: update
-    open-in-view: false
-    show-sql: false
+berkay:
+  gateway:
+    auth-service-uri: http://auth-service:8081
+    product-service-uri: http://product-service:8082
+  cors:
+    public-allowed-origins: "*"
+    personnel-allowed-origins:
+      - http://localhost:5173
+      - http://localhost:4174
 
 logging:
   level:

@@ -1,14 +1,10 @@
-spring:
-  datasource:
-    url: ${DB_URL}
-    username: ${DB_USER}
-    password: ${DB_PASSWORD}
-    driver-class-name: oracle.jdbc.OracleDriver
-  jpa:
-    hibernate:
-      ddl-auto: validate
-    open-in-view: false
-    show-sql: false
+berkay:
+  gateway:
+    auth-service-uri: ${AUTH_SERVICE_URI}
+    product-service-uri: ${PRODUCT_SERVICE_URI}
+  cors:
+    public-allowed-origins: ${PUBLIC_ALLOWED_ORIGINS}
+    personnel-allowed-origins: ${PERSONNEL_ALLOWED_ORIGINS}
 
 logging:
   level:
