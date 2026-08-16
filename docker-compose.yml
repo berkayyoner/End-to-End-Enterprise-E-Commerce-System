@@ -65,7 +65,8 @@ services:
 
   api:
     build:
-      context: ./api
+      context: .
+      dockerfile: api/Dockerfile
     container_name: berkay-api
     environment:
       SPRING_PROFILES_ACTIVE: development
@@ -79,7 +80,8 @@ services:
 
   auth-service:
     build:
-      context: ./auth-service
+      context: .
+      dockerfile: auth-service/Dockerfile
     container_name: berkay-auth-service
     environment:
       SPRING_PROFILES_ACTIVE: development
@@ -93,7 +95,8 @@ services:
 
   product-service:
     build:
-      context: ./product-service
+      context: .
+      dockerfile: product-service/Dockerfile
     container_name: berkay-product-service
     environment:
       SPRING_PROFILES_ACTIVE: development
