@@ -6,7 +6,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * Due to the request of GTech Developer team, main start and deadline of the project was 14.08.2026 18:00 and 17.08.2026 09:00. 
 * Main goal is using AI models/agents to develope a project almost fully automated.
 * I am using my own experiences and the education from GTech Academy.
-* **Important Note:** Project has started from scratch again on 16.08.2026 because of local Qwen 2.5 Coder, API Gemini, DeepSeek, Nvidia models' failure. Moved forward with different models and API Keys with fallback method.
+* **Important Note:** Project has started from scratch for the third time on 16.08.2026 because of local Qwen 2.5 Coder model, API Gemini, DeepSeek, Nvidia models' terrible failures. Moved forward with Claude API key.
 
 ## Technologies
 * **Front-end:** React.Js
@@ -34,14 +34,15 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 7. Install Claude for terminal.
 > CMD: `npm install -g @anthropic-ai/claude-code`
 > CMD: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+> CMD: `claude --dangerously-skip-permissions`
 or
-> CMD: `npx @anthropic-ai/claude-code`
+> CMD: `npx @anthropic-ai/claude-code --dangerously-skip-permissions`
 8. Giving the 4 prompts below to AI to understand the project and start working.
 
 ## Prompts
 1. Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
 
-2. Now, enter full autonomous execution mode. Follow this exact loop indefinitely until the entire ANALYSIS.md roadmap is complete:
+2. /loop Now, enter full autonomous execution mode. Follow this exact loop indefinitely until the entire ANALYSIS.md roadmap is complete:
     1. Compare ANALYSIS.md with DONE.md. Identify the exact next uncompleted technical task.
     2. Implement the task completely. Strictly follow the architecture, tech stack (Spring Boot, React, etc.), and constraints defined in RULES.md. Do NOT leave any 'TODO' comments, placeholder logic, or empty methods.
     3. Search for, create, or modify ALL necessary files across the full-stack architecture to make this specific feature 100% production-ready.
