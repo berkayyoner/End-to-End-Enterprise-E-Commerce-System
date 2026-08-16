@@ -8,3 +8,5 @@ Completed Steps:
 - Created User Management microservice with initial setup
 - Created Product Management microservice with initial setup
 - Implemented User Management microservice with API endpoints
+- Implemented Navbar component for the public front-end
+- Implemented Footer component for the public front-end
