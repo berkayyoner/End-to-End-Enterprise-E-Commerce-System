@@ -65,16 +65,15 @@ services:
 
   api:
     build:
-      context: .
-      dockerfile: api/Dockerfile
+      context: ./api
     container_name: berkay-api
     environment:
       SPRING_PROFILES_ACTIVE: development
     ports:
       - "8080:8080"
     depends_on:
-      oracle-db:
-        condition: service_healthy
+      - auth-service
+      - product-service
     networks:
       - berkay-net
 
