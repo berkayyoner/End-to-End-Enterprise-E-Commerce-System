@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: auth-service
+  profiles:
+    default: local
+
+server:
+  port: 8081
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG
