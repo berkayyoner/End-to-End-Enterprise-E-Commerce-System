@@ -1,72 +1,114 @@
 import subprocess
 import time
 import sys
+import os
 
-def run_aider_step():
-    # Strict and standard prompt given to Aider in every loop
+def read_file(filepath):
+    try:
+        with open(filepath, 'r', encoding='utf-8') as file:
+            return file.read()
+    except FileNotFoundError:
+        return ""
+
+def get_next_task_from_manager():
+    print("\n[MANAGER] Analyzing project state to determine the next task...")
+    
+    analysis_content = read_file("ANALYSIS.md")
+    done_content = read_file("DONE.md")
+
+    prompt = f"""You are a strict Technical Project Manager.
+Your job is to read the project roadmap and the completed steps, and determine the EXACT NEXT SINGLE atomic coding task that needs to be implemented.
+
+Roadmap (ANALYSIS.md):
+{analysis_content}
+
+Completed Steps (DONE.md):
+{done_content}
+
+INSTRUCTIONS:
+1. Find the first uncompleted sub-step in the roadmap.
+2. Output ONLY a short, actionable technical command for a developer to execute (e.g., 'Create the backend/auth-service Spring Boot project and its pom.xml').
+3. If all tasks in ANALYSIS.md are fully completed and present in DONE.md, output exactly the word: 'PROJECT_COMPLETED'.
+4. DO NOT include any explanations, formatting, markdown, or greetings. Output strictly the task string."""
+
+    command = ["ollama", "run", "qwen2.5-coder:14b", prompt]
+    
+    try:
+        result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8')
+        task = result.stdout.strip()
+        return task
+    except Exception as e:
+        print(f"[MANAGER] Failed to get task from Ollama: {e}")
+        return None
+
+def run_worker_step(specific_task):
     prompt = (
-        "TASK: You are a strict autonomous coding agent. Read ANALYSIS.md to find the EXACT NEXT uncompleted step. "
-        "Check DONE.md to see what is already finished.\n\n"
-        "STRICT WORKFLOW (MUST FOLLOW IN ORDER):\n"
-        "1. Identify ONE pending task.\n"
-        "2. You MUST create or modify the actual source code files (.java, .js, .yml, pom.xml, etc.) to implement this task. THIS IS MANDATORY.\n"
-        "3. ONLY AFTER successfully writing the code, add a single bullet point to DONE.md detailing what you built.\n\n"
-        "CRITICAL RULES:\n"
-        "- IT IS ABSOLUTELY FORBIDDEN to edit DONE.md without also writing real source code.\n"
-        "- DO NOT hallucinate conversations (never output 'User: ...').\n"
-        "- DO NOT repeat these instructions. Write the code, update DONE.md, and exit."
+        f"TASK: {specific_task}\n\n"
+        "STRICT WORKFLOW:\n"
+        "1. Write or modify the necessary source code files to complete this specific task.\n"
+        "2. Do NOT simulate a conversation or print system rules.\n"
+        "3. Once the code is written, add a single summary line to DONE.md and exit."
     )
 
-    # The terminal command to start Aider. 
-    # Using 'python -m aider' prevents Windows PATH errors.
-    # --file forces the critical documents into the fresh context every time.
     command = [
         "python", "-m", "aider",
         "--yes",
         "--no-show-model-warnings",
         "--model", "ollama/qwen2.5-coder:14b",
-        "--file", "RULES.md", "ANALYSIS.md", "DONE.md",
+        "--file", "DONE.md", 
         "--message", prompt
     ]
 
-    print(">>> Starting Aider with a fresh context for the next task...")
+    print(f"[WORKER] Executing task: {specific_task}")
     
     try:
-        # Run the subprocess and wait for it to finish
         result = subprocess.run(command)
         return result.returncode
     except KeyboardInterrupt:
         print("\n>>> Stopped by user.")
         sys.exit(0)
     except Exception as e:
-        print(f"\n>>> An unexpected error occurred: {e}")
+        print(f"\n>>> Unexpected error: {e}")
         return 1
 
 def main():
     print("=====================================================")
-    print(" E-Commerce Auto-Builder Orchestrator Started")
-    print(" Press CTRL+C to exit.")
+    print(" Two-Agent Autonomous Orchestrator Started")
     print("=====================================================\n")
     
-    # A limit to prevent the system from getting lost in an infinite loop overnight
-    max_iterations = 30 
+    max_iterations = 50 
     iteration = 0
 
     while iteration < max_iterations:
         iteration += 1
-        print(f"\n[ Iteration {iteration} / {max_iterations} ]")
+        print(f"\n================ [ Iteration {iteration} ] ================")
 
-        # Execute the task
-        exit_code = run_aider_step()
+        # Step 1: Manager decides the next task
+        next_task = get_next_task_from_manager()
+
+        if not next_task:
+            print(">>> Failed to determine the next task. Retrying in 15 seconds...")
+            time.sleep(15)
+            continue
+            
+        if "PROJECT_COMPLETED" in next_task.upper():
+            print("\n>>> Manager reported that all project phases are completed! Orchestrator stopping.")
+            break
+
+        print(f"\n>>> Manager assigned task:\n    {next_task}\n")
+
+        # Step 2: Worker executes the task
+        exit_code = run_worker_step(next_task)
 
         if exit_code != 0:
-            print(">>> Aider returned an unexpected exit code. Waiting 30 seconds to cool down...")
-            time.sleep(30)
+            print(">>> Worker (Aider) returned an error. Waiting 15 seconds to cool down...")
+            time.sleep(15)
         else:
-            print(">>> Step completed successfully. Resetting context and waiting 10 seconds before the next task...")
+            print(">>> Task completed successfully. Resetting context for the next cycle...")
             time.sleep(10)
 
-    print("\n>>> Reached the iteration limit. Orchestrator stopped.")
+    if iteration >= max_iterations:
+        print("\n>>> Reached the iteration limit. Orchestrator stopped.")
 
 if __name__ == "__main__":
     main()
