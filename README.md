@@ -6,7 +6,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * Due to the request of GTech Developer team, main start and deadline of the project was 14.08.2026 18:00 and 17.08.2026 09:00. 
 * Main goal is using AI models/agents to develope a project almost fully automated.
 * I am using my own experiences and the education from GTech Academy.
-* **Important Note:** Project has started from scratch again on 16.08.2026 because of Qwen 2.5 Coder model's failure. Moved forward with different models and API Keys with fallback method.
+* **Important Note:** Project has started from scratch again on 16.08.2026 because of local Qwen 2.5 Coder, API Gemini, DeepSeek, Nvidia models' failure. Moved forward with different models and API Keys with fallback method.
 
 ## Technologies
 * **Front-end:** React.Js
@@ -29,21 +29,9 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 2. Creating a detailed RULES.md file for main goals and expectations from the AI model/agent.
 3. Creating a `ANALYSIS.md` for AI to fill with the phases and steps to take which it will decide.
 4. Creating a `DONE.md` for AI to fill when it finishes a phase. So we can keep going in any issue.
-5. Using Aider Python library for local API connection. 
-> CMD: `python -m pip install aider-chat`
-> CMD: `python -m pip install google-generativeai`
-> CMD: `cd [project directory]`
-> CMD: `$env:DEEPSEEK_API_KEY="sk-deepseek_api_key_here"`
-> CMD: `$env:GEMINI_API_KEY="gemini_api_key_here"`
-> CMD: `$env:NVIDIA_API_KEY="nvidia_api_key_here"`
-> 3 AIs for fallback method.
 6. Creating project bases for AI to work on.
 7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
-8. Giving the first 3 prompts to AI to start working.
-9. Start services with the `docker-compose.yml` file.
-10. Give the 4th prompt to AI.
-11. Run `auto-builder.py` from terminal.
-> CMD: `python auto-builder.py`
+8. Giving the 4 prompts below to AI to start working.
 
 ## Prompts
 1. `Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
@@ -67,6 +55,6 @@ Do not ask for confirmation. Write the files to the disk immediately.`
 * I also created and stated empty `ANALYSIS.md` and `DONE.md` files. 
     * AI fills the `ANALYSIS.md` file with the phases of project to handle one by one by reading the `RULES.md` file.
     * Also fills `DONE.md` file with the steps it done. Because AIs has limited context sizes. So for long term step/phase remembering, I used the idea of ​​such a method.
-* After few small promts for the AI to understand the project, `auto-builder.py` file which I created, creates a loop for AI to keep working on the project for a long time.
+* After few small promts for the AI to understand the project, I created a loop for AI to keep working on the project for a long time.
 
 # Special Thanks to All GTech Team
