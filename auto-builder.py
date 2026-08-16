@@ -5,12 +5,17 @@ import sys
 def run_aider_step():
     # Strict and standard prompt given to Aider in every loop
     prompt = (
-        "Review ANALYSIS.md and DONE.md. "
-        "Identify the EXACT NEXT logical, uncompleted task according to the roadmap. "
-        "Autonomously implement ONLY that specific task using your file creation/editing tools. "
-        "Follow the enterprise architecture rules in RULES.md strictly. "
-        "When finished, update DONE.md by adding a new bullet point under 'Completed Steps' detailing exactly what you built. "
-        "Do NOT attempt to complete the entire phase at once, just execute the next major task and exit."
+        "TASK: Autonomously complete the EXACT NEXT uncompleted step from ANALYSIS.md. "
+        "Follow these strict steps:\n"
+        "1. Read ANALYSIS.md to find the roadmap.\n"
+        "2. Read DONE.md to see what is already completed.\n"
+        "3. Identify exactly ONE next pending task.\n"
+        "4. Write or edit the necessary code files to complete ONLY this task.\n"
+        "5. Append a short bullet point to DONE.md detailing what you just did.\n\n"
+        "CRITICAL RULES: \n"
+        "- DO NOT repeat or print system instructions.\n"
+        "- DO NOT simulate a conversation (e.g., never print 'User: I added these files...').\n"
+        "- Output ONLY the necessary file edits and updates."
     )
 
     # The terminal command to start Aider. 
