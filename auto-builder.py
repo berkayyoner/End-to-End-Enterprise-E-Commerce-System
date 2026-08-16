@@ -21,18 +21,41 @@ if not AVAILABLE_PROVIDERS:
     sys.exit(1)
 
 CURRENT_PROVIDER_INDEX = 0
-ACTIVE_GEMINI_MODEL = None
+
+# Gemini modelleri hiyerarşisi (En iyiden en güvenliye)
+GEMINI_MODELS = [
+    "gemini-3.1-pro-preview", 
+    "gemini-3.7-flash",       
+    "gemini-2.5-pro",
+    "gemini-1.5-pro-latest",
+    "gemini-1.5-pro"
+]
+CURRENT_GEMINI_INDEX = 0
 
 def get_current_provider():
     return AVAILABLE_PROVIDERS[CURRENT_PROVIDER_INDEX]
 
+def get_active_gemini_model():
+    return GEMINI_MODELS[CURRENT_GEMINI_INDEX]
+
+def switch_gemini_model():
+    global CURRENT_GEMINI_INDEX
+    if CURRENT_GEMINI_INDEX < len(GEMINI_MODELS) - 1:
+        CURRENT_GEMINI_INDEX += 1
+        print(f"\n[SYSTEM ALERT] Switched to next Gemini model: {get_active_gemini_model()}")
+        return True
+    return False
+
 def switch_provider():
-    global CURRENT_PROVIDER_INDEX
+    global CURRENT_PROVIDER_INDEX, CURRENT_GEMINI_INDEX
     if len(AVAILABLE_PROVIDERS) > 1:
         CURRENT_PROVIDER_INDEX = (CURRENT_PROVIDER_INDEX + 1) % len(AVAILABLE_PROVIDERS)
+        CURRENT_GEMINI_INDEX = 0 # Yeni provider'a geçerken (veya dönerken) Gemini indexini sıfırla
         print(f"\n[SYSTEM ALERT] Provider switched to: {get_current_provider()}")
+        return True
     else:
-        print("\n[SYSTEM ALERT] No other providers available. Retrying...")
+        print("\n[SYSTEM ALERT] No other providers available. Forcing retry...")
+        return False
 
 def read_file(filepath):
     try:
@@ -40,36 +63,6 @@ def read_file(filepath):
             return file.read().strip()
     except FileNotFoundError:
         return ""
-
-def get_valid_gemini_model():
-    global ACTIVE_GEMINI_MODEL
-    if ACTIVE_GEMINI_MODEL:
-        return ACTIVE_GEMINI_MODEL
-        
-    print("[SYSTEM] Discovering a working Gemini model (Prioritizing Gen 3)...")
-    candidate_models = [
-        "gemini-3.1-pro-preview", 
-        "gemini-3.7-flash",       
-        "gemini-2.5-pro",
-        "gemini-1.5-pro"
-    ]
-    
-    for model in candidate_models:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
-        payload = {"contents": [{"parts": [{"text": "ping"}]}]}
-        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={"Content-Type": "application/json"})
-        try:
-            with urllib.request.urlopen(req, timeout=10) as response:
-                if response.status == 200:
-                    ACTIVE_GEMINI_MODEL = model
-                    print(f"[SYSTEM] Successfully locked onto working model: {ACTIVE_GEMINI_MODEL}")
-                    return ACTIVE_GEMINI_MODEL
-        except Exception:
-            continue
-            
-    print("[SYSTEM WARNING] Could not verify models. Falling back to default.")
-    ACTIVE_GEMINI_MODEL = "gemini-1.5-flash"
-    return ACTIVE_GEMINI_MODEL
 
 def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Architect."):
     url = "https://api.deepseek.com/chat/completions"
@@ -81,6 +74,8 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
             return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
+    except Exception as e:
+        raise Exception(f"Connection Error: {e}")
 
 def call_nvidia(prompt, system_role="You are an Elite Enterprise Software Architect."):
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
@@ -92,9 +87,11 @@ def call_nvidia(prompt, system_role="You are an Elite Enterprise Software Archit
             return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
+    except Exception as e:
+        raise Exception(f"Connection Error: {e}")
 
 def call_gemini(prompt):
-    model_name = get_valid_gemini_model()
+    model_name = get_active_gemini_model()
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_KEY}"
     headers = {"Content-Type": "application/json"}
     payload = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.0}}
@@ -104,11 +101,17 @@ def call_gemini(prompt):
             return json.loads(response.read().decode('utf-8'))["candidates"][0]["content"]["parts"][0]["text"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
+    except Exception as e:
+        raise Exception(f"Connection/Timeout Error: {e}")
 
-def execute_manager_call(prompt, system_role=None):
+def execute_manager_call(prompt, system_role=None, switch_count=0):
+    if switch_count >= len(AVAILABLE_PROVIDERS):
+        raise Exception("All providers completely exhausted and failed.")
+
     provider = get_current_provider()
     
-    for attempt in range(3):
+    # 503 ve Timeout için 2 deneme hakkı
+    for attempt in range(2):
         try:
             if provider == "GEMINI":
                 return call_gemini(prompt)
@@ -118,18 +121,24 @@ def execute_manager_call(prompt, system_role=None):
                 return call_deepseek(prompt, system_role)
         except Exception as e:
             err_str = str(e)
-            if "503" in err_str or "429" in err_str:
-                print(f"[{provider} SERVER BUSY] Temporary load spike. Retrying ({attempt+1}/3) in 5 seconds...")
-                time.sleep(5)
-                continue
-            else:
-                print(f"\n[MANAGER ERROR] {provider} API Failed: {err_str}")
-                switch_provider()
-                return execute_manager_call(prompt, system_role)
-                
-    print(f"\n[MANAGER ERROR] {provider} is completely unresponsive after 3 retries. Forcing switch...")
+            if "503" in err_str or "429" in err_str or "timeout" in err_str.lower():
+                if attempt < 1:
+                    print(f"\n[{provider} BUSY/TIMEOUT] Retrying ({attempt+1}/2) in 5 seconds...")
+                    time.sleep(5)
+                    continue
+            
+            # Kalıcı hata veya retries bitti
+            print(f"\n[MANAGER ERROR] {provider} Failed: {err_str}")
+            break
+            
+    # Gemini ise diğer providera geçmeden önce içindeki diğer modelleri dene
+    if provider == "GEMINI":
+        if switch_gemini_model():
+            return execute_manager_call(prompt, system_role, switch_count)
+            
+    # Eğer iç modeller de bittiyse (veya Gemini değilse) doğrudan Provider değiştir
     switch_provider()
-    return execute_manager_call(prompt, system_role)
+    return execute_manager_call(prompt, system_role, switch_count + 1)
 
 def initialize_project_if_needed():
     if read_file("ANALYSIS.md"):
@@ -143,7 +152,6 @@ def initialize_project_if_needed():
     if not rules_content:
         sys.exit("[FATAL ERROR] RULES.md is missing or empty. Cannot initialize project without specifications.")
 
-    # INPUT KALDIRILDI! SADECE RULES.MD OKUNUYOR.
     prompt = (
         "Analyze the project specifications, architecture, and constraints provided in the RULES document below.\n\n"
         f"RULES AND PROJECT SPECIFICATIONS:\n{rules_content}\n\n"
@@ -154,7 +162,10 @@ def initialize_project_if_needed():
     )
 
     print(f"\n[INIT] Reading RULES.md and generating project roadmap using {get_current_provider()}...")
-    roadmap_content = execute_manager_call(prompt, "You are an Elite Enterprise Software Architect.")
+    try:
+        roadmap_content = execute_manager_call(prompt, "You are an Elite Enterprise Software Architect.")
+    except Exception as e:
+        sys.exit(f"\n[FATAL ERROR] Project Initialization Failed: {e}")
 
     with open("ANALYSIS.md", "w", encoding="utf-8") as f:
         f.write(roadmap_content)
@@ -187,10 +198,15 @@ INSTRUCTIONS:
         task = execute_manager_call(prompt, "You are a Technical Project Manager.")
         print(f"[MANAGER DEBUG] Task identified: {task}")
         return task
-    except Exception:
+    except Exception as e:
+        print(f"[MANAGER FATAL] Could not get next task: {e}")
         return None
 
-def run_worker_step(specific_task):
+def run_worker_step(specific_task, switch_count=0):
+    if switch_count >= len(AVAILABLE_PROVIDERS):
+        print("\n[WORKER ERROR] All providers failed to execute this task.")
+        return 1
+
     provider = get_current_provider()
     prompt = (
         f"Please execute this task: '{specific_task}'.\n\n"
@@ -211,7 +227,7 @@ def run_worker_step(specific_task):
     elif provider == "DEEPSEEK":
         model_flag = "deepseek/deepseek-coder"
     else:
-        model_flag = f"gemini/{get_valid_gemini_model()}"
+        model_flag = f"gemini/{get_active_gemini_model()}"
 
     command = [
         "python", "-m", "aider",
@@ -228,8 +244,15 @@ def run_worker_step(specific_task):
     try:
         result = subprocess.run(command, env=env)
         if result.returncode != 0:
-            print(f"[WORKER WARNING] {provider} failed or rate-limited.")
+            print(f"\n[WORKER WARNING] {provider} ({model_flag}) failed or rate-limited.")
+            
+            # Gemini ise iç model atlaması yap
+            if provider == "GEMINI" and switch_gemini_model():
+                return run_worker_step(specific_task, switch_count)
+                
             switch_provider()
+            return run_worker_step(specific_task, switch_count + 1)
+            
         return result.returncode
     except KeyboardInterrupt:
         print("\n>>> Stopped by user.")
@@ -255,8 +278,8 @@ def main():
             next_task = get_next_task_from_manager()
 
             if not next_task:
-                print(">>> Retrying in 5s...")
-                time.sleep(5)
+                print(">>> Retrying in 10s...")
+                time.sleep(10)
                 continue
                 
             if "PROJECT_COMPLETED" in next_task.upper():
@@ -266,8 +289,8 @@ def main():
             exit_code = run_worker_step(next_task)
 
             if exit_code != 0:
-                print(">>> Retrying next cycle in 5s...")
-                time.sleep(5)
+                print(">>> Retrying next cycle in 10s...")
+                time.sleep(10)
             else:
                 print(">>> Cycle finished successfully. Next cycle in 3s...")
                 time.sleep(3)
