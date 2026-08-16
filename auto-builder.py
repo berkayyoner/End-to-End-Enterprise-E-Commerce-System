@@ -34,7 +34,7 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
             {"role": "system", "content": system_role},
             {"role": "user", "content": prompt}
         ],
-        "temperature": 0.0 # Kesin ve net kararlar için sıfır yaratıcılık
+        "temperature": 0.0
     }
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
     with urllib.request.urlopen(req, timeout=60) as response:
@@ -42,11 +42,21 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
         return result["choices"][0]["message"]["content"].strip()
 
 def call_gemini(prompt):
-    import google.generativeai as genai
-    genai.configure(api_key=GEMINI_KEY)
-    model = genai.GenerativeModel('gemini-1.5-pro')
-    response = model.generate_content(prompt)
-    return response.text.strip()
+    # Google SDK'sını çöpe attık! Artık doğrudan Google'ın REST API uç noktasına bağlanıyoruz.
+    url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_KEY}"
+    headers = {
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "contents": [{"parts": [{"text": prompt}]}],
+        "generationConfig": {
+            "temperature": 0.0
+        }
+    }
+    req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
+    with urllib.request.urlopen(req, timeout=60) as response:
+        result = json.loads(response.read().decode('utf-8'))
+        return result["candidates"][0]["content"]["parts"][0]["text"].strip()
 
 def initialize_project_if_needed():
     if os.path.exists("ANALYSIS.md"):
@@ -132,7 +142,7 @@ INSTRUCTIONS:
     if CURRENT_PROVIDER == "DEEPSEEK" and DEEPSEEK_KEY:
         try:
             task = call_deepseek(prompt)
-            print(f"[MANAGER DEBUG] Task identified: {task}")
+            print(f"[MANAGER DEBUG] Task identified via DeepSeek: {task}")
             return task
         except Exception as e:
             print(f"[MANAGER WARNING] DeepSeek API failed ({e}). Switching to GEMINI...")
@@ -141,7 +151,7 @@ INSTRUCTIONS:
     if GEMINI_KEY:
         try:
             task = call_gemini(prompt)
-            print(f"[MANAGER DEBUG] Task identified: {task}")
+            print(f"[MANAGER DEBUG] Task identified via Gemini: {task}")
             return task
         except Exception as e:
             print(f"[MANAGER ERROR] Gemini API failed: {e}")
@@ -151,7 +161,6 @@ INSTRUCTIONS:
 
 def run_worker_step(specific_task):
     global CURRENT_PROVIDER
-    # RULES.md'ye tam itaat ve kurumsal standart dayatması
     prompt = (
         f"Please execute this task: '{specific_task}'.\n\n"
         "STRICT ENTERPRISE MANDATES:\n"
@@ -162,9 +171,8 @@ def run_worker_step(specific_task):
         "5. Commit your changes."
     )
 
-    model_flag = "deepseek/deepseek-coder" if CURRENT_PROVIDER == "DEEPSEEK" else "gemini/gemini-1.5-pro"
+    model_flag = "deepseek/deepseek-coder" if CURRENT_PROVIDER == "DEEPSEEK" else "gemini/gemini-1.5-pro-latest"
 
-    # RULES.md ve DONE.md Aider'ın aklına fiziksel olarak kazınıyor
     command = [
         "python", "-m", "aider",
         "--yes",
