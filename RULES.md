@@ -40,7 +40,7 @@ This will be a enterprise e-commerce project which will include all of the main 
 * **Generally:** Put all of the different applications in differend folders and name the folders according to the applications created inside.
 
 ## Expectations
-* This will be a microservice enterpise project.
+* This will be a microservice enterpise project. Each application needs to be kept under different folders. Avoid using general foldering names like "frontend" or "backend".
 * No critical or unwanted data will be sent to front-end.
 * Create environments for all applications but for development; use localhost values.
 * Never delete a value, only soft delete. Also datas should keep dates.
