@@ -12,23 +12,19 @@ GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
 NVIDIA_KEY = os.environ.get("NVIDIA_API_KEY")
 
 AVAILABLE_PROVIDERS = []
+if NVIDIA_KEY: AVAILABLE_PROVIDERS.append("NVIDIA") # Nvidia artık 1. sırada
 if GEMINI_KEY: AVAILABLE_PROVIDERS.append("GEMINI")
-if NVIDIA_KEY: AVAILABLE_PROVIDERS.append("NVIDIA")
 if DEEPSEEK_KEY: AVAILABLE_PROVIDERS.append("DEEPSEEK")
 
 if not AVAILABLE_PROVIDERS:
-    print("[FATAL ERROR] At least one API key must be set (GEMINI_API_KEY, NVIDIA_API_KEY, DEEPSEEK_API_KEY)!")
+    print("[FATAL ERROR] At least one API key must be set!")
     sys.exit(1)
 
 CURRENT_PROVIDER_INDEX = 0
 
-# Gemini modelleri hiyerarşisi (En iyiden en güvenliye)
 GEMINI_MODELS = [
     "gemini-3.1-pro-preview", 
-    "gemini-3.7-flash",       
-    "gemini-2.5-pro",
-    "gemini-1.5-pro-latest",
-    "gemini-1.5-pro"
+    "gemini-3.7-flash"
 ]
 CURRENT_GEMINI_INDEX = 0
 
@@ -50,7 +46,7 @@ def switch_provider():
     global CURRENT_PROVIDER_INDEX, CURRENT_GEMINI_INDEX
     if len(AVAILABLE_PROVIDERS) > 1:
         CURRENT_PROVIDER_INDEX = (CURRENT_PROVIDER_INDEX + 1) % len(AVAILABLE_PROVIDERS)
-        CURRENT_GEMINI_INDEX = 0 # Yeni provider'a geçerken (veya dönerken) Gemini indexini sıfırla
+        CURRENT_GEMINI_INDEX = 0 
         print(f"\n[SYSTEM ALERT] Provider switched to: {get_current_provider()}")
         return True
     else:
@@ -70,7 +66,7 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
     payload = {"model": "deepseek-chat", "messages": [{"role": "system", "content": system_role}, {"role": "user", "content": prompt}], "temperature": 0.0}
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=60) as response:
+        with urllib.request.urlopen(req, timeout=180) as response:
             return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
@@ -80,10 +76,11 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
 def call_nvidia(prompt, system_role="You are an Elite Enterprise Software Architect."):
     url = "https://integrate.api.nvidia.com/v1/chat/completions"
     headers = {"Content-Type": "application/json", "Authorization": f"Bearer {NVIDIA_KEY}"}
-    payload = {"model": "meta/llama-3.1-70b-instruct", "messages": [{"role": "system", "content": system_role}, {"role": "user", "content": prompt}], "temperature": 0.0}
+    payload = {"model": "meta/llama-3.1-70b-instruct", "messages": [{"role": "system", "content": system_role}, {"role": "user", "content": prompt}], "temperature": 0.0, "max_tokens": 4000}
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=60) as response:
+        # TIMEOUT 180 SANİYEYE ÇIKARILDI
+        with urllib.request.urlopen(req, timeout=180) as response:
             return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
@@ -97,7 +94,7 @@ def call_gemini(prompt):
     payload = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.0}}
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
     try:
-        with urllib.request.urlopen(req, timeout=60) as response:
+        with urllib.request.urlopen(req, timeout=180) as response:
             return json.loads(response.read().decode('utf-8'))["candidates"][0]["content"]["parts"][0]["text"].strip()
     except urllib.error.HTTPError as e:
         raise Exception(f"HTTP {e.code} - {e.read().decode('utf-8')}")
@@ -110,7 +107,6 @@ def execute_manager_call(prompt, system_role=None, switch_count=0):
 
     provider = get_current_provider()
     
-    # 503 ve Timeout için 2 deneme hakkı
     for attempt in range(2):
         try:
             if provider == "GEMINI":
@@ -127,16 +123,13 @@ def execute_manager_call(prompt, system_role=None, switch_count=0):
                     time.sleep(5)
                     continue
             
-            # Kalıcı hata veya retries bitti
             print(f"\n[MANAGER ERROR] {provider} Failed: {err_str}")
             break
             
-    # Gemini ise diğer providera geçmeden önce içindeki diğer modelleri dene
     if provider == "GEMINI":
         if switch_gemini_model():
             return execute_manager_call(prompt, system_role, switch_count)
             
-    # Eğer iç modeller de bittiyse (veya Gemini değilse) doğrudan Provider değiştir
     switch_provider()
     return execute_manager_call(prompt, system_role, switch_count + 1)
 
@@ -246,7 +239,6 @@ def run_worker_step(specific_task, switch_count=0):
         if result.returncode != 0:
             print(f"\n[WORKER WARNING] {provider} ({model_flag}) failed or rate-limited.")
             
-            # Gemini ise iç model atlaması yap
             if provider == "GEMINI" and switch_gemini_model():
                 return run_worker_step(specific_task, switch_count)
                 
@@ -263,7 +255,7 @@ def run_worker_step(specific_task, switch_count=0):
 
 def main():
     print("=====================================================")
-    print(" Zero-Touch Multi-AI Orchestrator Started")
+    print(f" Zero-Touch Multi-AI Orchestrator (Primary: {get_current_provider()})")
     print("=====================================================\n")
     
     try:
