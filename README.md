@@ -16,7 +16,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * **Containeriastion:** Docker
 * **Main product search:** Elasticsearch
 * **Environments for all projects:** development, production, local
-* **ORM:** Hybernate
+* **ORM:** Hybernate with Spring JPA
 * **Database:** Oracle
 * **Server Management:** Kubernates
 * **Deployment:** Jenkins
