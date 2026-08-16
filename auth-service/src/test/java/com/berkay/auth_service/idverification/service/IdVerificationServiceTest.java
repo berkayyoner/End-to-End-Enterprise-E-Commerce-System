@@ -102,6 +102,29 @@ class IdVerificationServiceTest {
 				.isInstanceOf(IdVerificationAlreadyReviewedException.class);
 	}
 
+	@Test
+	void findsTheApplicantsLatestApplication() {
+		AppUser user = new AppUser("frank@example.com", "hash", "Frank", "Ng", null);
+		IdVerificationApplication application = new IdVerificationApplication(user, "12345",
+				new byte[]{1}, "image/jpeg", new byte[]{2}, "image/jpeg");
+		when(appUserRepository.findByEmail("frank@example.com")).thenReturn(Optional.of(user));
+		when(applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(user)).thenReturn(Optional.of(application));
+
+		Optional<IdVerificationResponse> response = service.findLatestForAppUser("frank@example.com");
+
+		assertThat(response).isPresent();
+		assertThat(response.get().status()).isEqualTo(IdVerificationStatus.PENDING);
+	}
+
+	@Test
+	void returnsEmptyWhenTheApplicantHasNeverSubmitted() {
+		AppUser user = new AppUser("grace@example.com", "hash", "Grace", "Oh", null);
+		when(appUserRepository.findByEmail("grace@example.com")).thenReturn(Optional.of(user));
+		when(applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(user)).thenReturn(Optional.empty());
+
+		assertThat(service.findLatestForAppUser("grace@example.com")).isEmpty();
+	}
+
 	private static MockMultipartFile jpeg() {
 		return new MockMultipartFile("photo", "id.jpg", "image/jpeg", new byte[]{1, 2, 3});
 	}

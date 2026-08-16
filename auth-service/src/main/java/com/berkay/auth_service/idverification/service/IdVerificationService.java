@@ -22,6 +22,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
+import java.util.Optional;
 
 /**
  * RULES.md's dummy ID verification flow. Nothing here validates the ID number or inspects the
@@ -79,6 +80,13 @@ public class IdVerificationService {
 	@Transactional(readOnly = true)
 	public Page<IdVerificationResponse> list(IdVerificationStatus status, Pageable pageable) {
 		return applicationRepository.findAllByStatus(status, pageable).map(IdVerificationResponse::from);
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<IdVerificationResponse> findLatestForAppUser(String appUserEmail) {
+		AppUser appUser = appUserRepository.findByEmail(appUserEmail)
+				.orElseThrow(() -> new UsernameNotFoundException("No account for email: " + appUserEmail));
+		return applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(appUser).map(IdVerificationResponse::from);
 	}
 
 	@Transactional

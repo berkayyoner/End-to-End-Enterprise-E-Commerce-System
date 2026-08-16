@@ -105,4 +105,27 @@ class SellerApplicationServiceTest {
 		assertThatThrownBy(() -> service.approve(2L, "moderator@berkay.local"))
 				.isInstanceOf(SellerApplicationAlreadyReviewedException.class);
 	}
+
+	@Test
+	void findsTheApplicantsLatestApplication() {
+		AppUser user = new AppUser("frank@example.com", "hash", "Frank", "Ng", null);
+		SellerApplication application = new SellerApplication(user, "Acme LLC", "1234567890", "+90 555 555 5555",
+				"Istanbul, Turkiye");
+		when(appUserRepository.findByEmail("frank@example.com")).thenReturn(Optional.of(user));
+		when(applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(user)).thenReturn(Optional.of(application));
+
+		Optional<SellerApplicationResponse> response = service.findLatestForAppUser("frank@example.com");
+
+		assertThat(response).isPresent();
+		assertThat(response.get().companyName()).isEqualTo("Acme LLC");
+	}
+
+	@Test
+	void returnsEmptyWhenTheApplicantHasNeverApplied() {
+		AppUser user = new AppUser("grace@example.com", "hash", "Grace", "Oh", null);
+		when(appUserRepository.findByEmail("grace@example.com")).thenReturn(Optional.of(user));
+		when(applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(user)).thenReturn(Optional.empty());
+
+		assertThat(service.findLatestForAppUser("grace@example.com")).isEmpty();
+	}
 }

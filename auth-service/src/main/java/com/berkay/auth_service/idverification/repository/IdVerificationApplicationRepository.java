@@ -8,6 +8,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface IdVerificationApplicationRepository extends JpaRepository<IdVerificationApplication, Long> {
 
@@ -16,4 +17,6 @@ public interface IdVerificationApplicationRepository extends JpaRepository<IdVer
 	Page<IdVerificationApplication> findAllByStatus(IdVerificationStatus status, Pageable pageable);
 
 	List<IdVerificationApplication> findAllByAppUser(AppUser appUser);
+
+	Optional<IdVerificationApplication> findFirstByAppUserOrderByCreatedAtDesc(AppUser appUser);
 }

@@ -1,30 +1,38 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import { useTranslation } from './i18n'
+import { Layout } from './components/Layout.jsx'
+import { RequireAuth } from './auth/RequireAuth.jsx'
+import { HomePage } from './pages/HomePage.jsx'
+import { SignUpPage } from './pages/auth/SignUpPage.jsx'
+import { LoginPage } from './pages/auth/LoginPage.jsx'
+import { ProfilePage } from './pages/auth/ProfilePage.jsx'
+import { IdVerificationPage } from './pages/auth/IdVerificationPage.jsx'
 
 function App() {
-  const { t, language, changeLanguage, supportedLanguages } = useTranslation()
-
   return (
-    <section id="center">
-      <div>
-        <h1>{t('home.title')}</h1>
-        <p>{t('home.subtitle')}</p>
-        <p>{t('home.comingSoon')}</p>
-      </div>
-      <div className="ticks">
-        {supportedLanguages.map((code) => (
-          <button
-            key={code}
-            type="button"
-            className="counter"
-            disabled={code === language}
-            onClick={() => changeLanguage(code)}
-          >
-            {code.toUpperCase()}
-          </button>
-        ))}
-      </div>
-    </section>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/profile"
+          element={
+            <RequireAuth>
+              <ProfilePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/id-verification"
+          element={
+            <RequireAuth>
+              <IdVerificationPage />
+            </RequireAuth>
+          }
+        />
+      </Route>
+    </Routes>
   )
 }
 

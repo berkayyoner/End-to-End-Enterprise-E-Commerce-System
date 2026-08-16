@@ -2,11 +2,97 @@
   "common": {
     "appName": "Berkay",
     "loading": "Loading...",
-    "language": "Language"
+    "language": "Language",
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Log out"
   },
   "home": {
     "title": "Welcome to Berkay",
     "subtitle": "Turkey's next-generation e-commerce experience.",
     "comingSoon": "The storefront is coming soon."
+  },
+  "nav": {
+    "login": "Log in",
+    "signUp": "Sign up"
+  },
+  "auth": {
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Sign up to shop, follow sellers and track your orders.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "password": "Password",
+      "passwordHint": "At least 8 characters.",
+      "phoneNumber": "Phone number (optional)",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to continue to Berkay.",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    }
+  },
+  "profile": {
+    "title": "My account",
+    "subtitle": "Manage your identity verification and seller status.",
+    "memberSince": "Member since {date}",
+    "accountInfo": "Account information",
+    "email": "Email",
+    "phone": "Phone number",
+    "accountType": "Account type",
+    "typeSeller": "Seller",
+    "typeCustomer": "Customer",
+    "idVerification": {
+      "title": "Identity verification",
+      "verifiedNotice": "Your identity has been verified.",
+      "notVerifiedNotice": "You need to verify your identity before you can buy or sell on Berkay.",
+      "verifyButton": "Verify my identity",
+      "pendingNotice": "Your identity verification is pending review.",
+      "rejectedNotice": "Your identity verification was rejected: {reason}",
+      "tryAgain": "Submit again"
+    },
+    "seller": {
+      "title": "Become a seller",
+      "alreadySellerNotice": "You are already an approved seller on Berkay.",
+      "mustVerifyNotice": "Verify your identity first to apply for a seller account.",
+      "applyPrompt": "Tell us about your company to start selling on Berkay.",
+      "companyName": "Company name",
+      "taxId": "Tax ID",
+      "companyPhone": "Company phone",
+      "companyAddress": "Company address",
+      "submit": "Submit application",
+      "submitting": "Submitting...",
+      "pendingNotice": "Your seller application is pending review.",
+      "rejectedNotice": "Your seller application was rejected: {reason}",
+      "tryAgain": "Apply again"
+    }
+  },
+  "idVerification": {
+    "title": "Verify your identity",
+    "subtitle": "This is a dummy verification for demo purposes - any ID number and two photos are accepted.",
+    "idNumber": "ID number",
+    "frontPhoto": "Front of ID",
+    "backPhoto": "Back of ID with your face",
+    "submit": "Submit for review",
+    "submitting": "Submitting...",
+    "missingPhotos": "Please select both photos.",
+    "alreadyVerifiedNotice": "You are already verified.",
+    "pendingNotice": "You already have a verification pending review.",
+    "backToProfile": "Back to my account"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
   }
 }

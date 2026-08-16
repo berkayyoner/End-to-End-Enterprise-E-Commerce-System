@@ -16,6 +16,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -64,7 +65,8 @@ public class SecurityConfig {
 		provider.setPasswordEncoder(passwordEncoder);
 
 		http
-				.securityMatcher("/register", "/login", "/logout", "/csrf-token", "/id-verifications", "/seller-applications")
+				.securityMatcher("/register", "/login", "/logout", "/csrf-token", "/me", "/id-verifications",
+						"/id-verifications/me", "/seller-applications", "/seller-applications/me")
 				.authenticationProvider(provider)
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -72,6 +74,7 @@ public class SecurityConfig {
 						// same protection isn't needed here since it doesn't ride on existing
 						// authentication the way /login's session-establishing POST does.
 						.ignoringRequestMatchers("/register"))
+				.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jsonAuthenticationEntryPoint()))
 				.authorizeHttpRequests(authorize -> authorize
 						.requestMatchers("/register", "/csrf-token").permitAll()
 						.anyRequest().authenticated())
@@ -99,6 +102,7 @@ public class SecurityConfig {
 				.securityMatcher("/personnel/**")
 				.authenticationProvider(provider)
 				.csrf(csrf -> csrf.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()))
+				.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jsonAuthenticationEntryPoint()))
 				.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
 				.formLogin(form -> form
 						.loginProcessingUrl("/personnel/login")
@@ -118,6 +122,17 @@ public class SecurityConfig {
 	public SecurityFilterChain fallbackSecurityFilterChain(HttpSecurity http) throws Exception {
 		http.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated());
 		return http.build();
+	}
+
+	/**
+	 * Without this, an unauthenticated request to a protected endpoint (e.g. GET /me) hits
+	 * formLogin's default {@code AuthenticationEntryPoint}, which redirects (302) to an HTML
+	 * login page - fine for a server-rendered app, but the SPA (berkay-public, task 1.8) calls
+	 * these as plain JSON fetches and needs a 401 body, not a redirect, to detect "not logged in".
+	 */
+	private AuthenticationEntryPoint jsonAuthenticationEntryPoint() {
+		return (request, response, authException) ->
+				writeJson(response, HttpServletResponse.SC_UNAUTHORIZED, Map.of("error", "Authentication required"));
 	}
 
 	private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ActorType actorType, String action) {

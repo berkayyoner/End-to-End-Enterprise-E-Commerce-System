@@ -11,7 +11,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -66,5 +69,28 @@ class RegistrationServiceTest {
 				.isInstanceOf(EmailAlreadyRegisteredException.class);
 
 		verify(appUserRepository, never()).save(any());
+	}
+
+	@Test
+	void findsTheCurrentAccountByEmail() {
+		registrationService = new RegistrationService(appUserRepository, passwordEncoder, activityLogClient);
+		AppUser user = new AppUser("carol@example.com", "hash", "Carol", "Lee", null);
+
+		when(appUserRepository.findByEmail("carol@example.com")).thenReturn(Optional.of(user));
+
+		RegisterResponse response = registrationService.findByEmail("carol@example.com");
+
+		assertThat(response.email()).isEqualTo("carol@example.com");
+		assertThat(response.firstName()).isEqualTo("Carol");
+	}
+
+	@Test
+	void rejectsLookupForAnUnknownEmail() {
+		registrationService = new RegistrationService(appUserRepository, passwordEncoder, activityLogClient);
+
+		when(appUserRepository.findByEmail("ghost@example.com")).thenReturn(Optional.empty());
+
+		assertThatThrownBy(() -> registrationService.findByEmail("ghost@example.com"))
+				.isInstanceOf(UsernameNotFoundException.class);
 	}
 }

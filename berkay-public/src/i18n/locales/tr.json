@@ -2,11 +2,97 @@
   "common": {
     "appName": "Berkay",
     "loading": "Yükleniyor...",
-    "language": "Dil"
+    "language": "Dil",
+    "home": "Ana Sayfa",
+    "profile": "Hesabım",
+    "logout": "Çıkış Yap"
   },
   "home": {
     "title": "Berkay'a Hoş Geldiniz",
     "subtitle": "Türkiye'nin yeni nesil e-ticaret deneyimi.",
     "comingSoon": "Mağaza çok yakında burada."
+  },
+  "nav": {
+    "login": "Giriş Yap",
+    "signUp": "Kayıt Ol"
+  },
+  "auth": {
+    "signUp": {
+      "title": "Hesap oluştur",
+      "subtitle": "Alışveriş yapmak, satıcıları takip etmek ve siparişlerini takip etmek için kayıt ol.",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "passwordHint": "En az 8 karakter.",
+      "phoneNumber": "Telefon numarası (opsiyonel)",
+      "submit": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor...",
+      "haveAccount": "Zaten bir hesabın var mı?",
+      "loginLink": "Giriş yap"
+    },
+    "login": {
+      "title": "Tekrar hoş geldin",
+      "subtitle": "Berkay'a devam etmek için giriş yap.",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor...",
+      "noAccount": "Hesabın yok mu?",
+      "signUpLink": "Kayıt ol"
+    }
+  },
+  "profile": {
+    "title": "Hesabım",
+    "subtitle": "Kimlik doğrulama ve satıcı durumunu yönet.",
+    "memberSince": "Üyelik tarihi: {date}",
+    "accountInfo": "Hesap bilgileri",
+    "email": "E-posta",
+    "phone": "Telefon numarası",
+    "accountType": "Hesap türü",
+    "typeSeller": "Satıcı",
+    "typeCustomer": "Müşteri",
+    "idVerification": {
+      "title": "Kimlik doğrulama",
+      "verifiedNotice": "Kimliğiniz doğrulandı.",
+      "notVerifiedNotice": "Berkay'da alışveriş yapabilmek veya satış yapabilmek için önce kimliğinizi doğrulamanız gerekir.",
+      "verifyButton": "Kimliğimi doğrula",
+      "pendingNotice": "Kimlik doğrulama başvurunuz incelemede.",
+      "rejectedNotice": "Kimlik doğrulama başvurunuz reddedildi: {reason}",
+      "tryAgain": "Tekrar başvur"
+    },
+    "seller": {
+      "title": "Satıcı ol",
+      "alreadySellerNotice": "Berkay'da onaylı bir satıcısınız.",
+      "mustVerifyNotice": "Satıcı başvurusu yapabilmek için önce kimliğinizi doğrulayın.",
+      "applyPrompt": "Berkay'da satışa başlamak için şirketiniz hakkında bilgi verin.",
+      "companyName": "Şirket adı",
+      "taxId": "Vergi numarası",
+      "companyPhone": "Şirket telefonu",
+      "companyAddress": "Şirket adresi",
+      "submit": "Başvuruyu gönder",
+      "submitting": "Gönderiliyor...",
+      "pendingNotice": "Satıcı başvurunuz incelemede.",
+      "rejectedNotice": "Satıcı başvurunuz reddedildi: {reason}",
+      "tryAgain": "Tekrar başvur"
+    }
+  },
+  "idVerification": {
+    "title": "Kimliğini doğrula",
+    "subtitle": "Bu bir demo amaçlı sahte doğrulamadır - herhangi bir kimlik numarası ve iki fotoğraf kabul edilir.",
+    "idNumber": "Kimlik numarası",
+    "frontPhoto": "Kimliğin ön yüzü",
+    "backPhoto": "Kimliğin arka yüzü ve yüzünüz",
+    "submit": "İncelemeye gönder",
+    "submitting": "Gönderiliyor...",
+    "missingPhotos": "Lütfen her iki fotoğrafı da seçin.",
+    "alreadyVerifiedNotice": "Zaten doğrulanmış durumdasınız.",
+    "pendingNotice": "İncelemede olan bir doğrulama başvurunuz zaten var.",
+    "backToProfile": "Hesabıma dön"
+  },
+  "status": {
+    "pending": "İncelemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
   }
 }

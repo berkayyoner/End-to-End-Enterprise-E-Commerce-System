@@ -5,6 +5,7 @@ import com.berkay.auth_service.idverification.service.IdVerificationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -32,5 +33,12 @@ public class IdVerificationController {
 			@RequestParam MultipartFile backPhoto) {
 		IdVerificationResponse response = idVerificationService.submit(authentication.getName(), idNumber, frontPhoto, backPhoto);
 		return ResponseEntity.status(HttpStatus.CREATED).body(response);
+	}
+
+	@GetMapping("/id-verifications/me")
+	public ResponseEntity<IdVerificationResponse> me(Authentication authentication) {
+		return idVerificationService.findLatestForAppUser(authentication.getName())
+				.map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.noContent().build());
 	}
 }

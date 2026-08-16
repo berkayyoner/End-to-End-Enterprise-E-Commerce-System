@@ -20,6 +20,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 /**
  * RULES.md's dummy "apply to become a Seller" flow - no company info is actually checked
  * against anything real, and applying requires the account to already be ID-verified (task
@@ -71,6 +73,13 @@ public class SellerApplicationService {
 	@Transactional(readOnly = true)
 	public Page<SellerApplicationResponse> list(SellerApplicationStatus status, Pageable pageable) {
 		return applicationRepository.findAllByStatus(status, pageable).map(SellerApplicationResponse::from);
+	}
+
+	@Transactional(readOnly = true)
+	public Optional<SellerApplicationResponse> findLatestForAppUser(String appUserEmail) {
+		AppUser appUser = appUserRepository.findByEmail(appUserEmail)
+				.orElseThrow(() -> new UsernameNotFoundException("No account for email: " + appUserEmail));
+		return applicationRepository.findFirstByAppUserOrderByCreatedAtDesc(appUser).map(SellerApplicationResponse::from);
 	}
 
 	@Transactional
