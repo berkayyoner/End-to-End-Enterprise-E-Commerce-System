@@ -18,3 +18,4 @@ Completed Steps:
 - Implemented Seller Applications feature in User Management microservice
 - Implemented ID Applications feature in User Management microservice
 - Implemented Permissions feature in User Management microservice
+- Implemented "My Account" dropdown menu in the Navbar component for the public front-end
