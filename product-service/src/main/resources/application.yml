@@ -1,0 +1,17 @@
+spring:
+  application:
+    name: product-service
+  profiles:
+    default: local
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+
+server:
+  port: 8082
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG

@@ -1,0 +1,22 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@oracle-db:1521/XEPDB1
+    username: berkay
+    password: "1234"
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: false
+  data:
+    redis:
+      host: redis
+      port: 6379
+  elasticsearch:
+    uris: http://elasticsearch:9200
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG
