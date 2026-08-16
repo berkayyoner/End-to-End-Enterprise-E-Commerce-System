@@ -13,6 +13,8 @@ application. Nothing generic (`backend/`, `frontend/`, `common/`, `shared/`) liv
 | Folder              | Type              | Responsibility                                                                 |
 |---------------------|-------------------|---------------------------------------------------------------------------------|
 | `api`               | Spring Boot (gateway) | Single public entry point (Spring Cloud Gateway): routing, CORS enforcement, request-level rate limiting. Never holds business/domain logic. |
+| `discovery-service` | Spring Boot (infra, Phase 0.8+) | Eureka service registry. Every other Spring Boot service registers here and discovers peers by name instead of hardcoded host:port. |
+| `config-server`     | Spring Boot (infra, Phase 0.8+) | Spring Cloud Config Server (native/classpath-backed `config-repo`). Supplies centrally-managed property overrides layered on top of each service's own `application-*.yml`; never the only source of a property a service needs to boot. |
 | `auth-service`      | Spring Boot       | Identity: users, personnel, permission groups, OAuth2 authorization server, ID verification, seller applications, bans. |
 | `product-service`   | Spring Boot       | Catalog: products, categories, Elasticsearch indexing/search, Q&A, ratings/reviews. |
 | `order-service`     | Spring Boot (Phase 5) | Basket, orders, dummy payment/card vault. |
