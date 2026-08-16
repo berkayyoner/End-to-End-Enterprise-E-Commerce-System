@@ -3,7 +3,8 @@ import time
 import sys
 import os
 
-os.environ["OLLAMA_NUM_CTX"] = "8192"
+# Ollama's context window forced to 8K
+os.environ["OLLAMA_NUM_CTX"] = "8192" 
 
 def read_file(filepath):
     try:
@@ -18,26 +19,29 @@ def get_next_task_from_manager():
     analysis_content = read_file("ANALYSIS.md")
     done_content = read_file("DONE.md")
 
-    prompt = f"""You are a strict Technical Project Manager.
-Your job is to read the project roadmap and the completed steps, and determine the EXACT NEXT SINGLE atomic coding task that needs to be implemented.
+    prompt = f"""You are a strict, emotionless Technical Project Manager.
+Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md).
 
-Roadmap (ANALYSIS.md):
+Roadmap:
 {analysis_content}
 
-Completed Steps (DONE.md):
+Completed Steps:
 {done_content}
 
-INSTRUCTIONS:
-1. Find the first uncompleted sub-step in the roadmap.
-2. Output ONLY a short, actionable technical command for a developer to execute (e.g., 'Create the backend/auth-service Spring Boot project and its pom.xml').
-3. If all tasks in ANALYSIS.md are fully completed and present in DONE.md, output exactly the word: 'PROJECT_COMPLETED'.
-4. DO NOT include any explanations, formatting, markdown, or greetings. Output strictly the task string."""
+CRITICAL INSTRUCTIONS:
+1. Identify the FIRST uncompleted technical task from the roadmap.
+2. Output ONLY the task description. Do not add formatting, greetings, or markdown.
+3. If, and ONLY if, every single task in the roadmap exists in DONE.md, output EXACTLY the text: PROJECT_COMPLETED
+4. Be precise. (e.g., 'Implement API Gateway microservice')."""
 
     command = ["ollama", "run", "qwen2.5-coder:14b", prompt]
     
     try:
         result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8')
         task = result.stdout.strip()
+        # Temizleme filtreleri
+        if not task or "thinking" in task.lower() or "here is" in task.lower():
+            return None
         return task
     except Exception as e:
         print(f"[MANAGER] Failed to get task from Ollama: {e}")
@@ -46,10 +50,12 @@ INSTRUCTIONS:
 def run_worker_step(specific_task):
     prompt = (
         f"TASK: {specific_task}\n\n"
-        "STRICT WORKFLOW:\n"
+        "STRICT WORKFLOW AND FORMATTING RULES:\n"
         "1. Write or modify the necessary source code files to complete this specific task.\n"
-        "2. Do NOT simulate a conversation or print system rules.\n"
-        "3. Once the code is written, add a single summary line to DONE.md and exit."
+        "2. IMPORTANT: Aider is using the 'whole' edit format. You MUST output the ENTIRE, completely updated file content inside your code blocks. NEVER output diffs (e.g., @@ -1,2 +1,4 @@) inside the code blocks!\n"
+        "3. Provide the EXACT filename immediately before the ``` code block.\n"
+        "4. Do NOT simulate a conversation. Do NOT write 'User:' or 'Assistant:'.\n"
+        "5. Once the actual code is written, add a single summary line to DONE.md and exit."
     )
 
     command = [
@@ -85,29 +91,27 @@ def main():
         iteration += 1
         print(f"\n================ [ Iteration {iteration} ] ================")
 
-        # Step 1: Manager decides the next task
         next_task = get_next_task_from_manager()
 
         if not next_task:
-            print(">>> Failed to determine the next task. Retrying in 15 seconds...")
-            time.sleep(15)
+            print(">>> Manager provided an invalid response. Retrying in 5 seconds...")
+            time.sleep(5)
             continue
             
-        if "PROJECT_COMPLETED" in next_task.upper():
+        if next_task == "PROJECT_COMPLETED":
             print("\n>>> Manager reported that all project phases are completed! Orchestrator stopping.")
             break
 
         print(f"\n>>> Manager assigned task:\n    {next_task}\n")
 
-        # Step 2: Worker executes the task
         exit_code = run_worker_step(next_task)
 
         if exit_code != 0:
-            print(">>> Worker (Aider) returned an error. Waiting 15 seconds to cool down...")
-            time.sleep(15)
+            print(">>> Worker (Aider) returned an error. Waiting 10 seconds to cool down...")
+            time.sleep(10)
         else:
             print(">>> Task completed successfully. Resetting context for the next cycle...")
-            time.sleep(10)
+            time.sleep(5)
 
     if iteration >= max_iterations:
         print("\n>>> Reached the iteration limit. Orchestrator stopped.")
