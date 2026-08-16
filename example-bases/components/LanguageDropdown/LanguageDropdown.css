@@ -1,0 +1,47 @@
+.language-dropdown {
+  position: relative;
+  display: inline-block;
+  z-index: 9000;
+}
+
+.language-dropdown button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  z-index: 2;
+}
+
+.flag-icon {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: block;
+}
+
+.flag-icon:hover {
+  transform: scale(1.1);
+  transition: all 0.3s ease;
+}
+
+.dropdown-menu {
+    display: none;
+  position: absolute;
+  top: -10px; 
+  right: 0.5px;
+  background: #333;
+  border-radius: 50px;
+  padding: 5px;
+  margin-top: 5px; 
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  align-items: center;
+  padding-top: 45px;
+  z-index: 1;  
+}
+
+.dropdown-item {
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}

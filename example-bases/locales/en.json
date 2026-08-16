@@ -1,0 +1,16 @@
+{
+  "navBar": {
+    "home": "Home",
+    "projects": "Projects",
+    "login": "Login",
+    "language": "Language"
+  },
+
+  "home": {
+    "title": "Hello, I'm Berkay Öner 👋",
+    "description": "Just like you're chatting with me, you can chat with my Generative AI model, which I coded myself, in the space below.",
+    "chatPlaceholder": "Ask me anything about my experience, projects, or skills!",
+    "messagePlaceholder": "Type your message...",
+    "sendButton": "Send"
+  }
+}

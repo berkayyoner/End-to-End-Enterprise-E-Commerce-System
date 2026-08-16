@@ -1,0 +1,8 @@
+.aider*
+target/
+node_modules/
+.idea/
+*.class
+*.jar
+dist/
+build/
