@@ -24,3 +24,4 @@ Completed Steps:
 - Configured Oracle database connection for Product Management microservice
 - Implemented "My Store" button in the Navbar component for the public front-end
 - Created Search Service microservice with initial setup
+- Implemented basic routing and navigation for the public front-end
