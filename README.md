@@ -29,12 +29,19 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 3. Creating a ANALYSIS.md for AI to fill with the phases and steps to take which it will decide.
 4. Creating a DONE.md for AI to fill when it finishes a phase. So we can keep going in any issue.
 5. Using a local agent for developing more economically. (I've used Gwen 2.5 Coder 14B Instruct model and created a local API with Ollama.) (CMD: ollama run qwen2.5-coder:14b)
-6. Using Aider Python library for local API connection. (CMD: python -m pip install aider-chat) (CMD: cd [project directory]) (CMD: python -m aider --model ollama/qwen2.5-coder:14b)
+6. Using Aider Python library for local API connection. (CMD: python -m pip install aider-chat) (CMD: cd [project directory]) (CMD: python -m aider --model ollama/qwen2.5-coder:14b) or (CMD: python -m aider --yes --model ollama/qwen2.5-coder:14b) for automatic permission.
 7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
-8. Giving prompts to AI to start working.
+8. Giving the first 3 prompts to AI to start working.
+9. Start services with the "docker-compose.yml" file.
 
 ## Prompts
 1. "Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately."
 2. "Let's start Phase 1. Create a docker-compose.yml file in the root directory to set up the local development environment. It must include Oracle (XEPDB1, port 1521, user: berkay, pass: 1234), Redis, and Elasticsearch. Make sure the configurations are suitable for a local microservice environment. After creating the file, update the DONE.md file by adding '- docker-compose.yml created for local databases' under a new 'Completed Steps' section."
+3. "Read ANALYSIS.md. We will now autonomously complete the remaining steps for Phase 1. You MUST strictly use your file editing tools to actually create the files on the disk. DO NOT just print code blocks in the chat.
+Follow this enterprise folder structure strictly:
+    1. Create a backend/berkay-parent directory. Generate the Java 21 Spring Boot Parent pom.xml inside it.
+    2. Create a frontend/berkay-public directory. Generate the initial React package.json and basic setup files inside it.
+    3. NEVER create a src folder directly in the root directory.
+Update DONE.md after successfully writing all these files to the disk. Execute the file creation tools immediately without asking for confirmation."
 
 # Special Thanks to All GTech Team
