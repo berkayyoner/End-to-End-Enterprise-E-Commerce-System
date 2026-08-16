@@ -50,12 +50,14 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler({DuplicatePendingIdVerificationException.class, AlreadyIdVerifiedException.class,
-			IdVerificationAlreadyReviewedException.class})
-	public ResponseEntity<Map<String, Object>> handleIdVerificationConflict(RuntimeException ex) {
+			IdVerificationAlreadyReviewedException.class, DuplicatePendingSellerApplicationException.class,
+			AlreadySellerException.class, SellerApplicationAlreadyReviewedException.class, IdNotVerifiedException.class})
+	public ResponseEntity<Map<String, Object>> handleConflict(RuntimeException ex) {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
 	}
 
-	@ExceptionHandler({IdVerificationApplicationNotFoundException.class, UsernameNotFoundException.class})
+	@ExceptionHandler({IdVerificationApplicationNotFoundException.class, SellerApplicationNotFoundException.class,
+			UsernameNotFoundException.class})
 	public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
 	}
