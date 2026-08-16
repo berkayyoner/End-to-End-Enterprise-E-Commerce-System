@@ -11,7 +11,7 @@ This will be a enterprise e-commerce project which will include all of the main 
 * **Containeriastion:** Docker
 * **Main product search:** Elasticsearch
 * **Environments for all projects:** development, production, local
-* **ORM:** Hybernate
+* **ORM:** Hybernate with Spring JPA
 * **Database:** Oracle
 * **Server Management:** Kubernates
 * **Deployment:** Jenkins
