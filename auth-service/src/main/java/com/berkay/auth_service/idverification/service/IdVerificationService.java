@@ -1,5 +1,7 @@
 package com.berkay.auth_service.idverification.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
+import com.berkay.auth_service.activitylog.ActorType;
 import com.berkay.auth_service.exception.AlreadyIdVerifiedException;
 import com.berkay.auth_service.exception.DuplicatePendingIdVerificationException;
 import com.berkay.auth_service.exception.IdVerificationAlreadyReviewedException;
@@ -33,11 +35,13 @@ public class IdVerificationService {
 
 	private final IdVerificationApplicationRepository applicationRepository;
 	private final AppUserRepository appUserRepository;
+	private final ActivityLogClient activityLogClient;
 
 	public IdVerificationService(IdVerificationApplicationRepository applicationRepository,
-			AppUserRepository appUserRepository) {
+			AppUserRepository appUserRepository, ActivityLogClient activityLogClient) {
 		this.applicationRepository = applicationRepository;
 		this.appUserRepository = appUserRepository;
+		this.activityLogClient = activityLogClient;
 	}
 
 	@Transactional
@@ -66,7 +70,10 @@ public class IdVerificationService {
 				readBytes(backPhoto),
 				backPhoto.getContentType());
 
-		return IdVerificationResponse.from(applicationRepository.save(application));
+		IdVerificationApplication saved = applicationRepository.save(application);
+		activityLogClient.log(ActorType.USER, appUser.getId(), "ID_VERIFICATION_SUBMITTED", "applicationId=" + saved.getId());
+
+		return IdVerificationResponse.from(saved);
 	}
 
 	@Transactional(readOnly = true)
@@ -79,14 +86,20 @@ public class IdVerificationService {
 		IdVerificationApplication application = findPendingOrThrow(applicationId);
 		application.approve(reviewerEmail);
 		application.getAppUser().markIdVerified();
-		return IdVerificationResponse.from(applicationRepository.save(application));
+		IdVerificationResponse response = IdVerificationResponse.from(applicationRepository.save(application));
+		activityLogClient.log(ActorType.PERSONNEL, null, "ID_VERIFICATION_APPROVED",
+				"applicationId=" + applicationId + ", reviewer=" + reviewerEmail + ", appUser=" + response.appUserEmail());
+		return response;
 	}
 
 	@Transactional
 	public IdVerificationResponse reject(Long applicationId, String reviewerEmail, String reason) {
 		IdVerificationApplication application = findPendingOrThrow(applicationId);
 		application.reject(reviewerEmail, reason);
-		return IdVerificationResponse.from(applicationRepository.save(application));
+		IdVerificationResponse response = IdVerificationResponse.from(applicationRepository.save(application));
+		activityLogClient.log(ActorType.PERSONNEL, null, "ID_VERIFICATION_REJECTED",
+				"applicationId=" + applicationId + ", reviewer=" + reviewerEmail + ", reason=" + reason);
+		return response;
 	}
 
 	private IdVerificationApplication findPendingOrThrow(Long applicationId) {

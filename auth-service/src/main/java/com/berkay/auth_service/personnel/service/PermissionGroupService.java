@@ -1,5 +1,7 @@
 package com.berkay.auth_service.personnel.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
+import com.berkay.auth_service.activitylog.ActorType;
 import com.berkay.auth_service.exception.DuplicatePermissionGroupNameException;
 import com.berkay.auth_service.exception.PermissionGroupNotFoundException;
 import com.berkay.auth_service.personnel.dto.PermissionEntryDto;
@@ -25,9 +27,12 @@ import java.util.stream.Collectors;
 public class PermissionGroupService {
 
 	private final PermissionGroupRepository permissionGroupRepository;
+	private final ActivityLogClient activityLogClient;
 
-	public PermissionGroupService(PermissionGroupRepository permissionGroupRepository) {
+	public PermissionGroupService(PermissionGroupRepository permissionGroupRepository,
+			ActivityLogClient activityLogClient) {
 		this.permissionGroupRepository = permissionGroupRepository;
+		this.activityLogClient = activityLogClient;
 	}
 
 	@Transactional(readOnly = true)
@@ -51,7 +56,11 @@ public class PermissionGroupService {
 		PermissionGroup group = new PermissionGroup(request.name());
 		applyEntries(group, request.entries());
 
-		return PermissionGroupResponse.from(permissionGroupRepository.save(group));
+		PermissionGroup saved = permissionGroupRepository.save(group);
+		activityLogClient.log(ActorType.PERSONNEL, null, "PERMISSION_GROUP_CREATED",
+				"groupId=" + saved.getId() + ", name=" + saved.getName() + ", by=" + saved.getCreatedBy());
+
+		return PermissionGroupResponse.from(saved);
 	}
 
 	@Transactional
@@ -72,14 +81,20 @@ public class PermissionGroupService {
 				.forEach(group::revoke);
 		applyEntries(group, request.entries());
 
-		return PermissionGroupResponse.from(permissionGroupRepository.save(group));
+		PermissionGroup saved = permissionGroupRepository.save(group);
+		activityLogClient.log(ActorType.PERSONNEL, null, "PERMISSION_GROUP_UPDATED",
+				"groupId=" + saved.getId() + ", name=" + saved.getName() + ", by=" + saved.getUpdatedBy());
+
+		return PermissionGroupResponse.from(saved);
 	}
 
 	@Transactional
 	public void delete(Long id) {
 		PermissionGroup group = findActiveOrThrow(id);
 		group.softDelete();
-		permissionGroupRepository.save(group);
+		PermissionGroup saved = permissionGroupRepository.save(group);
+		activityLogClient.log(ActorType.PERSONNEL, null, "PERMISSION_GROUP_DELETED",
+				"groupId=" + saved.getId() + ", name=" + saved.getName() + ", by=" + saved.getUpdatedBy());
 	}
 
 	private void applyEntries(PermissionGroup group, List<PermissionEntryDto> entries) {

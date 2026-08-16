@@ -1,5 +1,6 @@
 package com.berkay.auth_service.sellerapplication.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
 import com.berkay.auth_service.exception.AlreadySellerException;
 import com.berkay.auth_service.exception.DuplicatePendingSellerApplicationException;
 import com.berkay.auth_service.exception.IdNotVerifiedException;
@@ -33,11 +34,14 @@ class SellerApplicationServiceTest {
 	@Mock
 	private AppUserRepository appUserRepository;
 
+	@Mock
+	private ActivityLogClient activityLogClient;
+
 	private SellerApplicationService service;
 
 	@BeforeEach
 	void setUp() {
-		service = new SellerApplicationService(applicationRepository, appUserRepository);
+		service = new SellerApplicationService(applicationRepository, appUserRepository, activityLogClient);
 	}
 
 	private static SellerApplicationRequest request() {

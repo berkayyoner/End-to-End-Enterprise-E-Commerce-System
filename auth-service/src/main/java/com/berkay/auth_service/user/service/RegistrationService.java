@@ -1,5 +1,7 @@
 package com.berkay.auth_service.user.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
+import com.berkay.auth_service.activitylog.ActorType;
 import com.berkay.auth_service.exception.EmailAlreadyRegisteredException;
 import com.berkay.auth_service.user.dto.RegisterRequest;
 import com.berkay.auth_service.user.dto.RegisterResponse;
@@ -14,10 +16,13 @@ public class RegistrationService {
 
 	private final AppUserRepository appUserRepository;
 	private final PasswordEncoder passwordEncoder;
+	private final ActivityLogClient activityLogClient;
 
-	public RegistrationService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder) {
+	public RegistrationService(AppUserRepository appUserRepository, PasswordEncoder passwordEncoder,
+			ActivityLogClient activityLogClient) {
 		this.appUserRepository = appUserRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.activityLogClient = activityLogClient;
 	}
 
 	@Transactional
@@ -34,6 +39,9 @@ public class RegistrationService {
 				request.lastName().trim(),
 				request.phoneNumber() != null ? request.phoneNumber().trim() : null);
 
-		return RegisterResponse.from(appUserRepository.save(user));
+		AppUser saved = appUserRepository.save(user);
+		activityLogClient.log(ActorType.USER, saved.getId(), "USER_REGISTERED", "email=" + saved.getEmail());
+
+		return RegisterResponse.from(saved);
 	}
 }

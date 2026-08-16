@@ -1,5 +1,6 @@
 package com.berkay.auth_service.idverification.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
 import com.berkay.auth_service.exception.AlreadyIdVerifiedException;
 import com.berkay.auth_service.exception.DuplicatePendingIdVerificationException;
 import com.berkay.auth_service.exception.IdVerificationAlreadyReviewedException;
@@ -33,11 +34,14 @@ class IdVerificationServiceTest {
 	@Mock
 	private AppUserRepository appUserRepository;
 
+	@Mock
+	private ActivityLogClient activityLogClient;
+
 	private IdVerificationService service;
 
 	@BeforeEach
 	void setUp() {
-		service = new IdVerificationService(applicationRepository, appUserRepository);
+		service = new IdVerificationService(applicationRepository, appUserRepository, activityLogClient);
 	}
 
 	@Test

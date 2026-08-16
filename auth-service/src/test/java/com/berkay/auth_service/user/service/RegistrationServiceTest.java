@@ -1,5 +1,6 @@
 package com.berkay.auth_service.user.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
 import com.berkay.auth_service.exception.EmailAlreadyRegisteredException;
 import com.berkay.auth_service.user.dto.RegisterRequest;
 import com.berkay.auth_service.user.dto.RegisterResponse;
@@ -28,11 +29,14 @@ class RegistrationServiceTest {
 	@Mock
 	private PasswordEncoder passwordEncoder;
 
+	@Mock
+	private ActivityLogClient activityLogClient;
+
 	private RegistrationService registrationService;
 
 	@Test
 	void registersANewUserWithNormalizedEmailAndHashedPassword() {
-		registrationService = new RegistrationService(appUserRepository, passwordEncoder);
+		registrationService = new RegistrationService(appUserRepository, passwordEncoder, activityLogClient);
 		RegisterRequest request = new RegisterRequest(" Alice@Example.com ", "SuperSecret1", "Alice", "Smith", null);
 
 		when(appUserRepository.existsByEmail("alice@example.com")).thenReturn(false);
@@ -53,7 +57,7 @@ class RegistrationServiceTest {
 
 	@Test
 	void rejectsRegistrationWhenEmailAlreadyExists() {
-		registrationService = new RegistrationService(appUserRepository, passwordEncoder);
+		registrationService = new RegistrationService(appUserRepository, passwordEncoder, activityLogClient);
 		RegisterRequest request = new RegisterRequest("bob@example.com", "SuperSecret1", "Bob", "Jones", null);
 
 		when(appUserRepository.existsByEmail("bob@example.com")).thenReturn(true);

@@ -4,7 +4,7 @@ spring:
   profiles:
     default: local
   config:
-    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://127.0.0.1:8888}"
   servlet:
     multipart:
       max-file-size: 5MB

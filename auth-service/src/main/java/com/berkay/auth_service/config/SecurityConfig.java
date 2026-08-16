@@ -1,5 +1,7 @@
 package com.berkay.auth_service.config;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
+import com.berkay.auth_service.activitylog.ActorType;
 import com.berkay.auth_service.personnel.security.PersonnelDetailsService;
 import com.berkay.auth_service.user.security.AppUserDetailsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -17,6 +19,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
+import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 
 import java.time.Instant;
@@ -32,7 +35,8 @@ import java.util.Map;
  * respond with JSON, not a redirect, since the SPA calls them via fetch; the SPA then drives the
  * /oauth2/authorize + /oauth2/token exchange (OAUTH2.md) using the session either establishes.
  * The Authorization Server's own endpoints are handled by {@link AuthorizationServerConfig},
- * ordered ahead of both of these.
+ * ordered ahead of both of these. Login/logout (success and failure) are reported to log-service
+ * per task 1.7's activity logging hooks.
  */
 @Configuration
 @EnableWebSecurity
@@ -40,9 +44,11 @@ import java.util.Map;
 public class SecurityConfig {
 
 	private final ObjectMapper objectMapper;
+	private final ActivityLogClient activityLogClient;
 
-	public SecurityConfig(ObjectMapper objectMapper) {
+	public SecurityConfig(ObjectMapper objectMapper, ActivityLogClient activityLogClient) {
 		this.objectMapper = objectMapper;
+		this.activityLogClient = activityLogClient;
 	}
 
 	@Bean
@@ -58,7 +64,7 @@ public class SecurityConfig {
 		provider.setPasswordEncoder(passwordEncoder);
 
 		http
-				.securityMatcher("/register", "/login", "/csrf-token", "/id-verifications", "/seller-applications")
+				.securityMatcher("/register", "/login", "/logout", "/csrf-token", "/id-verifications", "/seller-applications")
 				.authenticationProvider(provider)
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -71,8 +77,12 @@ public class SecurityConfig {
 						.anyRequest().authenticated())
 				.formLogin(form -> form
 						.loginProcessingUrl("/login")
-						.successHandler(jsonAuthenticationSuccessHandler())
-						.failureHandler(jsonAuthenticationFailureHandler())
+						.successHandler(jsonAuthenticationSuccessHandler(ActorType.USER, "USER_LOGIN_SUCCESS"))
+						.failureHandler(jsonAuthenticationFailureHandler(ActorType.USER, "USER_LOGIN_FAILURE"))
+						.permitAll())
+				.logout(logout -> logout
+						.logoutUrl("/logout")
+						.logoutSuccessHandler(jsonLogoutSuccessHandler(ActorType.USER, "USER_LOGOUT"))
 						.permitAll());
 
 		return http.build();
@@ -92,8 +102,12 @@ public class SecurityConfig {
 				.authorizeHttpRequests(authorize -> authorize.anyRequest().authenticated())
 				.formLogin(form -> form
 						.loginProcessingUrl("/personnel/login")
-						.successHandler(jsonAuthenticationSuccessHandler())
-						.failureHandler(jsonAuthenticationFailureHandler())
+						.successHandler(jsonAuthenticationSuccessHandler(ActorType.PERSONNEL, "PERSONNEL_LOGIN_SUCCESS"))
+						.failureHandler(jsonAuthenticationFailureHandler(ActorType.PERSONNEL, "PERSONNEL_LOGIN_FAILURE"))
+						.permitAll())
+				.logout(logout -> logout
+						.logoutUrl("/personnel/logout")
+						.logoutSuccessHandler(jsonLogoutSuccessHandler(ActorType.PERSONNEL, "PERSONNEL_LOGOUT"))
 						.permitAll());
 
 		return http.build();
@@ -106,14 +120,28 @@ public class SecurityConfig {
 		return http.build();
 	}
 
-	private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler() {
-		return (request, response, authentication) -> writeJson(response, HttpServletResponse.SC_OK,
-				Map.of("email", authentication.getName()));
+	private AuthenticationSuccessHandler jsonAuthenticationSuccessHandler(ActorType actorType, String action) {
+		return (request, response, authentication) -> {
+			activityLogClient.log(actorType, null, action, "email=" + authentication.getName());
+			writeJson(response, HttpServletResponse.SC_OK, Map.of("email", authentication.getName()));
+		};
 	}
 
-	private AuthenticationFailureHandler jsonAuthenticationFailureHandler() {
-		return (request, response, exception) -> writeJson(response, HttpServletResponse.SC_UNAUTHORIZED,
-				Map.of("error", "Invalid email or password"));
+	private AuthenticationFailureHandler jsonAuthenticationFailureHandler(ActorType actorType, String action) {
+		return (request, response, exception) -> {
+			String attemptedEmail = request.getParameter("username");
+			activityLogClient.log(actorType, null, action, "email=" + attemptedEmail);
+			writeJson(response, HttpServletResponse.SC_UNAUTHORIZED, Map.of("error", "Invalid email or password"));
+		};
+	}
+
+	private LogoutSuccessHandler jsonLogoutSuccessHandler(ActorType actorType, String action) {
+		return (request, response, authentication) -> {
+			if (authentication != null) {
+				activityLogClient.log(actorType, null, action, "email=" + authentication.getName());
+			}
+			writeJson(response, HttpServletResponse.SC_OK, Map.of("message", "Logged out"));
+		};
 	}
 
 	private void writeJson(HttpServletResponse response, int status, Map<String, Object> body) throws java.io.IOException {

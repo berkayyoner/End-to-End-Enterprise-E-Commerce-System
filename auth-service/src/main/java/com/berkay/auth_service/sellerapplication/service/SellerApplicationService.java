@@ -1,5 +1,7 @@
 package com.berkay.auth_service.sellerapplication.service;
 
+import com.berkay.auth_service.activitylog.ActivityLogClient;
+import com.berkay.auth_service.activitylog.ActorType;
 import com.berkay.auth_service.exception.AlreadySellerException;
 import com.berkay.auth_service.exception.DuplicatePendingSellerApplicationException;
 import com.berkay.auth_service.exception.IdNotVerifiedException;
@@ -28,11 +30,13 @@ public class SellerApplicationService {
 
 	private final SellerApplicationRepository applicationRepository;
 	private final AppUserRepository appUserRepository;
+	private final ActivityLogClient activityLogClient;
 
 	public SellerApplicationService(SellerApplicationRepository applicationRepository,
-			AppUserRepository appUserRepository) {
+			AppUserRepository appUserRepository, ActivityLogClient activityLogClient) {
 		this.applicationRepository = applicationRepository;
 		this.appUserRepository = appUserRepository;
+		this.activityLogClient = activityLogClient;
 	}
 
 	@Transactional
@@ -57,7 +61,11 @@ public class SellerApplicationService {
 				request.companyPhone().trim(),
 				request.companyAddress().trim());
 
-		return SellerApplicationResponse.from(applicationRepository.save(application));
+		SellerApplication saved = applicationRepository.save(application);
+		activityLogClient.log(ActorType.USER, appUser.getId(), "SELLER_APPLICATION_SUBMITTED",
+				"applicationId=" + saved.getId() + ", companyName=" + saved.getCompanyName());
+
+		return SellerApplicationResponse.from(saved);
 	}
 
 	@Transactional(readOnly = true)
@@ -70,14 +78,20 @@ public class SellerApplicationService {
 		SellerApplication application = findPendingOrThrow(applicationId);
 		application.approve(reviewerEmail);
 		application.getAppUser().approveAsSeller();
-		return SellerApplicationResponse.from(applicationRepository.save(application));
+		SellerApplicationResponse response = SellerApplicationResponse.from(applicationRepository.save(application));
+		activityLogClient.log(ActorType.PERSONNEL, null, "SELLER_APPLICATION_APPROVED",
+				"applicationId=" + applicationId + ", reviewer=" + reviewerEmail + ", appUser=" + response.appUserEmail());
+		return response;
 	}
 
 	@Transactional
 	public SellerApplicationResponse reject(Long applicationId, String reviewerEmail, String reason) {
 		SellerApplication application = findPendingOrThrow(applicationId);
 		application.reject(reviewerEmail, reason);
-		return SellerApplicationResponse.from(applicationRepository.save(application));
+		SellerApplicationResponse response = SellerApplicationResponse.from(applicationRepository.save(application));
+		activityLogClient.log(ActorType.PERSONNEL, null, "SELLER_APPLICATION_REJECTED",
+				"applicationId=" + applicationId + ", reviewer=" + reviewerEmail + ", reason=" + reason);
+		return response;
 	}
 
 	private SellerApplication findPendingOrThrow(Long applicationId) {

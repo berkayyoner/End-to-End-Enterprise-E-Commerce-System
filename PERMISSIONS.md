@@ -18,7 +18,7 @@ session side); auth-service's own personnel endpoints check the session authorit
 | P0 | Permissions (create/edit/delete permission groups) | auth-service | task 1.2/1.3 |
 | P1 | ID Applications (accept/deny ID verification submissions) | auth-service | task 1.4 |
 | P2 | Seller Applications (accept/deny seller applications) | auth-service | task 1.5 |
+| P3 | Users (ban action now; full list/view/edit/soft-delete added in Phase 7.2) | auth-service | task 1.6 |
 
 Not yet assigned (RULES.md names these pages; codes are assigned when each is actually built):
-Personnel, Users, Main/Sub/Inner Categories, Products, User Logs, Personnel Logs, Campaigns
-(Phase 7).
+Personnel, Main/Sub/Inner Categories, Products, User Logs, Personnel Logs, Campaigns (Phase 7).
