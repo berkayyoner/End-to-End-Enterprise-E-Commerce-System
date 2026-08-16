@@ -5,7 +5,15 @@ import os
 import json
 import urllib.request
 
-os.environ["OLLAMA_NUM_CTX"] = "8192" 
+# API Keys
+DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY")
+GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
+
+if not DEEPSEEK_KEY and not GEMINI_KEY:
+    print("[FATAL ERROR] At least one API key (DEEPSEEK_API_KEY or GEMINI_API_KEY) must be set!")
+    sys.exit(1)
+
+CURRENT_PROVIDER = "DEEPSEEK" if DEEPSEEK_KEY else "GEMINI"
 
 def read_file(filepath):
     try:
@@ -14,17 +22,99 @@ def read_file(filepath):
     except FileNotFoundError:
         return ""
 
+def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Architect."):
+    url = "https://api.deepseek.com/chat/completions"
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {DEEPSEEK_KEY}"
+    }
+    payload = {
+        "model": "deepseek-chat",
+        "messages": [
+            {"role": "system", "content": system_role},
+            {"role": "user", "content": prompt}
+        ],
+        "temperature": 0.0 # Kesin ve net kararlar için sıfır yaratıcılık
+    }
+    req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
+    with urllib.request.urlopen(req, timeout=60) as response:
+        result = json.loads(response.read().decode('utf-8'))
+        return result["choices"][0]["message"]["content"].strip()
+
+def call_gemini(prompt):
+    import google.generativeai as genai
+    genai.configure(api_key=GEMINI_KEY)
+    model = genai.GenerativeModel('gemini-1.5-pro')
+    response = model.generate_content(prompt)
+    return response.text.strip()
+
+def initialize_project_if_needed():
+    if os.path.exists("ANALYSIS.md"):
+        return 
+
+    print("\n=====================================================")
+    print(" PROJECT INITIALIZATION PHASE")
+    print("=====================================================")
+    
+    user_idea = input("\n>>> What do you want to build? (Describe your project briefly):\n> ")
+    rules_content = read_file("RULES.md")
+    
+    if not user_idea.strip():
+        print("[FATAL ERROR] Project idea cannot be empty. Exiting.")
+        sys.exit(1)
+
+    prompt = (
+        f"The user wants to build the following project:\n'{user_idea}'\n\n"
+        f"CRITICAL RULES AND TECHNOLOGIES:\n{rules_content}\n\n"
+        "Create a highly detailed, step-by-step technical roadmap (ANALYSIS.md) for this project. "
+        "You MUST strictly follow the architecture, technologies, and directory structures defined in the RULES. "
+        "Break down the tasks into granular, atomic coding steps. "
+        "Do NOT include conversational filler. Output ONLY the markdown roadmap."
+    )
+
+    global CURRENT_PROVIDER
+    print(f"\n[INIT] Generating project roadmap using {CURRENT_PROVIDER}... Applying RULES.md...")
+    
+    roadmap_content = None
+    
+    if CURRENT_PROVIDER == "DEEPSEEK" and DEEPSEEK_KEY:
+        try:
+            roadmap_content = call_deepseek(prompt)
+        except Exception as e:
+            print(f"[INIT WARNING] DeepSeek failed ({e}). Switching to Gemini...")
+            CURRENT_PROVIDER = "GEMINI"
+
+    if not roadmap_content and GEMINI_KEY:
+        try:
+            roadmap_content = call_gemini(prompt)
+        except Exception as e:
+            print(f"[INIT ERROR] Gemini also failed: {e}")
+
+    if not roadmap_content:
+        print("[FATAL ERROR] AI failed to generate the roadmap. Exiting.")
+        sys.exit(1)
+
+    with open("ANALYSIS.md", "w", encoding="utf-8") as f:
+        f.write(roadmap_content)
+        
+    with open("DONE.md", "w", encoding="utf-8") as f:
+        f.write(f"Project Start Date: {time.strftime('%Y-%m-%d')}\n\nCompleted Steps:\n")
+        
+    print("[INIT] SUCCESS! ANALYSIS.md and DONE.md generated with strict adherence to RULES.md.\n")
+    time.sleep(2)
+
 def get_next_task_from_manager():
-    print("\n[MANAGER] Analyzing project state to determine the next task...")
+    global CURRENT_PROVIDER
+    print(f"\n[MANAGER] Analyzing project state and RULES.md using {CURRENT_PROVIDER}...")
     
     analysis_content = read_file("ANALYSIS.md")
     done_content = read_file("DONE.md")
+    rules_content = read_file("RULES.md")
 
-    if not analysis_content:
-        return "PROJECT_COMPLETED"
+    prompt = f"""Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md) against the Project Rules (RULES.md).
 
-    prompt = f"""You are a Technical Project Manager.
-Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md) below.
+RULES:
+{rules_content}
 
 Roadmap:
 {analysis_content}
@@ -33,61 +123,66 @@ Completed Steps:
 {done_content}
 
 INSTRUCTIONS:
-1. Find the FIRST task from the roadmap that is explicitly MISSING from the Completed Steps.
-2. Output ONLY the technical task description.
-3. If all tasks are present in DONE.md, output exactly: PROJECT_COMPLETED
-4. Be precise and short. DO NOT output markdown, explanations, or greetings."""
+1. Find the FIRST specific technical task from the roadmap that is explicitly MISSING from the Completed Steps.
+2. The task MUST align with the technologies and architecture demanded in RULES.
+3. Output ONLY the technical task description.
+4. If all tasks are logically complete, output exactly: PROJECT_COMPLETED
+5. Be granular, precise, and short."""
 
-    data = json.dumps({
-        "model": "qwen2.5-coder:14b",
-        "prompt": prompt,
-        "stream": False,
-        "options": {
-            "num_ctx": 8192,
-            "temperature": 0.0 
-        }
-    }).encode('utf-8')
-
-    req = urllib.request.Request("http://localhost:11434/api/generate", data=data, headers={'Content-Type': 'application/json'})
-    
-    try:
-        with urllib.request.urlopen(req) as response:
-            result = json.loads(response.read().decode('utf-8'))
-            task = result.get("response", "").strip()
-            
+    if CURRENT_PROVIDER == "DEEPSEEK" and DEEPSEEK_KEY:
+        try:
+            task = call_deepseek(prompt)
             print(f"[MANAGER DEBUG] Task identified: {task}")
-            
-            if not task or "thinking" in task.lower():
-                return None
             return task
-    except Exception as e:
-        print(f"[MANAGER] Failed: {e}")
-        return None
+        except Exception as e:
+            print(f"[MANAGER WARNING] DeepSeek API failed ({e}). Switching to GEMINI...")
+            CURRENT_PROVIDER = "GEMINI"
+
+    if GEMINI_KEY:
+        try:
+            task = call_gemini(prompt)
+            print(f"[MANAGER DEBUG] Task identified: {task}")
+            return task
+        except Exception as e:
+            print(f"[MANAGER ERROR] Gemini API failed: {e}")
+            return None
+
+    return None
 
 def run_worker_step(specific_task):
-    # Aider'a verilecek komutu en sade haline getirdik.
-    # Zorunlu formatlama kurallarını sildik ki Aider'ın kafası karışmasın.
+    global CURRENT_PROVIDER
+    # RULES.md'ye tam itaat ve kurumsal standart dayatması
     prompt = (
         f"Please execute this task: '{specific_task}'.\n\n"
-        "1. Write or modify the necessary code to completely implement this feature (Entities, Repositories, Services, Controllers, and Frontend components as needed).\n"
-        "2. Add a short summary line indicating completion to DONE.md.\n"
-        "3. Commit your changes."
+        "STRICT ENTERPRISE MANDATES:\n"
+        "1. Read the RULES.md file provided in this chat. You MUST strictly obey all architectural layers, tech stacks, and constraints defined in it.\n"
+        "2. FULL IMPLEMENTATION: You are forbidden from leaving 'TODO' comments, dummy logic, or empty methods. Implement the complete flow (e.g., Entity, Repository, Service, Controller).\n"
+        "3. Search for and correctly modify ALL relevant files needed to make this feature 100% functional and production-ready.\n"
+        "4. When finished, append a single specific summary line to DONE.md explaining what you actually built.\n"
+        "5. Commit your changes."
     )
 
-    # --file parametresini sildik! Aider hangi dosyalara dokunacağını kendi Repo Map'inden bulacak.
-    # --yes komutuyla tüm git commit onaylarını otomatikleştiriyoruz.
+    model_flag = "deepseek/deepseek-coder" if CURRENT_PROVIDER == "DEEPSEEK" else "gemini/gemini-1.5-pro"
+
+    # RULES.md ve DONE.md Aider'ın aklına fiziksel olarak kazınıyor
     command = [
         "python", "-m", "aider",
         "--yes",
         "--no-show-model-warnings",
-        "--model", "ollama/qwen2.5-coder:14b",
+        "--model", model_flag,
+        "--file", "RULES.md",
+        "--file", "DONE.md",
         "--message", prompt
     ]
 
-    print(f"[WORKER] Starting Aider...")
+    print(f"[WORKER] Executing task with {model_flag} (Adhering to RULES.md)...")
     
     try:
         result = subprocess.run(command)
+        if result.returncode != 0 and CURRENT_PROVIDER == "DEEPSEEK" and GEMINI_KEY:
+            print("[WORKER WARNING] DeepSeek failed or rate-limited. Falling back to Gemini...")
+            CURRENT_PROVIDER = "GEMINI"
+            return run_worker_step(specific_task)
         return result.returncode
     except KeyboardInterrupt:
         print("\n>>> Stopped by user.")
@@ -98,8 +193,10 @@ def run_worker_step(specific_task):
 
 def main():
     print("=====================================================")
-    print(" Conflict-Free Two-Agent Orchestrator Started")
+    print(f" Rule-Enforced Multi-AI Orchestrator (Primary: {CURRENT_PROVIDER})")
     print("=====================================================\n")
+    
+    initialize_project_if_needed()
     
     max_iterations = 50 
     iteration = 0
@@ -111,22 +208,25 @@ def main():
         next_task = get_next_task_from_manager()
 
         if not next_task:
-            print(">>> Waiting 5 seconds to retry...")
-            time.sleep(5)
+            print(">>> Failed to get task. Retrying in 10s...")
+            time.sleep(10)
             continue
             
         if "PROJECT_COMPLETED" in next_task.upper():
-            print("\n>>> Manager reported completion! Stopping.")
+            print("\n>>> Manager reported that all project phases are completed! Orchestrator stopping.")
             break
 
         exit_code = run_worker_step(next_task)
 
         if exit_code != 0:
-            print(">>> Aider returned non-zero exit code. Cooling down (10s)...")
+            print(">>> Worker returned an error. Waiting 10s...")
             time.sleep(10)
         else:
-            print(">>> Cycle complete. Resetting for next task (5s)...")
+            print(">>> Task cycle finished successfully. Next cycle in 5s...")
             time.sleep(5)
+
+    if iteration >= max_iterations:
+        print("\n>>> Reached maximum iteration limit. Orchestrator stopped.")
 
 if __name__ == "__main__":
     main()
