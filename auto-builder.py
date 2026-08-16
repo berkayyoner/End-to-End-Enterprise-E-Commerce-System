@@ -3,6 +3,8 @@ import time
 import sys
 import os
 
+os.environ["OLLAMA_NUM_CTX"] = "8192"
+
 def read_file(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
