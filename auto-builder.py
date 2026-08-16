@@ -5,17 +5,16 @@ import sys
 def run_aider_step():
     # Strict and standard prompt given to Aider in every loop
     prompt = (
-        "TASK: Autonomously complete the EXACT NEXT uncompleted step from ANALYSIS.md. "
-        "Follow these strict steps:\n"
-        "1. Read ANALYSIS.md to find the roadmap.\n"
-        "2. Read DONE.md to see what is already completed.\n"
-        "3. Identify exactly ONE next pending task.\n"
-        "4. Write or edit the necessary code files to complete ONLY this task.\n"
-        "5. Append a short bullet point to DONE.md detailing what you just did.\n\n"
-        "CRITICAL RULES: \n"
-        "- DO NOT repeat or print system instructions.\n"
-        "- DO NOT simulate a conversation (e.g., never print 'User: I added these files...').\n"
-        "- Output ONLY the necessary file edits and updates."
+        "TASK: You are a strict autonomous coding agent. Read ANALYSIS.md to find the EXACT NEXT uncompleted step. "
+        "Check DONE.md to see what is already finished.\n\n"
+        "STRICT WORKFLOW (MUST FOLLOW IN ORDER):\n"
+        "1. Identify ONE pending task.\n"
+        "2. You MUST create or modify the actual source code files (.java, .js, .yml, pom.xml, etc.) to implement this task. THIS IS MANDATORY.\n"
+        "3. ONLY AFTER successfully writing the code, add a single bullet point to DONE.md detailing what you built.\n\n"
+        "CRITICAL RULES:\n"
+        "- IT IS ABSOLUTELY FORBIDDEN to edit DONE.md without also writing real source code.\n"
+        "- DO NOT hallucinate conversations (never output 'User: ...').\n"
+        "- DO NOT repeat these instructions. Write the code, update DONE.md, and exit."
     )
 
     # The terminal command to start Aider. 
