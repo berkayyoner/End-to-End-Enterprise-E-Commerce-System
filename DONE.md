@@ -5,3 +5,5 @@ Completed Steps:
 - Created backend/berkay-parent directory and pom.xml
 - Created frontend/berkay-public directory and initial React setup files
 - Created Discovery Server and API Gateway microservices
+- Created User Management microservice with initial setup
+- Created Product Management microservice with initial setup

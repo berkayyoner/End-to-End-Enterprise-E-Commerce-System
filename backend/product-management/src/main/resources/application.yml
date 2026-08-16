@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: product-management
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: berkay
+    password: 1234
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.Oracle12cDialect
