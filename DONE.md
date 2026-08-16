@@ -15,3 +15,6 @@ Completed Steps:
 - Implemented Product Management microservice with API endpoints
 - Implemented Product List component for the public front-end
 - Implemented Product Details component for the public front-end
+- Implemented Seller Applications feature in User Management microservice
+- Implemented ID Applications feature in User Management microservice
+- Implemented Permissions feature in User Management microservice
