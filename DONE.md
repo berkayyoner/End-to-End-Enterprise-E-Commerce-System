@@ -13,3 +13,5 @@ Completed Steps:
 - Implemented additional API endpoints for User Management microservice
 - Created Product Management microservice with initial setup
 - Implemented Product Management microservice with API endpoints
+- Implemented Product List component for the public front-end
+- Implemented Product Details component for the public front-end
