@@ -6,6 +6,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * Due to the request of GTech Developer team, main start and deadline of the project was 14.08.2026 18:00 and 17.08.2026 09:00. 
 * Main goal is using AI models/agents to develope a project almost fully automated.
 * I am using my own experiences and the education from GTech Academy.
+* **Important Note:** Project has started from scratch again on 16.08.2026 because of Qwen 2.5 Coder model's failure. Moved forward with different models.
 
 ## Technologies
 * **Front-end:** React.Js
