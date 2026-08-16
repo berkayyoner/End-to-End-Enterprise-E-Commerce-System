@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: api
+  profiles:
+    default: local
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG
