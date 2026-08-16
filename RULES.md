@@ -37,7 +37,7 @@ This will be a enterprise e-commerce project which will include all of the main 
 * **Public front-end:** berkay-public
 * **Personnel front-end:** berkay-personnel
 * **API:** api
-* **Generally:** Put all of the different applications in differend folders and name the folders according to the applications created inside.
+* **Generally:** Put all of the different applications in differend folders and name the folders according to the applications created inside. Some of the project bases already created so use them if needed.
 
 ## Expectations
 * This will be a microservice enterpise project. Each application needs to be kept under different folders. Avoid using general foldering names like "frontend" or "backend".

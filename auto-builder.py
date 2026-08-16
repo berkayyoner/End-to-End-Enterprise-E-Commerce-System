@@ -108,7 +108,6 @@ def call_gemini(prompt):
 def execute_manager_call(prompt, system_role=None):
     provider = get_current_provider()
     
-    # 503 Hatalarına karşı dirençli bekleme ve tekrar deneme (Retry) mekanizması
     for attempt in range(3):
         try:
             if provider == "GEMINI":
@@ -133,7 +132,6 @@ def execute_manager_call(prompt, system_role=None):
     return execute_manager_call(prompt, system_role)
 
 def initialize_project_if_needed():
-    # HATA ÇÖZÜLDÜ: Artık sadece dosyanın varlığına değil, içine de bakıyoruz!
     if read_file("ANALYSIS.md"):
         return 
 
@@ -141,22 +139,21 @@ def initialize_project_if_needed():
     print(" PROJECT INITIALIZATION PHASE")
     print("=====================================================")
     
-    user_idea = input("\n>>> What do you want to build? (Describe your project briefly):\n> ")
     rules_content = read_file("RULES.md")
-    
-    if not user_idea.strip():
-        sys.exit("[FATAL ERROR] Project idea cannot be empty.")
+    if not rules_content:
+        sys.exit("[FATAL ERROR] RULES.md is missing or empty. Cannot initialize project without specifications.")
 
+    # INPUT KALDIRILDI! SADECE RULES.MD OKUNUYOR.
     prompt = (
-        f"The user wants to build the following project:\n'{user_idea}'\n\n"
-        f"CRITICAL RULES AND TECHNOLOGIES:\n{rules_content}\n\n"
-        "Create a highly detailed, step-by-step technical roadmap (ANALYSIS.md) for this project. "
-        "You MUST strictly follow the architecture, technologies, and directory structures defined in the RULES. "
+        "Analyze the project specifications, architecture, and constraints provided in the RULES document below.\n\n"
+        f"RULES AND PROJECT SPECIFICATIONS:\n{rules_content}\n\n"
+        "Based entirely on the above document, create a highly detailed, step-by-step technical roadmap (ANALYSIS.md) to build this project. "
+        "You MUST strictly follow the architecture, technologies, and directory structures defined. "
         "Break down the tasks into granular, atomic coding steps. "
         "Do NOT include conversational filler. Output ONLY the markdown roadmap."
     )
 
-    print(f"\n[INIT] Generating roadmap using {get_current_provider()}...")
+    print(f"\n[INIT] Reading RULES.md and generating project roadmap using {get_current_provider()}...")
     roadmap_content = execute_manager_call(prompt, "You are an Elite Enterprise Software Architect.")
 
     with open("ANALYSIS.md", "w", encoding="utf-8") as f:
@@ -165,7 +162,7 @@ def initialize_project_if_needed():
     with open("DONE.md", "w", encoding="utf-8") as f:
         f.write(f"Project Start Date: {time.strftime('%Y-%m-%d')}\n\nCompleted Steps:\n")
         
-    print("[INIT] SUCCESS! ANALYSIS.md and DONE.md generated.\n")
+    print("[INIT] SUCCESS! ANALYSIS.md and DONE.md generated exclusively from RULES.md.\n")
     time.sleep(2)
 
 def get_next_task_from_manager():
@@ -243,7 +240,7 @@ def run_worker_step(specific_task):
 
 def main():
     print("=====================================================")
-    print(" Triple-Fallback Multi-AI Orchestrator Started")
+    print(" Zero-Touch Multi-AI Orchestrator Started")
     print("=====================================================\n")
     
     try:

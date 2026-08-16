@@ -36,7 +36,8 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 > CMD: `$env:DEEPSEEK_API_KEY="sk-deepseek_api_key_here"`
 > CMD: `$env:GEMINI_API_KEY="gemini_api_key_here"`
 > CMD: `$env:NVIDIA_API_KEY="nvidia_api_key_here"`
-> 2 AIs for fallback method.
+> 3 AIs for fallback method.
+6. Creating project bases for AI to work on.
 7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
 8. Giving the first 3 prompts to AI to start working.
 9. Start services with the `docker-compose.yml` file.
