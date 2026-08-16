@@ -19,3 +19,6 @@ Completed Steps:
 - Implemented ID Applications feature in User Management microservice
 - Implemented Permissions feature in User Management microservice
 - Implemented "My Account" dropdown menu in the Navbar component for the public front-end
+- Implemented "My Store" button in the Navbar component for the public front-end
+- Configured Oracle database connection for User Management microservice
+- Configured Oracle database connection for Product Management microservice
