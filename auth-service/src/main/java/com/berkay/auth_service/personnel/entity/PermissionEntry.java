@@ -67,6 +67,12 @@ public class PermissionEntry extends BaseEntity {
 		return canDelete;
 	}
 
+	void updateCapabilities(boolean canAdd, boolean canEdit, boolean canDelete) {
+		this.canAdd = canAdd;
+		this.canEdit = canEdit;
+		this.canDelete = canDelete;
+	}
+
 	/** e.g. "P0AED", "P2ED", "P3", "P4A" - the exact rendering RULES.md's examples use. */
 	public String toCode() {
 		StringBuilder code = new StringBuilder(pageCode);

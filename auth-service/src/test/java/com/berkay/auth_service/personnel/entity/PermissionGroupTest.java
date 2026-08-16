@@ -59,4 +59,15 @@ class PermissionGroupTest {
 		assertThat(group.hasView("P2")).isFalse();
 		assertThat(group.toCodes()).isEmpty();
 	}
+
+	@Test
+	void decomposesEachEntryIntoOneAuthorityPerCapability() {
+		PermissionGroup group = new PermissionGroup("Manager");
+		group.grant("P0", true, true, true);
+		group.grant("P3", false, false, false);
+
+		assertThat(group.toAuthorities()).containsExactlyInAnyOrder(
+				"PERM_P0_VIEW", "PERM_P0_ADD", "PERM_P0_EDIT", "PERM_P0_DELETE",
+				"PERM_P3_VIEW");
+	}
 }

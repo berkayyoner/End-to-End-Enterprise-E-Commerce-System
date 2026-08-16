@@ -2,6 +2,7 @@ package com.berkay.auth_service.exception;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -24,6 +25,22 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(EmailAlreadyRegisteredException.class)
 	public ResponseEntity<Map<String, Object>> handleEmailAlreadyRegistered(EmailAlreadyRegisteredException ex) {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
+	}
+
+	@ExceptionHandler(DuplicatePermissionGroupNameException.class)
+	public ResponseEntity<Map<String, Object>> handleDuplicatePermissionGroupName(DuplicatePermissionGroupNameException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
+	}
+
+	@ExceptionHandler(PermissionGroupNotFoundException.class)
+	public ResponseEntity<Map<String, Object>> handlePermissionGroupNotFound(PermissionGroupNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
+	}
+
+	@ExceptionHandler(AccessDeniedException.class)
+	public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(errorBody(HttpStatus.FORBIDDEN, "You do not have permission to perform this action"));
 	}
 
 	private static Map<String, Object> errorBody(HttpStatus status, Object errors) {

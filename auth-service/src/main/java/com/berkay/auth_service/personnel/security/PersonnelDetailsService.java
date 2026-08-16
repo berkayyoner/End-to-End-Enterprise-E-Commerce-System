@@ -27,9 +27,7 @@ public class PersonnelDetailsService implements UserDetailsService {
 		Personnel personnel = personnelRepository.findByEmailWithPermissions(email.trim().toLowerCase())
 				.orElseThrow(() -> new UsernameNotFoundException("No personnel account for email: " + email));
 
-		String[] authorities = personnel.getPermissionGroup().toCodes().stream()
-				.map(code -> "PERM_" + code)
-				.toArray(String[]::new);
+		String[] authorities = personnel.getPermissionGroup().toAuthorities().toArray(String[]::new);
 
 		return User.withUsername(personnel.getEmail())
 				.password(personnel.getPasswordHash())
