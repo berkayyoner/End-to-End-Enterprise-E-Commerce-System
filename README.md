@@ -29,26 +29,31 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 2. Creating a detailed RULES.md file for main goals and expectations from the AI model/agent.
 3. Creating a `ANALYSIS.md` for AI to fill with the phases and steps to take which it will decide.
 4. Creating a `DONE.md` for AI to fill when it finishes a phase. So we can keep going in any issue.
-6. Creating project bases for AI to work on.
-7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
-8. Giving the 4 prompts below to AI to start working.
+5. Creating project bases for AI to work on.
+6. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
+7. Install Claude for terminal.
+> CMD: `npm install -g @anthropic-ai/claude-code`
+> CMD: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
+or
+> CMD: `npx @anthropic-ai/claude-code`
+8. Giving the 4 prompts below to AI to understand the project and start working.
 
 ## Prompts
-1. `Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
-2. `Let's start Phase 1. Create a docker-compose.yml file in the root directory to set up the local development environment. It must include Oracle (XEPDB1, port 1521, user: berkay, pass: 1234), Redis, and Elasticsearch. Make sure the configurations are suitable for a local microservice environment. After creating the file, update the DONE.md file by adding '- docker-compose.yml created for local databases' under a new 'Completed Steps' section.`
-3. `Read ANALYSIS.md. We will now autonomously complete the remaining steps for Phase 1. You MUST strictly use your file editing tools to actually create the files on the disk. DO NOT just print code blocks in the chat.
+1. Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
+2. Let's start Phase 1. Create a docker-compose.yml file in the root directory to set up the local development environment. It must include Oracle (XEPDB1, port 1521, user: berkay, pass: 1234), Redis, and Elasticsearch. Make sure the configurations are suitable for a local microservice environment. After creating the file, update the DONE.md file by adding '- docker-compose.yml created for local databases' under a new 'Completed Steps' section.
+3. Read ANALYSIS.md. We will now autonomously complete the remaining steps for Phase 1. You MUST strictly use your file editing tools to actually create the files on the disk. DO NOT just print code blocks in the chat.
 Follow this enterprise folder structure strictly:
     1. Create a backend/berkay-parent directory. Generate the Java 21 Spring Boot Parent pom.xml inside it.
     2. Create a frontend/berkay-public directory. Generate the initial React package.json and basic setup files inside it.
     3. NEVER create a src folder directly in the root directory.
-Update DONE.md after successfully writing all these files to the disk. Execute the file creation tools immediately without asking for confirmation.`
-4. `The database containers are already running successfully. Now, autonomously build the core microservice infrastructure inside the backend directory. MUST strictly use file creation tools.
+Update DONE.md after successfully writing all these files to the disk. Execute the file creation tools immediately without asking for confirmation.
+4. The database containers are already running successfully. Now, autonomously build the core microservice infrastructure inside the backend directory. MUST strictly use file creation tools.
 Execute these steps:
     1. Create a backend/discovery-server Spring Boot project. It should act as a Netflix Eureka Server (running on port 8761). Create its pom.xml and main application class.
     2. Create a backend/api-gateway Spring Boot project. It should act as a Spring Cloud Gateway (running on port 8080) and a Eureka Client. Create its pom.xml, application.properties (or yml), and main application class.
     3. Update the backend/berkay-parent/pom.xml to include both discovery-server and api-gateway as <modules>.
     4. Update DONE.md indicating that the Discovery Server and API Gateway have been created.
-Do not ask for confirmation. Write the files to the disk immediately.`
+Do not ask for confirmation. Write the files to the disk immediately.
 
 ## How it works
 * I have completely manually created a `RULES.md` file which includes the projects all of the expectations and the technologiles which will be used.
