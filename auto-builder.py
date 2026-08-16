@@ -2,8 +2,11 @@ import subprocess
 import time
 import sys
 import os
+import json
+import urllib.request
+import urllib.error
 
-# Ollama's context window forced to 8K
+# Ollama's context window forced to 8K for Aider
 os.environ["OLLAMA_NUM_CTX"] = "8192" 
 
 def read_file(filepath):
@@ -11,6 +14,7 @@ def read_file(filepath):
         with open(filepath, 'r', encoding='utf-8') as file:
             return file.read()
     except FileNotFoundError:
+        print(f"[WARNING] File not found: {filepath}")
         return ""
 
 def get_next_task_from_manager():
@@ -19,8 +23,11 @@ def get_next_task_from_manager():
     analysis_content = read_file("ANALYSIS.md")
     done_content = read_file("DONE.md")
 
-    prompt = f"""You are a strict, emotionless Technical Project Manager.
-Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md).
+    if not analysis_content:
+        return "PROJECT_COMPLETED"
+
+    prompt = f"""You are an elite, emotionless Technical Project Manager.
+Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md) below.
 
 Roadmap:
 {analysis_content}
@@ -29,22 +36,34 @@ Completed Steps:
 {done_content}
 
 CRITICAL INSTRUCTIONS:
-1. Identify the FIRST uncompleted technical task from the roadmap.
+1. Identify the FIRST uncompleted technical task from the roadmap that is NOT listed in the completed steps.
 2. Output ONLY the task description. Do not add formatting, greetings, or markdown.
-3. If, and ONLY if, every single task in the roadmap exists in DONE.md, output EXACTLY the text: PROJECT_COMPLETED
-4. Be precise. (e.g., 'Implement API Gateway microservice')."""
+3. If, and ONLY if, every single task in the roadmap exists in the completed steps, output EXACTLY the text: PROJECT_COMPLETED
+4. Be extremely precise. (e.g., 'Implement Search Service microservice'). Do not include file paths in your task description, just the goal."""
 
-    command = ["ollama", "run", "qwen2.5-coder:14b", prompt]
+    # Using Ollama REST API directly for better context handling
+    data = json.dumps({
+        "model": "qwen2.5-coder:14b",
+        "prompt": prompt,
+        "stream": False,
+        "options": {
+            "num_ctx": 8192,
+            "temperature": 0.1 # Düşük yaratıcılık, yüksek mantık
+        }
+    }).encode('utf-8')
+
+    req = urllib.request.Request("http://localhost:11434/api/generate", data=data, headers={'Content-Type': 'application/json'})
     
     try:
-        result = subprocess.run(command, capture_output=True, text=True, encoding='utf-8')
-        task = result.stdout.strip()
-        # Temizleme filtreleri
-        if not task or "thinking" in task.lower() or "here is" in task.lower():
-            return None
-        return task
+        with urllib.request.urlopen(req) as response:
+            result = json.loads(response.read().decode('utf-8'))
+            task = result.get("response", "").strip()
+            
+            if not task or "thinking" in task.lower() or "here is" in task.lower():
+                return None
+            return task
     except Exception as e:
-        print(f"[MANAGER] Failed to get task from Ollama: {e}")
+        print(f"[MANAGER] Failed to get task from Ollama API: {e}")
         return None
 
 def run_worker_step(specific_task):
@@ -55,7 +74,7 @@ def run_worker_step(specific_task):
         "2. IMPORTANT: Aider is using the 'whole' edit format. You MUST output the ENTIRE, completely updated file content inside your code blocks. NEVER output diffs (e.g., @@ -1,2 +1,4 @@) inside the code blocks!\n"
         "3. Provide the EXACT filename immediately before the ``` code block.\n"
         "4. Do NOT simulate a conversation. Do NOT write 'User:' or 'Assistant:'.\n"
-        "5. Once the actual code is written, add a single summary line to DONE.md and exit."
+        "5. Once the actual code is written, MUST add a single summary line to DONE.md and exit."
     )
 
     command = [
@@ -81,7 +100,7 @@ def run_worker_step(specific_task):
 
 def main():
     print("=====================================================")
-    print(" Two-Agent Autonomous Orchestrator Started")
+    print(" REST API Two-Agent Autonomous Orchestrator Started")
     print("=====================================================\n")
     
     max_iterations = 50 
