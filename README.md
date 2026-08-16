@@ -32,11 +32,11 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 5. Creating project bases for AI to work on.
 6. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
 7. Install Claude for terminal.
-    * > CMD: `npm install -g @anthropic-ai/claude-code`
-    * > CMD: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser`
-    * > CMD: `claude --dangerously-skip-permissions`
-    * or
-    * > CMD: `npx @anthropic-ai/claude-code --dangerously-skip-permissions`
+> CMD: `npm install -g @anthropic-ai/claude-code` <br/>
+> CMD: `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` <br/>
+> CMD: `claude --dangerously-skip-permissions` <br/>
+or <br/>
+> CMD: `npx @anthropic-ai/claude-code --dangerously-skip-permissions` <br/>
 8. Giving the 4 prompts below to AI to understand the project and start working.
 
 ## Prompts
