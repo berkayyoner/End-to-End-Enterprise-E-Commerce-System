@@ -35,5 +35,6 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 
 ## Prompts
 1. "Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately."
+2. "Let's start Phase 1. Create a docker-compose.yml file in the root directory to set up the local development environment. It must include Oracle (XEPDB1, port 1521, user: berkay, pass: 1234), Redis, and Elasticsearch. Make sure the configurations are suitable for a local microservice environment. After creating the file, update the DONE.md file by adding '- docker-compose.yml created for local databases' under a new 'Completed Steps' section."
 
 # Special Thanks to All GTech Team
