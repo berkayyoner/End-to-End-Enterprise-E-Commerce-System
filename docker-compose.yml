@@ -26,5 +26,21 @@ services:
       - "9200:9200"
       - "9300:9300"
 
+  api-gateway:
+    image: api-gateway:latest
+    container_name: api-gateway
+    ports:
+      - "8080:8080"
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+
+  discovery-server:
+    image: discovery-server:latest
+    container_name: discovery-server
+    ports:
+      - "8761:8761"
+
 volumes:
   oracle_data:
