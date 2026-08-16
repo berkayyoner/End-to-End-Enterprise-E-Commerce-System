@@ -42,7 +42,7 @@ def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Arch
         return result["choices"][0]["message"]["content"].strip()
 
 def call_gemini(prompt):
-    # Google SDK'sını çöpe attık! Artık doğrudan Google'ın REST API uç noktasına bağlanıyoruz.
+    # Google SDK YOK! Doğrudan en güncel REST API uç noktasına bağlanıyoruz
     url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro-latest:generateContent?key={GEMINI_KEY}"
     headers = {
         "Content-Type": "application/json"
@@ -171,6 +171,7 @@ def run_worker_step(specific_task):
         "5. Commit your changes."
     )
 
+    # Aider'a en güncel Gemini model ismini gönderiyoruz
     model_flag = "deepseek/deepseek-coder" if CURRENT_PROVIDER == "DEEPSEEK" else "gemini/gemini-1.5-pro-latest"
 
     command = [
