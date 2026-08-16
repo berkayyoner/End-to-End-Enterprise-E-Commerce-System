@@ -42,5 +42,15 @@ services:
     ports:
       - "8761:8761"
 
+  search-service:
+    image: search-service:latest
+    container_name: search-service
+    ports:
+      - "8083:8083"
+    depends_on:
+      - discovery-server
+    environment:
+      - SPRING_PROFILES_ACTIVE=local
+
 volumes:
   oracle_data:
