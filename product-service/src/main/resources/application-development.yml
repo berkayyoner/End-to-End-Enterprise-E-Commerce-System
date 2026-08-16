@@ -15,6 +15,13 @@ spring:
       port: 6379
   elasticsearch:
     uris: http://elasticsearch:9200
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
 
 logging:
   level:

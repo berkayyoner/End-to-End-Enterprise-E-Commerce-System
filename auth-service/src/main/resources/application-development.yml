@@ -9,6 +9,21 @@ spring:
       ddl-auto: update
     open-in-view: false
     show-sql: false
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+
+berkay:
+  oauth2:
+    issuer-uri: http://localhost:8080/api/auth
+    public-client:
+      redirect-uris:
+        - http://localhost:5173/oauth2/callback
+        - http://localhost:4173/oauth2/callback
 
 logging:
   level:

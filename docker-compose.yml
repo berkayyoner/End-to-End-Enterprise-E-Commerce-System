@@ -63,6 +63,54 @@ services:
       retries: 20
       start_period: 45s
 
+  discovery-service:
+    build:
+      context: ./discovery-service
+    container_name: berkay-discovery-service
+    ports:
+      - "8761:8761"
+    networks:
+      - berkay-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8761/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  config-server:
+    build:
+      context: ./config-server
+    container_name: berkay-config-server
+    ports:
+      - "8888:8888"
+    networks:
+      - berkay-net
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8888/actuator/health || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+
+  log-service:
+    build:
+      context: ./log-service
+    container_name: berkay-log-service
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+    ports:
+      - "8083:8083"
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - berkay-net
+
   api:
     build:
       context: ./api
@@ -72,8 +120,16 @@ services:
     ports:
       - "8080:8080"
     depends_on:
-      - auth-service
-      - product-service
+      discovery-service:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+      auth-service:
+        condition: service_started
+      product-service:
+        condition: service_started
+      log-service:
+        condition: service_started
     networks:
       - berkay-net
 
@@ -88,6 +144,10 @@ services:
       - "8081:8081"
     depends_on:
       oracle-db:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     networks:
       - berkay-net
@@ -107,6 +167,10 @@ services:
       redis:
         condition: service_healthy
       elasticsearch:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      config-server:
         condition: service_healthy
     networks:
       - berkay-net

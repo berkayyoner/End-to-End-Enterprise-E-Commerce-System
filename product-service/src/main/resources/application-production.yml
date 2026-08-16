@@ -15,6 +15,13 @@ spring:
       port: ${REDIS_PORT:6379}
   elasticsearch:
     uris: ${ELASTICSEARCH_URIS}
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
 
 logging:
   level:

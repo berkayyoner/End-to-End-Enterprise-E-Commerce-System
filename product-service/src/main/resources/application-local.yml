@@ -16,6 +16,11 @@ spring:
   elasticsearch:
     uris: http://localhost:9200
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

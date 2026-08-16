@@ -9,6 +9,19 @@ spring:
       ddl-auto: validate
     open-in-view: false
     show-sql: false
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
+
+berkay:
+  oauth2:
+    issuer-uri: ${OAUTH2_ISSUER_URI}
+    public-client:
+      redirect-uris: ${OAUTH2_PUBLIC_CLIENT_REDIRECT_URIS}
 
 logging:
   level:

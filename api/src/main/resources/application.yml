@@ -3,6 +3,8 @@ spring:
     name: api
   profiles:
     default: local
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://localhost:8888}"
 
 server:
   port: 8080

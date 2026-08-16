@@ -10,6 +10,19 @@ spring:
     open-in-view: false
     show-sql: true
 
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+berkay:
+  oauth2:
+    issuer-uri: http://localhost:8080/api/auth
+    public-client:
+      redirect-uris:
+        - http://localhost:5173/oauth2/callback
+        - http://localhost:4173/oauth2/callback
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

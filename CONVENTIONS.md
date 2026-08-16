@@ -15,6 +15,7 @@ application. Nothing generic (`backend/`, `frontend/`, `common/`, `shared/`) liv
 | `api`               | Spring Boot (gateway) | Single public entry point (Spring Cloud Gateway): routing, CORS enforcement, request-level rate limiting. Never holds business/domain logic. |
 | `discovery-service` | Spring Boot (infra, Phase 0.8+) | Eureka service registry. Every other Spring Boot service registers here and discovers peers by name instead of hardcoded host:port. |
 | `config-server`     | Spring Boot (infra, Phase 0.8+) | Spring Cloud Config Server (native/classpath-backed `config-repo`). Supplies centrally-managed property overrides layered on top of each service's own `application-*.yml`; never the only source of a property a service needs to boot. |
+| `log-service`       | Spring Boot (infra, Phase 0.9+) | Centralized, immutable user/personnel activity log store (RULES.md's "Log every user and personnel activity"). Every other service POSTs activity events to it over REST instead of writing its own log table — the one deliberate exception to per-service table ownership below. |
 | `auth-service`      | Spring Boot       | Identity: users, personnel, permission groups, OAuth2 authorization server, ID verification, seller applications, bans. |
 | `product-service`   | Spring Boot       | Catalog: products, categories, Elasticsearch indexing/search, Q&A, ratings/reviews. |
 | `order-service`     | Spring Boot (Phase 5) | Basket, orders, dummy payment/card vault. |
@@ -59,8 +60,11 @@ inside it (e.g. `product-service` will hold both `catalog` and `search` domain p
   REST API (via the `api` gateway or direct service-to-service call), never a shared table or
   cross-schema JOIN.
 * Table ownership by service:
+  * `log-service`: `activity_log` (written via `POST /logs` by every other service; the only
+    table any service other than its owner effectively "writes to", and only through the
+    owner's own REST API, never directly).
   * `auth-service`: `app_user`, `personnel`, `permission_group`, `id_verification`,
-    `seller_application`, `banned_user`, `activity_log`.
+    `seller_application`, `banned_user`.
   * `product-service`: `product`, `product_translation`, `category` (+ translations),
     `category_change_request`, `review`, `qna`.
   * `order-service` (Phase 5): `basket`, `basket_item`, `order`, `order_item`, `saved_card`.

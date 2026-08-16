@@ -1,7 +1,7 @@
 package com.berkay.api.config;
 
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.server.mvc.filter.FilterFunctions;
+import org.springframework.cloud.gateway.server.mvc.filter.LoadBalancerFilterFunctions;
 import org.springframework.cloud.gateway.server.mvc.handler.GatewayRouterFunctions;
 import org.springframework.cloud.gateway.server.mvc.handler.HandlerFunctions;
 import org.springframework.context.annotation.Bean;
@@ -12,25 +12,20 @@ import org.springframework.web.servlet.function.ServerResponse;
 
 /**
  * Routes every downstream call through this gateway (RULES.md: front-ends never talk to
- * auth-service/product-service directly). Each route strips its own path prefix so the
- * downstream service sees a clean root-relative path.
+ * auth-service/product-service directly). Targets are resolved by service ID through Eureka
+ * (registered via discovery-service) rather than hardcoded host:port, so instances can scale or
+ * move without touching gateway config. Each route strips its own path prefix so the downstream
+ * service sees a clean root-relative path.
  */
 @Configuration
-@EnableConfigurationProperties(GatewayRouteProperties.class)
 public class GatewayRoutesConfig {
-
-	private final GatewayRouteProperties routeProperties;
-
-	public GatewayRoutesConfig(GatewayRouteProperties routeProperties) {
-		this.routeProperties = routeProperties;
-	}
 
 	@Bean
 	public RouterFunction<ServerResponse> authServiceRoute() {
 		return GatewayRouterFunctions.route("auth-service")
 				.route(RequestPredicates.path("/api/auth/**"), HandlerFunctions.http())
 				.filter(FilterFunctions.stripPrefix(2))
-				.filter(FilterFunctions.uri(routeProperties.getAuthServiceUri()))
+				.filter(LoadBalancerFilterFunctions.lb("auth-service"))
 				.build();
 	}
 
@@ -39,7 +34,7 @@ public class GatewayRoutesConfig {
 		return GatewayRouterFunctions.route("product-service")
 				.route(RequestPredicates.path("/api/products/**"), HandlerFunctions.http())
 				.filter(FilterFunctions.stripPrefix(2))
-				.filter(FilterFunctions.uri(routeProperties.getProductServiceUri()))
+				.filter(LoadBalancerFilterFunctions.lb("product-service"))
 				.build();
 	}
 }

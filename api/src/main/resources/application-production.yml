@@ -1,7 +1,13 @@
+spring:
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
+
 berkay:
-  gateway:
-    auth-service-uri: ${AUTH_SERVICE_URI}
-    product-service-uri: ${PRODUCT_SERVICE_URI}
   cors:
     public-allowed-origins: ${PUBLIC_ALLOWED_ORIGINS}
     personnel-allowed-origins: ${PERSONNEL_ALLOWED_ORIGINS}

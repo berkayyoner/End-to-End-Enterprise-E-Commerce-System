@@ -12,6 +12,9 @@
 
 	<modules>
 		<module>common-lib</module>
+		<module>discovery-service</module>
+		<module>config-server</module>
+		<module>log-service</module>
 		<module>auth-service</module>
 		<module>product-service</module>
 		<module>api</module>
