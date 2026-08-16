@@ -33,6 +33,8 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
 8. Giving the first 3 prompts to AI to start working.
 9. Start services with the "docker-compose.yml" file.
+10. Give the 4th prompt to AI.
+11. Run auto-builder.py from terminal. (CMD: python auto-builder.py)
 
 ## Prompts
 1. "Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately."
@@ -43,5 +45,12 @@ Follow this enterprise folder structure strictly:
     2. Create a frontend/berkay-public directory. Generate the initial React package.json and basic setup files inside it.
     3. NEVER create a src folder directly in the root directory.
 Update DONE.md after successfully writing all these files to the disk. Execute the file creation tools immediately without asking for confirmation."
+4. "The database containers are already running successfully. Now, autonomously build the core microservice infrastructure inside the backend directory. MUST strictly use file creation tools.
+Execute these steps:
+    1. Create a backend/discovery-server Spring Boot project. It should act as a Netflix Eureka Server (running on port 8761). Create its pom.xml and main application class.
+    2. Create a backend/api-gateway Spring Boot project. It should act as a Spring Cloud Gateway (running on port 8080) and a Eureka Client. Create its pom.xml, application.properties (or yml), and main application class.
+    3. Update the backend/berkay-parent/pom.xml to include both discovery-server and api-gateway as <modules>.
+    4. Update DONE.md indicating that the Discovery Server and API Gateway have been created.
+Do not ask for confirmation. Write the files to the disk immediately."
 
 # Special Thanks to All GTech Team
