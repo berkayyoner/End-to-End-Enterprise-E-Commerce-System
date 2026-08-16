@@ -24,6 +24,14 @@ berkay:
       redirect-uris:
         - http://localhost:5173/oauth2/callback
         - http://localhost:4173/oauth2/callback
+    personnel-client:
+      redirect-uris:
+        - http://localhost:5174/oauth2/callback
+        - http://localhost:4174/oauth2/callback
+  personnel:
+    bootstrap:
+      email: admin@berkay.local
+      password: ChangeMe123!
 
 logging:
   level:

@@ -22,6 +22,12 @@ berkay:
     issuer-uri: ${OAUTH2_ISSUER_URI}
     public-client:
       redirect-uris: ${OAUTH2_PUBLIC_CLIENT_REDIRECT_URIS}
+    personnel-client:
+      redirect-uris: ${OAUTH2_PERSONNEL_CLIENT_REDIRECT_URIS}
+  personnel:
+    bootstrap:
+      email: ${PERSONNEL_BOOTSTRAP_EMAIL:#{null}}
+      password: ${PERSONNEL_BOOTSTRAP_PASSWORD:#{null}}
 
 logging:
   level:

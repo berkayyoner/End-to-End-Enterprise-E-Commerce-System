@@ -1,5 +1,6 @@
 package com.berkay.auth_service.config;
 
+import com.berkay.auth_service.personnel.repository.PersonnelRepository;
 import com.berkay.auth_service.user.repository.AppUserRepository;
 import com.nimbusds.jose.jwk.JWKSet;
 import com.nimbusds.jose.jwk.RSAKey;
@@ -44,7 +45,7 @@ import java.util.UUID;
  * production should load a persisted key instead (a deployment concern, not a code change).
  */
 @Configuration
-@EnableConfigurationProperties(OAuth2ClientProperties.class)
+@EnableConfigurationProperties({OAuth2ClientProperties.class, PersonnelOAuth2ClientProperties.class})
 public class AuthorizationServerConfig {
 
 	@Value("${berkay.oauth2.issuer-uri}")
@@ -64,9 +65,20 @@ public class AuthorizationServerConfig {
 	}
 
 	@Bean
-	public RegisteredClientRepository registeredClientRepository(OAuth2ClientProperties clientProperties) {
-		RegisteredClient.Builder publicClient = RegisteredClient.withId(UUID.randomUUID().toString())
-				.clientId("berkay-public-client")
+	public RegisteredClientRepository registeredClientRepository(OAuth2ClientProperties clientProperties,
+			PersonnelOAuth2ClientProperties personnelClientProperties) {
+		RegisteredClient.Builder publicClient = pkcePublicClientBuilder("berkay-public-client");
+		clientProperties.getRedirectUris().forEach(publicClient::redirectUri);
+
+		RegisteredClient.Builder personnelClient = pkcePublicClientBuilder("berkay-personnel-client");
+		personnelClientProperties.getRedirectUris().forEach(personnelClient::redirectUri);
+
+		return new InMemoryRegisteredClientRepository(publicClient.build(), personnelClient.build());
+	}
+
+	private static RegisteredClient.Builder pkcePublicClientBuilder(String clientId) {
+		return RegisteredClient.withId(UUID.randomUUID().toString())
+				.clientId(clientId)
 				.clientIdIssuedAt(java.time.Instant.now())
 				.clientAuthenticationMethod(ClientAuthenticationMethod.NONE)
 				.authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
@@ -81,10 +93,6 @@ public class AuthorizationServerConfig {
 						.refreshTokenTimeToLive(Duration.ofDays(30))
 						.reuseRefreshTokens(false)
 						.build());
-
-		clientProperties.getRedirectUris().forEach(publicClient::redirectUri);
-
-		return new InMemoryRegisteredClientRepository(publicClient.build());
 	}
 
 	@Bean
@@ -109,13 +117,22 @@ public class AuthorizationServerConfig {
 	}
 
 	@Bean
-	public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(AppUserRepository appUserRepository) {
+	public OAuth2TokenCustomizer<JwtEncodingContext> tokenCustomizer(AppUserRepository appUserRepository,
+			PersonnelRepository personnelRepository) {
 		return context -> {
-			if (OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
-				appUserRepository.findByEmail(context.getPrincipal().getName()).ifPresent(user -> context.getClaims()
-						.claim("account_type", user.isSeller() ? "SELLER" : "CUSTOMER")
-						.claim("id_verified", user.isIdVerified()));
+			if (!OAuth2TokenType.ACCESS_TOKEN.equals(context.getTokenType())) {
+				return;
 			}
+
+			String principalName = context.getPrincipal().getName();
+
+			personnelRepository.findByEmailWithPermissions(principalName).ifPresentOrElse(
+					personnel -> context.getClaims()
+							.claim("account_type", "PERSONNEL")
+							.claim("permissions", personnel.getPermissionGroup().toCodes()),
+					() -> appUserRepository.findByEmail(principalName).ifPresent(user -> context.getClaims()
+							.claim("account_type", user.isSeller() ? "SELLER" : "CUSTOMER")
+							.claim("id_verified", user.isIdVerified())));
 		};
 	}
 
