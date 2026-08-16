@@ -5,14 +5,18 @@ import os
 import json
 import urllib.request
 
-# Ollama'nın bağlam sınırını 8K'ya zorluyoruz
+# Ollama's context window forced to 8K
 os.environ["OLLAMA_NUM_CTX"] = "8192" 
 
 def read_file(filepath):
     try:
         with open(filepath, 'r', encoding='utf-8') as file:
-            return file.read()
+            content = file.read().strip()
+            if not content:
+                print(f"[WARNING] {filepath} is empty!")
+            return content
     except FileNotFoundError:
+        print(f"[ERROR] {filepath} not found!")
         return ""
 
 def get_next_task_from_manager():
@@ -22,10 +26,10 @@ def get_next_task_from_manager():
     done_content = read_file("DONE.md")
 
     if not analysis_content:
+        print("[MANAGER] ANALYSIS.md is missing or empty! Stopping orchestrator.")
         return "PROJECT_COMPLETED"
 
-    # Yöneticiye devasa işler yerine "küçük, tekil adımlar" bulmasını emrediyoruz
-    prompt = f"""You are a strict Technical Project Manager.
+    prompt = f"""You are a strict, detail-oriented Technical Project Manager.
 Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md) below.
 
 Roadmap:
@@ -35,11 +39,11 @@ Completed Steps:
 {done_content}
 
 CRITICAL INSTRUCTIONS:
-1. Identify the FIRST uncompleted task from the roadmap that is NOT listed in the completed steps.
-2. Break it down into a SINGLE, small, actionable coding step.
-3. Output ONLY the technical task description. (e.g., 'Create the ProductController.java file in the product-management service').
-4. If ALL tasks are completed, output EXACTLY: PROJECT_COMPLETED
-5. Do not include formatting, markdown, or greetings. Be short and precise."""
+1. Read the Roadmap phase by phase, line by line.
+2. Find the EXACT NEXT granular task that is explicitly MISSING from the Completed Steps.
+3. Break it down into a SINGLE, actionable coding step.
+4. Output ONLY the technical task description.
+5. NEVER output 'PROJECT_COMPLETED' unless absolutely every single sub-item in the Roadmap is explicitly written in the Completed Steps."""
 
     data = json.dumps({
         "model": "qwen2.5-coder:14b",
@@ -47,7 +51,7 @@ CRITICAL INSTRUCTIONS:
         "stream": False,
         "options": {
             "num_ctx": 8192,
-            "temperature": 0.1 
+            "temperature": 0.0 # Yaratıcılık tamamen kapalı, sadece mantık
         }
     }).encode('utf-8')
 
@@ -58,6 +62,8 @@ CRITICAL INSTRUCTIONS:
             result = json.loads(response.read().decode('utf-8'))
             task = result.get("response", "").strip()
             
+            print(f"[MANAGER DEBUG] Raw output from Ollama: {task}")
+            
             if not task or "thinking" in task.lower() or "here is" in task.lower():
                 return None
             return task
@@ -66,7 +72,6 @@ CRITICAL INSTRUCTIONS:
         return None
 
 def run_worker_step(specific_task):
-    # Formatlama talimatlarını sildik! Aider'ın kendi zekasına güveniyoruz.
     prompt = (
         f"TASK: {specific_task}\n\n"
         "STRICT ENTERPRISE CODING STANDARDS (MANDATORY):\n"
@@ -118,7 +123,7 @@ def main():
             time.sleep(5)
             continue
             
-        if next_task == "PROJECT_COMPLETED":
+        if "PROJECT_COMPLETED" in next_task.upper():
             print("\n>>> Manager reported that all project phases are completed! Orchestrator stopping.")
             break
 
@@ -127,7 +132,7 @@ def main():
         exit_code = run_worker_step(next_task)
 
         if exit_code != 0:
-            print(">>> Worker (Aider) returned an error or warning. Resetting context and moving to next cycle in 10s...")
+            print(">>> Worker (Aider) returned an error. Waiting 10 seconds to cool down...")
             time.sleep(10)
         else:
             print(">>> Task completed successfully. Resetting context for the next cycle...")
