@@ -1,0 +1,12 @@
+{
+  "common": {
+    "appName": "Berkay",
+    "loading": "Yükleniyor...",
+    "language": "Dil"
+  },
+  "home": {
+    "title": "Berkay'a Hoş Geldiniz",
+    "subtitle": "Türkiye'nin yeni nesil e-ticaret deneyimi.",
+    "comingSoon": "Mağaza çok yakında burada."
+  }
+}

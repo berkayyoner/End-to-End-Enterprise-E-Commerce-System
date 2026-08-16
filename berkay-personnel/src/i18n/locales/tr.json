@@ -1,0 +1,12 @@
+{
+  "common": {
+    "appName": "Berkay Personel Paneli",
+    "loading": "Yükleniyor...",
+    "language": "Dil"
+  },
+  "home": {
+    "title": "Berkay Personel Paneline Hoş Geldiniz",
+    "subtitle": "Yönetim ve moderasyon işlemleri için giriş yapın.",
+    "comingSoon": "Panel çok yakında burada."
+  }
+}
