@@ -39,89 +39,85 @@ Goal: users, personnel, sign up/login, OAuth2, and the P0–P5 permission group 
 1.8. `berkay-public`: sign up / login pages, ID verification dummy page, "apply to become Seller" flow from profile section.
 1.9. `berkay-personnel`: login page (separate app entry, no public nav), permission-aware route/menu rendering based on personnel's P-codes.
 
-## Phase 2 — Category & Catalog Management
-Goal: 3-level category hierarchy and admin/moderator category management with change-request approval flow.
+---
 
-2.1. `product-service` (or new `catalog-service`): Main Category / Sub Type / Inner Type entities with multi-language name/description translation tables.
-2.2. Category "Change Requests" workflow: moderator edits create a pending change request; admin (P0/appropriate permission) approves or denies before it takes effect.
-2.3. `berkay-personnel`: "Main Categories", "Sub Categories", "Inner Categories" management pages + "Change Requests" review page.
-2.4. `berkay-public`: hover-driven "Categories" mega-menu (Main > Sub > Inner, 5 inner types + "Show More"), top-nav horizontal main category shortcuts linking into search/filter.
+## ⚠️ SCOPE PIVOT (2026-08-17) — read this before continuing past Phase 1
 
-## Phase 3 — Product Catalog & Elasticsearch Search
-Goal: product CRUD, Elasticsearch indexing, and the full search/browse experience.
+This was meant to be a **prototype that demonstrates enterprise architecture**, not a production-grade system. Phase 0 and Phase 1 already went far deeper than intended (real OAuth2 Authorization Server, Eureka, config server, full permission-code engine) and burned most of the available budget. Remaining budget is small (~$20), so Phases 2–10 below are rewritten **thin on purpose**: keep every feature from RULES.md visibly present and clickable, but implement the cheapest correct version of each, not the enterprise-grade one. Cost/effort now outranks completeness-of-realism for every remaining task.
 
-3.1. `product-service`: Product entity (price, stock, description short/long, photos max 10, key features, translations for seller-provided names/descriptions) with Oracle persistence + soft delete.
-3.2. `product-service`: Elasticsearch index + sync pipeline (on create/update/delete) for product search documents.
-3.3. `product-service`: paginated/infinite-scroll search API (20 items per page, fetch-more trigger around item 16), sort options (Suggested Ranking, Most Expensive, Cheapest, Newest, Most Selling, Most Favorited, Most Rated).
-3.4. `product-service`: detailed filter API — category checkboxes (Main/Sub/Inner), price range, and other facets backed by Elasticsearch aggregations.
-3.5. `product-service`: product detail aggregation endpoint — rating summary, Q&A, campaigns, similar/recommended/"bought together" product lists, seller info snapshot, estimated delivery calculation (customer vs seller location).
-3.6. `berkay-public`: Search Results page — 4-column product grid, sort dropdown, left vertical filter panel, infinite scroll.
-3.7. `berkay-public`: Product Detail page — photo slider (max 10), price/stock/rating, Show More description expansion, Q&A section, campaigns section, Buy Now / Add to Basket (ID-verification gate), follow seller, key features boxes, all horizontal slider sections (similar / recommended / bought-together), "these might also interest you" text list, popular brands/stores, popular pages section.
-3.8. `berkay-personnel`: "Products" management page (edit/soft-delete seller products).
+Ground rules for everything below:
+* **Fewer services.** Do not create a new microservice per feature. Fold Phase 3–6 features into `product-service` (catalog/search/reviews/Q&A/favorites/campaigns) and a single new `order-service` (basket/order/payment/coupons). No `catalog-service`, `payment-service`, `favorites-service`, or `campaign-service`.
+* **Skip real Elasticsearch aggregations.** A single ES index for keyword + sort is enough; implement category/price filtering with plain JPA queries against Oracle, not ES facet aggregations. If ES is more trouble than it's worth for a given task, a well-indexed Oracle query satisfying the same API contract is an acceptable substitute — note the substitution in DONE.md.
+* **No real recommendation/ranking logic.** "Similar/recommended/bought-together/suggested more" lists = same-category or random-N queries. Label them as such in code comments only if genuinely non-obvious; otherwise they're just simple queries.
+* **No approval workflows unless RULES.md explicitly names one** (category change-requests is the one exception already scoped down in 2.2).
+* **UI polish is inline, not a separate pass.** Build the red-accent theme token and light/dark toggle once in Phase 2, reuse everywhere after. Don't schedule a later "polish phase."
+* **Testing is a thin safety net, not a suite.** A handful of unit tests per service and one or two Selenium happy-path scripts, not per-flow coverage.
+* **Deployment is already done at skeleton level** (Phase 0.11: Dockerfiles, k8s namespaces, Jenkinsfile). Don't expand it unless a task specifically needs a new Dockerfile.
+* Every task below should be completable as a single DONE.md entry each — if a task is trending large mid-implementation, cut scope further rather than expanding it.
 
-## Phase 4 — Seller Experience
-Goal: seller-side storefront management.
+---
 
-4.1. `product-service` / `auth-service`: Seller profile (store name, earned money ledger, followers).
-4.2. `berkay-public`: "My Store" hover menu (earned money info, "My Products", "Add New Product").
-4.3. `berkay-public`: "Add New Product" page — up to 10 photo uploads + all product fields from Phase 3.1, both language variants.
-4.4. `berkay-public`: "My Products" page — list + edit all product details.
-4.5. `berkay-public`: Seller public profile page ("go to market") — all seller products, follow button, seller Q&A list.
+## Phase 2 — Category & Catalog Management (thin)
+Goal: 3-level category hierarchy, enough admin management to demo it, and the shared UI theme.
 
-## Phase 5 — Basket, Orders & Payment
-Goal: cart, checkout, dummy payment, and order history.
+2.1. `product-service`: Main Category / Sub Type / Inner Type entities with translation tables (tr/en). Plain CRUD, no versioning.
+2.2. Category "Change Requests": single simple workflow — moderator edit creates a pending row, P0 admin approves/denies via one endpoint. Keep the entity and the two endpoints minimal.
+2.3. `berkay-personnel`: one combined "Categories" page (all 3 levels in one screen, tabs or nested lists) + one "Change Requests" list. Also establish here: the shared red-accent CSS variable and light/dark toggle, reused by every later page instead of a dedicated polish phase.
+2.4. `berkay-public`: hover-driven "Categories" mega-menu (Main > Sub > Inner, 5 + Show More) and horizontal top-nav category shortcuts.
 
-5.1. New `order-service`: Basket entity/API (add/remove/update quantity), persisted per signed-in user.
-5.2. New `payment-service` (or module in `order-service`): dummy payment processing — accepts any card info, "save card for future purchases" (encrypted-at-rest storage), auto-fill saved card on checkout.
-5.3. `order-service`: Order entity, order status lifecycle, order history ("All My Orders").
-5.4. `berkay-public`: Basket page, Checkout/Payment page (saved-card autofill), Buy Now direct-to-payment flow, ID-verification gate enforcement.
-5.5. `berkay-public`: "My Account" dropdown pages — All My Orders, My Reviews, My Discount Coupons, Seller Messages, My User Information, Log Out.
+## Phase 3 — Product Catalog & Search (thin)
+Goal: product CRUD and a working, but simplified, search/browse/detail experience.
 
-## Phase 6 — Reviews, Q&A, Favorites & Campaigns
-Goal: social/engagement features layered on top of catalog and orders.
+3.1. `product-service`: Product entity (price, stock, short/long description, up to 10 photo URLs, key features, tr/en translations) with soft delete.
+3.2. `product-service`: single Elasticsearch index synced on write; search API does keyword + the 7 required sort options; category/price filtering via JPA query params, not ES aggregations. Pagination: 20/page, infinite scroll trigger ~item 16.
+3.3. `product-service`: product detail endpoint — real rating average/count and real Q&A, but similar/recommended/bought-together/"might also interest you"/popular-brands/popular-pages are all simple same-category-or-random queries. Delivery estimate is a fixed dummy calculation (e.g. flat 3–7 days, no real distance logic).
+3.4. `berkay-public`: Search Results page (grid, sort dropdown, left filter panel, infinite scroll).
+3.5. `berkay-public`: Product Detail page — all sections from RULES.md present (slider, Q&A, campaigns, buy now/add to basket with ID-verification gate, follow seller, key features, the horizontal slider sections, text-only "might also interest you", popular brands/pages) — each wired to the simplified data above.
+3.6. `berkay-personnel`: "Products" page (list/edit/soft-delete).
 
-6.1. `product-service`: Rating/Review entity (average rating, total count) tied to completed orders.
-6.2. `product-service`: Q&A entity (customer asks, seller answers) surfaced on product detail and seller profile.
-6.3. New `favorites` module/service: Favorite products, Follow seller relationships; personalized "suggested more" ranking boost for followed sellers.
-6.4. New `campaign-service` (or module): Campaign entity, product-campaign association, "Campaigns" listing surfaced on product detail and footer.
-6.5. Discount coupon entity + application at checkout.
-6.6. `berkay-public`: "My Favorites" page, follow/unfollow UI, review submission UI, Q&A ask/answer UI, coupons page.
+## Phase 4 — Seller Experience (thin)
+Goal: enough seller tooling to demo the seller side of the marketplace.
 
-## Phase 7 — Personnel/Admin Panel Completion
-Goal: fill out remaining admin/moderator management pages with unique page codes (e.g. "P2 - Product Requests").
+4.1. `product-service`: seller profile fields on top of existing Seller account (store name, follower count) + a simple earned-money ledger entity (just a running total updated on order completion, no payout logic).
+4.2. `berkay-public`: "My Store" hover menu, "Add New Product" page (up to 10 photos, both languages), "My Products" list/edit page, and seller public profile page (products + follow button + seller's Q&A list) — one PR-sized task covering all four, since each is a thin CRUD screen over Phase 3's Product entity.
 
-7.1. `berkay-personnel`: "Personnel" page (create personnel accounts, assign permission groups).
-7.2. `berkay-personnel`: "Users" page (view/edit/soft-delete public accounts, trigger ban flow).
-7.3. `berkay-personnel`: "ID Applications" review page (accept/deny).
-7.4. `berkay-personnel`: "Seller Applications" review page (accept/deny).
-7.5. `berkay-personnel`: "User Logs" and "Personnel Logs" viewer pages.
-7.6. `berkay-personnel`: "Campaigns" management page.
-7.7. `berkay-personnel`: shared shell — top nav (language dropdown, logout only), collapsible left page menu driven by personnel's permission codes, multi-language support for the whole app.
+## Phase 5 — Basket, Orders & Payment (thin)
+Goal: cart → dummy payment → order history, in one new service.
 
-## Phase 8 — Cross-Cutting UI/UX Polish
-Goal: enterprise-grade shared UI system across both front-ends.
+5.1. New `order-service`: Basket entity/API (add/remove/update qty) + Order entity/status lifecycle + dummy Payment (accepts any card, optional encrypted "save card" field, autofills on next checkout) — build as one cohesive service, not staged sub-tasks.
+5.2. `berkay-public`: Basket page, Checkout/Payment page (saved-card autofill), Buy Now flow, ID-verification gate; "My Account" dropdown pages (All My Orders, My Reviews, My Discount Coupons, Seller Messages placeholder, My User Information, Log Out) — Seller Messages can be a static "coming soon" placeholder, it's not in RULES.md's required feature list beyond being a menu entry.
 
-8.1. Design system: shared component library (buttons, inputs, sliders, modals) with a single configurable red accent variable (theme token, not hardcoded).
-8.2. Light/dark mode toggle wired through the design system (`berkay-public` nav + `berkay-personnel` nav).
-8.3. Responsive layout pass for `berkay-public` (mobile/tablet breakpoints) for nav, category mega-menu, search grid, product detail sliders, checkout.
-8.4. Footer component: sub-sections (Who Are We, Contact, Security, Campaigns, Sell on Berkay, Live Support, How May I Return), payment network icons (MasterCard, Visa, Troy), social icons, "©2026 All Rights Reserved", Cookie Options / Terms of Use / Protection of Personal Data links.
-8.5. Top navigation bar final assembly: logo→home, Elasticsearch-backed search bar, My Account/My Favorites/My Basket, light/dark toggle, language switcher, Categories button + horizontal main categories.
+## Phase 6 — Reviews, Q&A, Favorites & Campaigns (thin)
+Goal: the remaining social/engagement features, folded into existing services.
 
-## Phase 9 — Testing & Quality
-Goal: automated verification across the stack, continuously extended per feature (not a one-time pass).
+6.1. `product-service`: Review entity (tied to completed orders via `order-service` lookup), Q&A entity — already partially consumed by Phase 3; this task is whatever wasn't needed yet (e.g. the ask/answer write endpoints if Phase 3 only built read).
+6.2. `product-service`: Favorite + Follow-seller entities; "suggested more" boost for followed sellers = simple SQL boost (e.g. `ORDER BY followed DESC`), not a ranking model.
+6.3. `order-service`: flat-percentage discount coupon entity + apply-at-checkout logic.
+6.4. `product-service`: Campaign entity + product-campaign association, surfaced on product detail (already stubbed in 3.5) and footer.
+6.5. `berkay-public`: "My Favorites" page, follow/unfollow buttons, review submission UI, Q&A ask/answer UI, coupons page — one combined task.
 
-9.1. Backend unit tests per service (JUnit) for services delivered in Phases 1–7.
-9.2. Postman collections per service for manual/CI API verification.
-9.3. Selenium end-to-end test suites for critical public flows (search, product detail, checkout, sign up) and personnel flows (login, approvals).
-9.4. CI wiring: Jenkins pipeline runs unit tests + Postman (Newman) + Selenium suites per environment.
+## Phase 7 — Personnel/Admin Panel Completion (thin)
+Goal: every admin page RULES.md names exists and works; no extra polish.
 
-## Phase 10 — Deployment & Operations
-Goal: containerize, orchestrate, and ship.
+7.1. `berkay-personnel`: "Personnel" page (create accounts, assign permission groups).
+7.2. `berkay-personnel`: "Users" page (view/edit/soft-delete, trigger existing ban flow from 1.6).
+7.3. `berkay-personnel`: "ID Applications" and "Seller Applications" review pages (these mostly just need a UI in front of 1.4/1.5's existing endpoints — one combined task).
+7.4. `berkay-personnel`: "User Logs" and "Personnel Logs" viewer pages (read-only tables over log-service's existing GET /logs).
+7.5. `berkay-personnel`: "Campaigns" management page (CRUD over 6.4's Campaign entity) + the shared shell (top nav with language dropdown/logout, permission-driven collapsible left menu) if not already produced as a side effect of earlier personnel pages.
 
-10.1. Dockerfiles for every service and front-end (multi-stage builds).
-10.2. Kubernetes manifests (Deployments, Services, Ingress, ConfigMaps/Secrets) per environment (local/development/production).
-10.3. Jenkins pipelines: build → test → containerize → deploy per environment, with promotion gates.
-10.4. Observability: centralized log aggregation dashboard, health checks/readiness probes for all services.
+## Phase 8 — Testing & Quality (thin safety net)
+Goal: a baseline of automated checks, not full coverage. Skip if budget runs out before this phase — it is the lowest-priority remaining phase.
+
+8.1. A handful of backend unit tests for the highest-risk logic added in Phases 2–7 (payment, ban, permissions already covered in Phase 1).
+8.2. One Postman collection covering the core happy path (browse → basket → checkout → order).
+8.3. One or two Selenium scripts for the single most important flow (sign up → search → buy) — not per-feature suites.
+
+## Phase 9 — Final polish & wrap-up (thin)
+Goal: make sure what exists is coherent, not add anything new.
+
+9.1. Verify responsive layout works at a basic mobile/tablet breakpoint on the pages built in Phases 2–7 (fix only actual breakage, don't do a dedicated redesign pass).
+9.2. Footer component (Who Are We/Contact/Security/Campaigns/Sell on Berkay/Live Support/How May I Return links, payment network icons, social icons, copyright/legal links) and final top-nav assembly — build once, reuse; this was deferred from Phase 2 only because it needs pages from later phases to link to.
+9.3. Skip Kubernetes/Jenkins/observability expansion entirely — Phase 0.11's skeleton is the deliverable for deployment. Only touch it if something in Phases 2–8 broke it (e.g. a new service needs a Dockerfile).
 
 ---
 
