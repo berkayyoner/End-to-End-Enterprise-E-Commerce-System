@@ -40,20 +40,15 @@ or
 
 ## Prompts
 1. Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
-2. Let's start Phase 1. Create a docker-compose.yml file in the root directory to set up the local development environment. It must include Oracle (XEPDB1, port 1521, user: berkay, pass: 1234), Redis, and Elasticsearch. Make sure the configurations are suitable for a local microservice environment. After creating the file, update the DONE.md file by adding '- docker-compose.yml created for local databases' under a new 'Completed Steps' section.
-3. Read ANALYSIS.md. We will now autonomously complete the remaining steps for Phase 1. You MUST strictly use your file editing tools to actually create the files on the disk. DO NOT just print code blocks in the chat.
-Follow this enterprise folder structure strictly:
-    1. Create a backend/berkay-parent directory. Generate the Java 21 Spring Boot Parent pom.xml inside it.
-    2. Create a frontend/berkay-public directory. Generate the initial React package.json and basic setup files inside it.
-    3. NEVER create a src folder directly in the root directory.
-Update DONE.md after successfully writing all these files to the disk. Execute the file creation tools immediately without asking for confirmation.
-4. The database containers are already running successfully. Now, autonomously build the core microservice infrastructure inside the backend directory. MUST strictly use file creation tools.
-Execute these steps:
-    1. Create a backend/discovery-server Spring Boot project. It should act as a Netflix Eureka Server (running on port 8761). Create its pom.xml and main application class.
-    2. Create a backend/api-gateway Spring Boot project. It should act as a Spring Cloud Gateway (running on port 8080) and a Eureka Client. Create its pom.xml, application.properties (or yml), and main application class.
-    3. Update the backend/berkay-parent/pom.xml to include both discovery-server and api-gateway as <modules>.
-    4. Update DONE.md indicating that the Discovery Server and API Gateway have been created.
-Do not ask for confirmation. Write the files to the disk immediately.
+
+2. Now, enter full autonomous execution mode. Follow this exact loop indefinitely until the entire ANALYSIS.md roadmap is complete:
+    1. Compare ANALYSIS.md with DONE.md. Identify the exact next uncompleted technical task.
+    2. Implement the task completely. Strictly follow the architecture, tech stack (Spring Boot, React, etc.), and constraints defined in RULES.md. Do NOT leave any 'TODO' comments, placeholder logic, or empty methods.
+    3. Search for, create, or modify ALL necessary files across the full-stack architecture to make this specific feature 100% production-ready.
+    4. If you encounter compilation, dependency, or runtime errors during implementation, read the logs, debug the issue, and apply the fix autonomously without asking for my input.
+    5. Once the feature is fully implemented and stable, append a specific, single-line summary of what you just built to DONE.md.
+    6. Immediately move to the next uncompleted task in ANALYSIS.md and repeat this process from step 1.
+CRITICAL RULE: Do NOT ask for confirmation, permission, or feedback between tasks. Do NOT stop to explain what you are doing. Simply execute, update DONE.md, and proceed to the next task autonomously until the project is finished.
 
 ## How it works
 * I have completely manually created a `RULES.md` file which includes the projects all of the expectations and the technologiles which will be used.
