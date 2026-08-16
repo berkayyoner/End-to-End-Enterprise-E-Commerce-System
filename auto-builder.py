@@ -6,50 +6,33 @@ import json
 import urllib.request
 import urllib.error
 
-# API Keys
+# 1. API Anahtarlarını Topla
 DEEPSEEK_KEY = os.environ.get("DEEPSEEK_API_KEY")
 GEMINI_KEY = os.environ.get("GEMINI_API_KEY")
+NVIDIA_KEY = os.environ.get("NVIDIA_API_KEY")
 
-if not DEEPSEEK_KEY and not GEMINI_KEY:
-    print("[FATAL ERROR] At least one API key (DEEPSEEK_API_KEY or GEMINI_API_KEY) must be set!")
+AVAILABLE_PROVIDERS = []
+if GEMINI_KEY: AVAILABLE_PROVIDERS.append("GEMINI")
+if NVIDIA_KEY: AVAILABLE_PROVIDERS.append("NVIDIA")
+if DEEPSEEK_KEY: AVAILABLE_PROVIDERS.append("DEEPSEEK")
+
+if not AVAILABLE_PROVIDERS:
+    print("[FATAL ERROR] At least one API key must be set (GEMINI_API_KEY, NVIDIA_API_KEY, DEEPSEEK_API_KEY)!")
     sys.exit(1)
 
-CURRENT_PROVIDER = "GEMINI" if GEMINI_KEY else "DEEPSEEK"
+CURRENT_PROVIDER_INDEX = 0
 ACTIVE_GEMINI_MODEL = None
 
-def get_valid_gemini_model():
-    """Gemini 3 Serisi öncelikli olmak üzere çalışan en iyi modeli bulur."""
-    global ACTIVE_GEMINI_MODEL
-    if ACTIVE_GEMINI_MODEL:
-        return ACTIVE_GEMINI_MODEL
-        
-    print("[SYSTEM] Discovering a working Gemini model (Prioritizing Gen 3)...")
-    
-    # 2026 Güncel Model Aday Listesi
-    candidate_models = [
-        "gemini-3.1-pro-preview", # Yazılım mühendisliği ve ajan iş akışları için optimize edilmiş
-        "gemini-3.7-flash",       # Yüksek hızlı akıl yürütme
-        "gemini-2.5-pro",
-        "gemini-1.5-pro-latest"
-    ]
-    
-    for model in candidate_models:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
-        payload = {"contents": [{"parts": [{"text": "ping"}]}]}
-        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={"Content-Type": "application/json"})
-        
-        try:
-            with urllib.request.urlopen(req, timeout=10) as response:
-                if response.status == 200:
-                    ACTIVE_GEMINI_MODEL = model
-                    print(f"[SYSTEM] Successfully locked onto working model: {ACTIVE_GEMINI_MODEL}")
-                    return ACTIVE_GEMINI_MODEL
-        except Exception:
-            continue
-            
-    print("[SYSTEM WARNING] Could not verify Gen 3 models. Falling back to safe default.")
-    ACTIVE_GEMINI_MODEL = "gemini-1.5-flash"
-    return ACTIVE_GEMINI_MODEL
+def get_current_provider():
+    return AVAILABLE_PROVIDERS[CURRENT_PROVIDER_INDEX]
+
+def switch_provider():
+    global CURRENT_PROVIDER_INDEX
+    if len(AVAILABLE_PROVIDERS) > 1:
+        CURRENT_PROVIDER_INDEX = (CURRENT_PROVIDER_INDEX + 1) % len(AVAILABLE_PROVIDERS)
+        print(f"\n[SYSTEM ALERT] Provider switched to: {get_current_provider()}")
+    else:
+        print("\n[SYSTEM ALERT] No other providers available to switch to. Retrying...")
 
 def read_file(filepath):
     try:
@@ -58,50 +41,71 @@ def read_file(filepath):
     except FileNotFoundError:
         return ""
 
+def get_valid_gemini_model():
+    global ACTIVE_GEMINI_MODEL
+    if ACTIVE_GEMINI_MODEL:
+        return ACTIVE_GEMINI_MODEL
+        
+    candidate_models = [
+        "gemini-3.1-pro-preview", 
+        "gemini-3.7-flash",       
+        "gemini-2.5-pro",
+        # "gemini-1.5-pro-latest"
+    ]
+    
+    for model in candidate_models:
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent?key={GEMINI_KEY}"
+        payload = {"contents": [{"parts": [{"text": "ping"}]}]}
+        req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers={"Content-Type": "application/json"})
+        try:
+            with urllib.request.urlopen(req, timeout=10) as response:
+                if response.status == 200:
+                    ACTIVE_GEMINI_MODEL = model
+                    return ACTIVE_GEMINI_MODEL
+        except Exception:
+            continue
+            
+    ACTIVE_GEMINI_MODEL = "gemini-1.5-flash"
+    return ACTIVE_GEMINI_MODEL
+
 def call_deepseek(prompt, system_role="You are an Elite Enterprise Software Architect."):
     url = "https://api.deepseek.com/chat/completions"
-    headers = {
-        "Content-Type": "application/json",
-        "Authorization": f"Bearer {DEEPSEEK_KEY}"
-    }
-    payload = {
-        "model": "deepseek-chat",
-        "messages": [
-            {"role": "system", "content": system_role},
-            {"role": "user", "content": prompt}
-        ],
-        "temperature": 0.0
-    }
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {DEEPSEEK_KEY}"}
+    payload = {"model": "deepseek-chat", "messages": [{"role": "system", "content": system_role}, {"role": "user", "content": prompt}], "temperature": 0.0}
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    try:
-        with urllib.request.urlopen(req, timeout=60) as response:
-            result = json.loads(response.read().decode('utf-8'))
-            return result["choices"][0]["message"]["content"].strip()
-    except urllib.error.HTTPError as e:
-        error_details = e.read().decode('utf-8')
-        raise Exception(f"HTTP {e.code} - {error_details}")
+    with urllib.request.urlopen(req, timeout=45) as response:
+        return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
+
+def call_nvidia(prompt, system_role="You are an Elite Enterprise Software Architect."):
+    url = "https://integrate.api.nvidia.com/v1/chat/completions"
+    headers = {"Content-Type": "application/json", "Authorization": f"Bearer {NVIDIA_KEY}"}
+    payload = {"model": "meta/llama-3.1-70b-instruct", "messages": [{"role": "system", "content": system_role}, {"role": "user", "content": prompt}], "temperature": 0.0}
+    req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
+    with urllib.request.urlopen(req, timeout=45) as response:
+        return json.loads(response.read().decode('utf-8'))["choices"][0]["message"]["content"].strip()
 
 def call_gemini(prompt):
     model_name = get_valid_gemini_model()
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{model_name}:generateContent?key={GEMINI_KEY}"
-    headers = {
-        "Content-Type": "application/json"
-    }
-    payload = {
-        "contents": [{"parts": [{"text": prompt}]}],
-        "generationConfig": {
-            "temperature": 0.0 # Kesin mantık ve stabilite için
-        }
-    }
+    headers = {"Content-Type": "application/json"}
+    payload = {"contents": [{"parts": [{"text": prompt}]}], "generationConfig": {"temperature": 0.0}}
     req = urllib.request.Request(url, data=json.dumps(payload).encode('utf-8'), headers=headers)
-    
+    with urllib.request.urlopen(req, timeout=45) as response:
+        return json.loads(response.read().decode('utf-8'))["candidates"][0]["content"]["parts"][0]["text"].strip()
+
+def execute_manager_call(prompt, system_role=None):
+    provider = get_current_provider()
     try:
-        with urllib.request.urlopen(req, timeout=60) as response:
-            result = json.loads(response.read().decode('utf-8'))
-            return result["candidates"][0]["content"]["parts"][0]["text"].strip()
-    except urllib.error.HTTPError as e:
-        error_details = e.read().decode('utf-8')
-        raise Exception(f"HTTP {e.code} - {error_details}")
+        if provider == "GEMINI":
+            return call_gemini(prompt)
+        elif provider == "NVIDIA":
+            return call_nvidia(prompt, system_role)
+        elif provider == "DEEPSEEK":
+            return call_deepseek(prompt, system_role)
+    except Exception as e:
+        print(f"\n[MANAGER ERROR] {provider} API Failed: {e}")
+        switch_provider()
+        raise e
 
 def initialize_project_if_needed():
     if os.path.exists("ANALYSIS.md"):
@@ -115,8 +119,7 @@ def initialize_project_if_needed():
     rules_content = read_file("RULES.md")
     
     if not user_idea.strip():
-        print("[FATAL ERROR] Project idea cannot be empty. Exiting.")
-        sys.exit(1)
+        sys.exit("[FATAL ERROR] Project idea cannot be empty.")
 
     prompt = (
         f"The user wants to build the following project:\n'{user_idea}'\n\n"
@@ -127,27 +130,14 @@ def initialize_project_if_needed():
         "Do NOT include conversational filler. Output ONLY the markdown roadmap."
     )
 
-    global CURRENT_PROVIDER
-    print(f"\n[INIT] Generating project roadmap using {CURRENT_PROVIDER} (Gen 3 Enabled)... Applying RULES.md...")
-    
-    roadmap_content = None
-    
-    if CURRENT_PROVIDER == "DEEPSEEK" and DEEPSEEK_KEY:
+    while True:
+        print(f"\n[INIT] Generating roadmap using {get_current_provider()}...")
         try:
-            roadmap_content = call_deepseek(prompt)
-        except Exception as e:
-            print(f"[INIT WARNING] DeepSeek failed ({e}). Switching to Gemini...")
-            CURRENT_PROVIDER = "GEMINI"
-
-    if not roadmap_content and GEMINI_KEY:
-        try:
-            roadmap_content = call_gemini(prompt)
-        except Exception as e:
-            print(f"[INIT ERROR] Gemini also failed: {e}")
-
-    if not roadmap_content:
-        print("[FATAL ERROR] AI failed to generate the roadmap. Exiting.")
-        sys.exit(1)
+            roadmap_content = execute_manager_call(prompt, "You are an Elite Enterprise Software Architect.")
+            break
+        except Exception:
+            time.sleep(3)
+            continue
 
     with open("ANALYSIS.md", "w", encoding="utf-8") as f:
         f.write(roadmap_content)
@@ -155,27 +145,19 @@ def initialize_project_if_needed():
     with open("DONE.md", "w", encoding="utf-8") as f:
         f.write(f"Project Start Date: {time.strftime('%Y-%m-%d')}\n\nCompleted Steps:\n")
         
-    print("[INIT] SUCCESS! ANALYSIS.md and DONE.md generated with strict adherence to RULES.md.\n")
+    print("[INIT] SUCCESS! ANALYSIS.md and DONE.md generated.\n")
     time.sleep(2)
 
 def get_next_task_from_manager():
-    global CURRENT_PROVIDER
-    print(f"\n[MANAGER] Analyzing project state and RULES.md using {CURRENT_PROVIDER}...")
-    
+    print(f"\n[MANAGER] Analyzing project state using {get_current_provider()}...")
     analysis_content = read_file("ANALYSIS.md")
     done_content = read_file("DONE.md")
     rules_content = read_file("RULES.md")
 
     prompt = f"""Compare the Roadmap (ANALYSIS.md) and Completed Steps (DONE.md) against the Project Rules (RULES.md).
-
-RULES:
-{rules_content}
-
-Roadmap:
-{analysis_content}
-
-Completed Steps:
-{done_content}
+RULES: {rules_content}
+Roadmap: {analysis_content}
+Completed Steps: {done_content}
 
 INSTRUCTIONS:
 1. Find the FIRST specific technical task from the roadmap that is explicitly MISSING from the Completed Steps.
@@ -184,43 +166,35 @@ INSTRUCTIONS:
 4. If all tasks are logically complete, output exactly: PROJECT_COMPLETED
 5. Be granular, precise, and short."""
 
-    if CURRENT_PROVIDER == "DEEPSEEK" and DEEPSEEK_KEY:
-        try:
-            task = call_deepseek(prompt)
-            print(f"[MANAGER DEBUG] Task identified via DeepSeek: {task}")
-            return task
-        except Exception as e:
-            print(f"[MANAGER WARNING] DeepSeek API failed ({e}). Switching to GEMINI...")
-            CURRENT_PROVIDER = "GEMINI"
-
-    if GEMINI_KEY:
-        try:
-            task = call_gemini(prompt)
-            print(f"[MANAGER DEBUG] Task identified via Gemini: {task}")
-            return task
-        except Exception as e:
-            print(f"[MANAGER ERROR] Gemini API failed: {e}")
-            return None
-
-    return None
+    try:
+        task = execute_manager_call(prompt, "You are a Technical Project Manager.")
+        print(f"[MANAGER DEBUG] Task identified: {task}")
+        return task
+    except Exception:
+        return None
 
 def run_worker_step(specific_task):
-    global CURRENT_PROVIDER
+    provider = get_current_provider()
     prompt = (
         f"Please execute this task: '{specific_task}'.\n\n"
         "STRICT ENTERPRISE MANDATES:\n"
         "1. Read the RULES.md file provided in this chat. You MUST strictly obey all architectural layers, tech stacks, and constraints defined in it.\n"
-        "2. FULL IMPLEMENTATION: You are forbidden from leaving 'TODO' comments, dummy logic, or empty methods. Implement the complete flow (e.g., Entity, Repository, Service, Controller).\n"
+        "2. FULL IMPLEMENTATION: You are forbidden from leaving 'TODO' comments, dummy logic, or empty methods. Implement the complete flow.\n"
         "3. Search for and correctly modify ALL relevant files needed to make this feature 100% functional and production-ready.\n"
         "4. When finished, append a single specific summary line to DONE.md explaining what you actually built.\n"
         "5. Commit your changes."
     )
 
-    if CURRENT_PROVIDER == "DEEPSEEK":
+    env = os.environ.copy()
+    
+    if provider == "NVIDIA":
+        env["OPENAI_API_KEY"] = NVIDIA_KEY
+        env["OPENAI_API_BASE"] = "https://integrate.api.nvidia.com/v1"
+        model_flag = "openai/meta/llama-3.1-70b-instruct"
+    elif provider == "DEEPSEEK":
         model_flag = "deepseek/deepseek-coder"
     else:
-        model_name = get_valid_gemini_model()
-        model_flag = f"gemini/{model_name}"
+        model_flag = f"gemini/{get_valid_gemini_model()}"
 
     command = [
         "python", "-m", "aider",
@@ -232,14 +206,13 @@ def run_worker_step(specific_task):
         "--message", prompt
     ]
 
-    print(f"[WORKER] Executing task with {model_flag} (Adhering to RULES.md)...")
+    print(f"[WORKER] Executing task with {model_flag}...")
     
     try:
-        result = subprocess.run(command)
-        if result.returncode != 0 and CURRENT_PROVIDER == "DEEPSEEK" and GEMINI_KEY:
-            print("[WORKER WARNING] DeepSeek failed or rate-limited. Falling back to Gemini...")
-            CURRENT_PROVIDER = "GEMINI"
-            return run_worker_step(specific_task)
+        result = subprocess.run(command, env=env)
+        if result.returncode != 0:
+            print(f"[WORKER WARNING] {provider} failed or rate-limited.")
+            switch_provider()
         return result.returncode
     except KeyboardInterrupt:
         print("\n>>> Stopped by user.")
@@ -250,40 +223,41 @@ def run_worker_step(specific_task):
 
 def main():
     print("=====================================================")
-    print(f" Gen 3 Multi-AI Orchestrator (Primary: {CURRENT_PROVIDER})")
+    print(" Triple-Fallback Multi-AI Orchestrator Started")
     print("=====================================================\n")
     
-    initialize_project_if_needed()
-    
-    max_iterations = 50 
-    iteration = 0
+    try:
+        initialize_project_if_needed()
+        max_iterations = 50 
+        iteration = 0
 
-    while iteration < max_iterations:
-        iteration += 1
-        print(f"\n================ [ Iteration {iteration} ] ================")
+        while iteration < max_iterations:
+            iteration += 1
+            print(f"\n================ [ Iteration {iteration} ] ================")
 
-        next_task = get_next_task_from_manager()
+            next_task = get_next_task_from_manager()
 
-        if not next_task:
-            print(">>> Failed to get task. Retrying in 10s...")
-            time.sleep(10)
-            continue
-            
-        if "PROJECT_COMPLETED" in next_task.upper():
-            print("\n>>> Manager reported that all project phases are completed! Orchestrator stopping.")
-            break
+            if not next_task:
+                print(">>> Retrying in 5s...")
+                time.sleep(5)
+                continue
+                
+            if "PROJECT_COMPLETED" in next_task.upper():
+                print("\n>>> Manager reported that all project phases are completed! Stopping.")
+                break
 
-        exit_code = run_worker_step(next_task)
+            exit_code = run_worker_step(next_task)
 
-        if exit_code != 0:
-            print(">>> Worker returned an error. Waiting 10s...")
-            time.sleep(10)
-        else:
-            print(">>> Task cycle finished successfully. Next cycle in 5s...")
-            time.sleep(5)
+            if exit_code != 0:
+                print(">>> Retrying next cycle in 5s...")
+                time.sleep(5)
+            else:
+                print(">>> Cycle finished successfully. Next cycle in 3s...")
+                time.sleep(3)
 
-    if iteration >= max_iterations:
-        print("\n>>> Reached maximum iteration limit. Orchestrator stopped.")
+    except KeyboardInterrupt:
+        print("\n\n>>> Process manually interrupted by user. Exiting safely.")
+        sys.exit(0)
 
 if __name__ == "__main__":
     main()
