@@ -29,12 +29,13 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 2. Creating a detailed RULES.md file for main goals and expectations from the AI model/agent.
 3. Creating a `ANALYSIS.md` for AI to fill with the phases and steps to take which it will decide.
 4. Creating a `DONE.md` for AI to fill when it finishes a phase. So we can keep going in any issue.
-5. Using a local agent for developing more economically. (I've used Gwen 2.5 Coder 14B Instruct model and created a local API with Ollama.)
-> CMD: `ollama run qwen2.5-coder:14b`
-6. Using Aider Python library for local API connection. 
+5. Using Aider Python library for local API connection. 
 > CMD: `python -m pip install aider-chat`
+> CMD: `python -m pip install google-generativeai`
 > CMD: `cd [project directory]`
-> CMD: `python -m aider --model ollama/qwen2.5-coder:14b` or `CMD: python -m aider --yes --no-show-model-warnings" --model ollama/qwen2.5-coder:14b` for automatic permission.
+> CMD: `$env:DEEPSEEK_API_KEY="sk-deepseek_api_key_here"`
+> CMD: `$env:GEMINI_API_KEY="AIzaSy_gemini_api_key_buraya"`
+> 2 AIs for fallback method.
 7. Creating development branches. (PROD, PREPROD, UAT, INT, DEV)
 8. Giving the first 3 prompts to AI to start working.
 9. Start services with the `docker-compose.yml` file.
