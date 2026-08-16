@@ -19,6 +19,7 @@ def run_aider_step():
     command = [
         "python", "-m", "aider",
         "--yes",
+        "--no-show-model-warnings",
         "--model", "ollama/qwen2.5-coder:14b",
         "--file", "RULES.md", "ANALYSIS.md", "DONE.md",
         "--message", prompt
