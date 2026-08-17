@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth'
 import { getPublicSellerProfile, getSellerProducts } from '../api/sellerApi'
+import { followSeller, unfollowSeller, isFollowingSeller } from '../api/followApi'
 import '../styles/sellerProfile.css'
 
 export function SellerProfilePage() {
   const { id } = useParams()
+  const navigate = useNavigate()
   const { t, language } = useTranslation()
   const { isAuthenticated } = useAuth()
   const [profile, setProfile] = useState(null)
@@ -24,6 +26,19 @@ export function SellerProfilePage() {
 
         const productsData = await getSellerProducts(id, language)
         setProducts(productsData)
+
+        // Fetch follow state if authenticated
+        if (isAuthenticated) {
+          try {
+            const followResponse = await isFollowingSeller(id)
+            setFollowState((prev) => ({
+              ...prev,
+              [id]: followResponse.isFollowing,
+            }))
+          } catch (err) {
+            console.error('Failed to load follow state:', err)
+          }
+        }
       } catch (err) {
         setError(t('sellerProfile.loadError') || 'Failed to load seller profile')
         console.error('Failed to load seller profile:', err)
@@ -33,18 +48,29 @@ export function SellerProfilePage() {
     }
 
     fetchData()
-  }, [id, language, t])
+  }, [id, language, t, isAuthenticated])
 
-  const handleFollowSeller = () => {
+  const handleFollowSeller = async () => {
     if (!isAuthenticated) {
-      // In a real app, would redirect to login
+      navigate('/login')
       return
     }
-    // Toggle follow state (placeholder - no real backend call per task 4.2)
-    setFollowState((prev) => ({
-      ...prev,
-      [id]: !prev[id],
-    }))
+
+    const isCurrentlyFollowing = followState[id] || false
+    try {
+      if (isCurrentlyFollowing) {
+        await unfollowSeller(id)
+      } else {
+        await followSeller(id)
+      }
+      // Toggle follow state
+      setFollowState((prev) => ({
+        ...prev,
+        [id]: !prev[id],
+      }))
+    } catch (err) {
+      console.error('Error toggling follow state:', err)
+    }
   }
 
   const getProductName = (product) => {

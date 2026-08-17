@@ -4,6 +4,7 @@ import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth'
 import { getProductDetail } from '../api/productDetailApi'
 import { addToBasket } from '../api/orderApi'
+import { followSeller, unfollowSeller, isFollowingSeller } from '../api/followApi'
 import '../styles/productDetail.css'
 
 export function ProductDetailPage() {
@@ -20,7 +21,7 @@ export function ProductDetailPage() {
   const [followingState, setFollowingState] = useState({})
   const [addingToBasket, setAddingToBasket] = useState(false)
 
-  // Fetch product details
+  // Fetch product details and follow state
   useEffect(() => {
     const fetchProduct = async () => {
       try {
@@ -28,6 +29,19 @@ export function ProductDetailPage() {
         setError(null)
         const data = await getProductDetail(id, language)
         setProduct(data)
+
+        // Fetch follow state if authenticated
+        if (isAuthenticated && data.sellerId) {
+          try {
+            const followResponse = await isFollowingSeller(data.sellerId)
+            setFollowingState((prev) => ({
+              ...prev,
+              [data.sellerId]: followResponse.isFollowing,
+            }))
+          } catch (err) {
+            console.error('Failed to load follow state:', err)
+          }
+        }
       } catch (err) {
         setError(t('productDetail.loadingError'))
         console.error('Failed to load product:', err)
@@ -37,7 +51,7 @@ export function ProductDetailPage() {
     }
 
     fetchProduct()
-  }, [id, t, language])
+  }, [id, t, language, isAuthenticated])
 
   const handlePrevPhoto = () => {
     if (product?.photos && product.photos.length > 0) {
@@ -100,16 +114,27 @@ export function ProductDetailPage() {
     }
   }
 
-  const handleFollowSeller = () => {
+  const handleFollowSeller = async () => {
     if (!isAuthenticated) {
       navigate('/login')
       return
     }
-    // Toggle follow state (placeholder - no real backend call)
-    setFollowingState((prev) => ({
-      ...prev,
-      [product.sellerId]: !prev[product.sellerId],
-    }))
+
+    const isCurrentlyFollowing = followingState[product.sellerId] || false
+    try {
+      if (isCurrentlyFollowing) {
+        await unfollowSeller(product.sellerId)
+      } else {
+        await followSeller(product.sellerId)
+      }
+      // Toggle follow state
+      setFollowingState((prev) => ({
+        ...prev,
+        [product.sellerId]: !prev[product.sellerId],
+      }))
+    } catch (err) {
+      console.error('Error toggling follow state:', err)
+    }
   }
 
   const handleProductClick = (productId) => {
@@ -330,9 +355,29 @@ export function ProductDetailPage() {
         {/* Campaigns Section */}
         <div className="product-section">
           <h2>{t('productDetail.campaignsSection')}</h2>
-          <div className="empty-state">
-            <p>{t('productDetail.noCampaigns')}</p>
-          </div>
+          {product.campaigns && product.campaigns.length > 0 ? (
+            <div className="campaigns-list">
+              {product.campaigns.map((campaign) => (
+                <div key={campaign.id} className="campaign-item">
+                  <div className="campaign-name">
+                    <a href="/campaigns" style={{ color: 'var(--accent)', textDecoration: 'none' }}>
+                      {campaign.name}
+                    </a>
+                  </div>
+                  {campaign.description && (
+                    <p className="campaign-description">{campaign.description}</p>
+                  )}
+                  <div className="campaign-dates-small">
+                    {new Date(campaign.startDate).toLocaleDateString()} - {new Date(campaign.endDate).toLocaleDateString()}
+                  </div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="empty-state">
+              <p>{t('productDetail.noCampaigns')}</p>
+            </div>
+          )}
         </div>
 
         {/* Similar Products */}

@@ -1,5 +1,6 @@
 package com.berkay.product_service.exception;
 
+import com.berkay.product_service.campaign.exception.CampaignNotFoundException;
 import com.berkay.product_service.category.exception.CategoryNotFoundException;
 import com.berkay.product_service.category.changerequest.exception.CategoryChangeRequestNotFoundException;
 import com.berkay.product_service.category.changerequest.exception.CategoryChangeRequestAlreadyReviewedException;
@@ -95,6 +96,12 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, Object>> handleSellerOwnership(SellerOwnershipException ex) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(errorBody(HttpStatus.FORBIDDEN, ex.getMessage()));
+	}
+
+	@ExceptionHandler(CampaignNotFoundException.class)
+	public ResponseEntity<Map<String, Object>> handleCampaignNotFound(CampaignNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
 	}
 
 	private Map<String, Object> errorBody(HttpStatus status, Object message) {

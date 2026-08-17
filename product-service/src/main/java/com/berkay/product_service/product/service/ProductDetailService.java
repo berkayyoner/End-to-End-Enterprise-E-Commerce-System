@@ -1,6 +1,8 @@
 package com.berkay.product_service.product.service;
 
 import com.berkay.common.i18n.TranslationResolver;
+import com.berkay.product_service.campaign.dto.CampaignResponse;
+import com.berkay.product_service.campaign.service.CampaignService;
 import com.berkay.product_service.product.dto.ProductDetailDTO;
 import com.berkay.product_service.product.dto.ProductNameDTO;
 import com.berkay.product_service.product.dto.ProductPhotoDTO;
@@ -22,8 +24,8 @@ import java.util.stream.Collectors;
 
 /**
  * Service for aggregating comprehensive product detail information.
- * Combines core product data with related recommendations, marketplace info, and placeholders
- * for future phases (ratings/Q&A/campaigns).
+ * Combines core product data with related recommendations, marketplace info, real ratings/Q&A/campaigns,
+ * and real active campaigns for the product (Phase 6.4).
  */
 @Service
 public class ProductDetailService {
@@ -38,14 +40,17 @@ public class ProductDetailService {
 	private final ProductRepository productRepository;
 	private final ReviewService reviewService;
 	private final QnaService qnaService;
+	private final CampaignService campaignService;
 
 	public ProductDetailService(
 			ProductRepository productRepository,
 			ReviewService reviewService,
-			QnaService qnaService) {
+			QnaService qnaService,
+			CampaignService campaignService) {
 		this.productRepository = productRepository;
 		this.reviewService = reviewService;
 		this.qnaService = qnaService;
+		this.campaignService = campaignService;
 	}
 
 	@Transactional(readOnly = true)
@@ -95,8 +100,10 @@ public class ProductDetailService {
 				.map(q -> (Object) q)
 				.toList();
 
-		// Placeholder for Phase 6.4 (campaigns)
-		List<Object> campaigns = List.of();
+		// Real Phase 6.4 data: active campaigns for this product
+		List<Object> campaigns = campaignService.getCampaignsByProduct(productId).stream()
+				.map(c -> (Object) c)
+				.toList();
 
 		return new ProductDetailDTO(
 				product.getId(),

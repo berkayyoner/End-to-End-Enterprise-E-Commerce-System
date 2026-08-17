@@ -71,6 +71,14 @@ inside it (e.g. `product-service` will hold both `catalog` and `search` domain p
 * All tables include soft-delete (`is_deleted`, `deleted_at`) and audit (`created_at`,
   `updated_at`, `created_by`, `updated_by`) columns via the shared `common-lib` base entity —
   see task 0.4. No table ever performs a hard `DELETE`.
+* **JPQL gotcha (found in task 6.2):** `BaseEntity`'s soft-delete field is named `deleted`
+  (`private boolean deleted`) with a JavaBean-style getter `isDeleted()` — in a hand-written
+  `@Query` JPQL string, reference it as `f.deleted`, never `f.isDeleted`. The getter name is not
+  the entity attribute name, and `f.isDeleted = false` fails at bean-creation time with a
+  Hibernate `UnknownPathException`/`PathElementException`, not a compile error, so it only
+  surfaces when the app actually starts (including in `@SpringBootTest`/`@DataJpaTest`). Check
+  every new hand-written `@Query` against this before trusting a "build passed" claim that used
+  `-DskipTests` or only ran a narrow `-Dtest=...` filter.
 * Environments: each service ships `application-local.yml`, `application-development.yml`,
   `application-production.yml` (task 0.3); `local` uses `localhost` values for Oracle/Redis/
   Elasticsearch, matching the `RULES.md` requirement that development environments default to

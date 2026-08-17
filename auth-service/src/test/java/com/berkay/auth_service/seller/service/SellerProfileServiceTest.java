@@ -1,6 +1,7 @@
 package com.berkay.auth_service.seller.service;
 
 import com.berkay.auth_service.exception.AppUserNotFoundException;
+import com.berkay.auth_service.seller.client.SellerFollowClient;
 import com.berkay.auth_service.seller.dto.SellerProfileResponse;
 import com.berkay.auth_service.seller.dto.SellerPublicProfileResponse;
 import com.berkay.auth_service.seller.dto.UpdateStoreNameRequest;
@@ -12,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -32,21 +34,25 @@ class SellerProfileServiceTest {
 	@Mock
 	private SellerEarningsRepository sellerEarningsRepository;
 
+	@Mock
+	private SellerFollowClient sellerFollowClient;
+
 	private SellerProfileService sellerProfileService;
 
 	@Test
 	void getsSellerProfileWithEarningsAndFollowerCount() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser seller = new AppUser("seller@example.com", "hash", "Seller", "One", null);
+		ReflectionTestUtils.setField(seller, "id", 1L);  // Set ID so toString() works
 		seller.approveAsSeller();
 		seller.setStoreName("My Store");
-		seller.setFollowerCount(42);
 
 		SellerEarnings earnings = new SellerEarnings(1L);
 		earnings.credit(new BigDecimal("199.99"));
 
 		when(appUserRepository.findById(1L)).thenReturn(Optional.of(seller));
 		when(sellerEarningsRepository.findBySellerId(1L)).thenReturn(Optional.of(earnings));
+		when(sellerFollowClient.getFollowerCount("1")).thenReturn(42L);
 
 		SellerProfileResponse response = sellerProfileService.getSellerProfile(1L);
 
@@ -58,12 +64,14 @@ class SellerProfileServiceTest {
 
 	@Test
 	void createsEarningsRecordIfNotExists() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser seller = new AppUser("seller@example.com", "hash", "Seller", "One", null);
+		ReflectionTestUtils.setField(seller, "id", 1L);  // Set ID so toString() works
 		seller.approveAsSeller();
 
 		when(appUserRepository.findById(1L)).thenReturn(Optional.of(seller));
 		when(sellerEarningsRepository.findBySellerId(1L)).thenReturn(Optional.empty());
+		when(sellerFollowClient.getFollowerCount("1")).thenReturn(0L);
 
 		SellerEarnings newEarnings = new SellerEarnings(1L);
 		when(sellerEarningsRepository.save(any(SellerEarnings.class))).thenReturn(newEarnings);
@@ -76,7 +84,7 @@ class SellerProfileServiceTest {
 
 	@Test
 	void updatesStoreName() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser seller = new AppUser("seller@example.com", "hash", "Seller", "One", null);
 		seller.approveAsSeller();
 		seller.setStoreName("Old Store Name");
@@ -98,13 +106,14 @@ class SellerProfileServiceTest {
 
 	@Test
 	void getsPublicProfile() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser seller = new AppUser("seller@example.com", "hash", "Seller", "One", null);
+		ReflectionTestUtils.setField(seller, "id", 1L);  // Set ID so toString() works
 		seller.approveAsSeller();
 		seller.setStoreName("Public Store");
-		seller.setFollowerCount(99);
 
 		when(appUserRepository.findById(1L)).thenReturn(Optional.of(seller));
+		when(sellerFollowClient.getFollowerCount("1")).thenReturn(99L);
 
 		SellerPublicProfileResponse response = sellerProfileService.getPublicProfile(1L);
 
@@ -114,7 +123,7 @@ class SellerProfileServiceTest {
 
 	@Test
 	void rejectsGetProfileForNonSeller() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser customer = new AppUser("customer@example.com", "hash", "Customer", "One", null);
 		// seller = false by default
 
@@ -127,7 +136,7 @@ class SellerProfileServiceTest {
 
 	@Test
 	void rejectsUpdateStoreNameForNonSeller() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser customer = new AppUser("customer@example.com", "hash", "Customer", "One", null);
 
 		when(appUserRepository.findById(2L)).thenReturn(Optional.of(customer));
@@ -140,7 +149,7 @@ class SellerProfileServiceTest {
 
 	@Test
 	void rejectsPublicProfileForNonSeller() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 		AppUser customer = new AppUser("customer@example.com", "hash", "Customer", "One", null);
 
 		when(appUserRepository.findById(2L)).thenReturn(Optional.of(customer));
@@ -152,7 +161,7 @@ class SellerProfileServiceTest {
 
 	@Test
 	void throwsAppUserNotFoundExceptionWhenSellerDoesNotExist() {
-		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository);
+		sellerProfileService = new SellerProfileService(appUserRepository, sellerEarningsRepository, sellerFollowClient);
 
 		when(appUserRepository.findById(999L)).thenReturn(Optional.empty());
 

@@ -21,6 +21,8 @@ import { MyReviewsPage } from './pages/MyReviewsPage.jsx'
 import { MyCouponsPage } from './pages/MyCouponsPage.jsx'
 import { SellerMessagesPage } from './pages/SellerMessagesPage.jsx'
 import { MyUserInfoPage } from './pages/MyUserInfoPage.jsx'
+import { MyFavoritesPage } from './pages/MyFavoritesPage.jsx'
+import { CampaignsPage } from './pages/CampaignsPage.jsx'
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/campaigns" element={<CampaignsPage />} />
         <Route path="/products/:id" element={<ProductDetailPage />} />
         <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
@@ -126,6 +129,14 @@ function App() {
           element={
             <RequireAuth>
               <MyUserInfoPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-favorites"
+          element={
+            <RequireAuth>
+              <MyFavoritesPage />
             </RequireAuth>
           }
         />

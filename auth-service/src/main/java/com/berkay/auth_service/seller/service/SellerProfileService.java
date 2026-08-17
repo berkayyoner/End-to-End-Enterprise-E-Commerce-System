@@ -1,6 +1,7 @@
 package com.berkay.auth_service.seller.service;
 
 import com.berkay.auth_service.exception.AppUserNotFoundException;
+import com.berkay.auth_service.seller.client.SellerFollowClient;
 import com.berkay.auth_service.seller.dto.SellerProfileResponse;
 import com.berkay.auth_service.seller.dto.SellerPublicProfileResponse;
 import com.berkay.auth_service.seller.dto.UpdateStoreNameRequest;
@@ -27,16 +28,20 @@ public class SellerProfileService {
 
 	private final AppUserRepository appUserRepository;
 	private final SellerEarningsRepository sellerEarningsRepository;
+	private final SellerFollowClient sellerFollowClient;
 
 	public SellerProfileService(AppUserRepository appUserRepository,
-			SellerEarningsRepository sellerEarningsRepository) {
+			SellerEarningsRepository sellerEarningsRepository,
+			SellerFollowClient sellerFollowClient) {
 		this.appUserRepository = appUserRepository;
 		this.sellerEarningsRepository = sellerEarningsRepository;
+		this.sellerFollowClient = sellerFollowClient;
 	}
 
 	/**
 	 * Get the authenticated seller's profile (store name, earnings, follower count).
 	 * Automatically creates a SellerEarnings record if it doesn't exist yet.
+	 * Fetches real follower count from product-service; best-effort fallback to 0 if unreachable.
 	 */
 	@Transactional
 	public SellerProfileResponse getSellerProfile(Long sellerId) {
@@ -52,6 +57,10 @@ public class SellerProfileService {
 					SellerEarnings newEarnings = new SellerEarnings(sellerId);
 					return sellerEarningsRepository.save(newEarnings);
 				});
+
+		// Fetch real follower count from product-service (best-effort, fallback to 0)
+		long followerCount = sellerFollowClient.getFollowerCount(seller.getId().toString());
+		seller.setFollowerCount((int) followerCount);
 
 		return SellerProfileResponse.from(seller, earnings.getTotalEarned());
 	}
@@ -80,6 +89,7 @@ public class SellerProfileService {
 
 	/**
 	 * Get public profile for a seller by ID (store name and follower count only, no earnings).
+	 * Fetches real follower count from product-service; best-effort fallback to 0 if unreachable.
 	 */
 	@Transactional(readOnly = true)
 	public SellerPublicProfileResponse getPublicProfile(Long sellerId) {
@@ -90,6 +100,13 @@ public class SellerProfileService {
 			throw new IllegalStateException("User is not a seller");
 		}
 
-		return SellerPublicProfileResponse.from(seller);
+		// Fetch real follower count from product-service (best-effort, fallback to 0)
+		long followerCount = sellerFollowClient.getFollowerCount(seller.getId().toString());
+
+		return new SellerPublicProfileResponse(
+				seller.getId(),
+				seller.getStoreName(),
+				(int) followerCount  // Cast to int for the record
+		);
 	}
 }

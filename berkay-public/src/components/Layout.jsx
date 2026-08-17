@@ -26,6 +26,9 @@ export function Layout() {
               <Link to="/basket" className="basket-link" aria-label={t('basket.title')}>
                 🛒 {t('basket.title')}
               </Link>
+              <Link to="/my-favorites" className="favorites-link" aria-label={t('nav.myFavorites') || 'My Favorites'}>
+                ♥ {t('nav.myFavorites') || 'My Favorites'}
+              </Link>
               <MyAccountMenu />
             </>
           ) : (

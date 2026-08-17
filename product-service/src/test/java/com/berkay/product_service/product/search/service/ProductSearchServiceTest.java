@@ -1,5 +1,6 @@
 package com.berkay.product_service.product.search.service;
 
+import com.berkay.product_service.follow.service.FollowService;
 import com.berkay.product_service.product.repository.ProductRepository;
 import com.berkay.product_service.product.search.document.ProductDocument;
 import com.berkay.product_service.product.search.repository.ProductSearchRepository;
@@ -32,11 +33,14 @@ class ProductSearchServiceTest {
 	@Mock
 	private ProductSearchRepository searchRepository;
 
+	@Mock
+	private FollowService followService;
+
 	private ProductSearchService searchService;
 
 	@BeforeEach
 	void setUp() {
-		searchService = new ProductSearchService(productRepository, searchRepository);
+		searchService = new ProductSearchService(productRepository, searchRepository, followService);
 	}
 
 	@Test
@@ -46,7 +50,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search("Test", null, null, null,
-				null, null, "Suggested Ranking", 0);
+				null, null, "Suggested Ranking", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -62,7 +66,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "The Most Expensive", 0);
+				null, null, "The Most Expensive", 0, null);
 
 		// Assert - should be sorted by price DESC (100, 75, 50 if we had products)
 		// For now, verify it returns empty since we're mocking productRepository.findAllActive()
@@ -76,7 +80,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "The Cheapest", 0);
+				null, null, "The Cheapest", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -89,7 +93,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "Newest", 0);
+				null, null, "Newest", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -102,7 +106,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "The Most Selling", 0);
+				null, null, "The Most Selling", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -115,7 +119,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "The Most Favorited", 0);
+				null, null, "The Most Favorited", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -128,7 +132,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "The Most Rated", 0);
+				null, null, "The Most Rated", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -141,7 +145,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "Suggested Ranking", 0);
+				null, null, "Suggested Ranking", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -178,7 +182,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				null, null, "Suggested Ranking", 0);
+				null, null, "Suggested Ranking", 0, null);
 
 		// Assert - verify page size configuration
 		assertThat(results.getSize()).isEqualTo(20);
@@ -194,7 +198,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, null, null, null,
-				minPrice, maxPrice, "Suggested Ranking", 0);
+				minPrice, maxPrice, "Suggested Ranking", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();
@@ -207,7 +211,7 @@ class ProductSearchServiceTest {
 
 		// Act
 		Page<ProductDocument> results = searchService.search(null, 5L, null, null,
-				null, null, "Suggested Ranking", 0);
+				null, null, "Suggested Ranking", 0, null);
 
 		// Assert
 		assertThat(results).isEmpty();

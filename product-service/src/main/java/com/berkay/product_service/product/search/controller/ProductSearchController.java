@@ -3,6 +3,7 @@ package com.berkay.product_service.product.search.controller;
 import com.berkay.product_service.product.search.dto.SearchResultsPage;
 import com.berkay.product_service.product.search.service.ProductSearchService;
 import org.springframework.data.domain.Page;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -40,6 +41,7 @@ public class ProductSearchController {
 	 *                         "The Cheapest", "Newest", "The Most Selling",
 	 *                         "The Most Favorited", or "The Most Rated" (default: "Suggested Ranking")
 	 * @param page             0-indexed page number (default: 0)
+	 * @param authentication   optional auth context (for extracting callerId for followed-seller boost)
 	 * @return page of products with pagination metadata
 	 */
 	@GetMapping
@@ -51,10 +53,16 @@ public class ProductSearchController {
 			@RequestParam(value = "minPrice", required = false) BigDecimal minPrice,
 			@RequestParam(value = "maxPrice", required = false) BigDecimal maxPrice,
 			@RequestParam(value = "sort", defaultValue = "Suggested Ranking") String sort,
-			@RequestParam(value = "page", defaultValue = "0") int page) {
+			@RequestParam(value = "page", defaultValue = "0") int page,
+			Authentication authentication) {
+
+		String callerId = null;
+		if (authentication != null && authentication.isAuthenticated()) {
+			callerId = authentication.getName();
+		}
 
 		Page<ProductDocument> results = searchService.search(q, mainCategoryId, subTypeId,
-				innerTypeId, minPrice, maxPrice, sort, page);
+				innerTypeId, minPrice, maxPrice, sort, page, callerId);
 
 		return SearchResultsPage.from(results);
 	}

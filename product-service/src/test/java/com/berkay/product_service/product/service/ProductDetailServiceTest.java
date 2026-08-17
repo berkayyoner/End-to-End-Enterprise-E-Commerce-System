@@ -9,6 +9,7 @@ import com.berkay.product_service.product.entity.ProductKeyFeature;
 import com.berkay.product_service.product.entity.ProductPhoto;
 import com.berkay.product_service.product.entity.ProductTranslation;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
+import com.berkay.product_service.campaign.service.CampaignService;
 import com.berkay.product_service.product.repository.ProductRepository;
 import com.berkay.product_service.qna.service.QnaService;
 import com.berkay.product_service.review.service.ReviewService;
@@ -40,6 +41,9 @@ class ProductDetailServiceTest {
 	@Mock
 	private QnaService qnaService;
 
+	@Mock
+	private CampaignService campaignService;
+
 	private ProductDetailService service;
 	private MainCategory mainCategory;
 	private SubType subType;
@@ -47,7 +51,7 @@ class ProductDetailServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		service = new ProductDetailService(productRepository, reviewService, qnaService);
+		service = new ProductDetailService(productRepository, reviewService, qnaService, campaignService);
 		mainCategory = new MainCategory("Electronics");
 		subType = new SubType(mainCategory, "Computers");
 		innerType = new InnerType(subType, "Laptops");
@@ -83,6 +87,7 @@ class ProductDetailServiceTest {
 
 		when(productRepository.findActiveById(1L)).thenReturn(Optional.of(product));
 		when(productRepository.findActiveByInnerTypeId(innerType.getId())).thenReturn(List.of(product));
+		when(campaignService.getCampaignsByProduct(1L)).thenReturn(List.of());
 
 		ProductDetailDTO detail = service.getProductDetail(1L, "tr");
 
@@ -121,6 +126,7 @@ class ProductDetailServiceTest {
 
 		when(productRepository.findActiveById(1L)).thenReturn(Optional.of(currentProduct));
 		when(productRepository.findActiveByInnerTypeId(innerType.getId())).thenReturn(categoryProducts);
+		when(campaignService.getCampaignsByProduct(1L)).thenReturn(List.of());
 
 		ProductDetailDTO detail = service.getProductDetail(1L, "tr");
 
@@ -167,6 +173,7 @@ class ProductDetailServiceTest {
 
 		when(productRepository.findActiveById(1L)).thenReturn(Optional.of(currentProduct));
 		when(productRepository.findActiveByInnerTypeId(innerType.getId())).thenReturn(categoryProducts);
+		when(campaignService.getCampaignsByProduct(1L)).thenReturn(List.of());
 
 		ProductDetailDTO detail = service.getProductDetail(1L, "tr");
 
@@ -205,6 +212,7 @@ class ProductDetailServiceTest {
 
 		when(productRepository.findActiveById(1L)).thenReturn(Optional.of(product1));
 		when(productRepository.findActiveByInnerTypeId(innerType.getId())).thenReturn(categoryProducts);
+		when(campaignService.getCampaignsByProduct(1L)).thenReturn(List.of());
 
 		ProductDetailDTO detail = service.getProductDetail(1L, "tr");
 
@@ -235,6 +243,7 @@ class ProductDetailServiceTest {
 
 		when(productRepository.findActiveById(1L)).thenReturn(Optional.of(product));
 		when(productRepository.findActiveByInnerTypeId(innerType.getId())).thenReturn(List.of(product));
+		when(campaignService.getCampaignsByProduct(1L)).thenReturn(List.of());
 
 		ProductDetailDTO detail = service.getProductDetail(1L, "en");
 

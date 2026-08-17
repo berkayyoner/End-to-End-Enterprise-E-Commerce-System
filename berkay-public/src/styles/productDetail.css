@@ -589,6 +589,57 @@
   font-size: 0.9rem;
 }
 
+/* Campaigns Section */
+.campaigns-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.campaign-item {
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 0.5rem;
+  background-color: var(--bg-secondary);
+  transition: all 0.2s ease;
+}
+
+.campaign-item:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border-color: var(--accent);
+}
+
+.campaign-name {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.5rem;
+}
+
+.campaign-name a {
+  color: var(--accent);
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.campaign-name a:hover {
+  opacity: 0.8;
+}
+
+.campaign-description {
+  color: var(--text-secondary);
+  font-size: 0.95rem;
+  margin: 0.5rem 0;
+  line-height: 1.4;
+}
+
+.campaign-dates-small {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  margin-top: 0.5rem;
+}
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .product-detail-content {

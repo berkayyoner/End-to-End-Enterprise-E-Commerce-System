@@ -16,7 +16,8 @@
     "login": "Log in",
     "signUp": "Sign up",
     "categories": "Categories",
-    "showMore": "Show More"
+    "showMore": "Show More",
+    "myFavorites": "My Favorites"
   },
   "auth": {
     "signUp": {
@@ -300,5 +301,24 @@
     "notVerified": "Not Verified",
     "verifyNow": "Verify Now",
     "backToAccount": "Back to Account"
+  },
+  "myFavorites": {
+    "title": "My Favorites",
+    "empty": "You haven't added any favorite products yet",
+    "continueShopping": "Continue Shopping",
+    "itemsCount": "items",
+    "remove": "Remove from Favorites",
+    "loadingError": "Error loading favorites"
+  },
+  "campaigns": {
+    "title": "Active Campaigns",
+    "subtitle": "Discover our latest promotions and featured products",
+    "empty": "No active campaigns at the moment",
+    "browseCatalog": "Browse Catalog",
+    "loadingError": "Error loading campaigns",
+    "startDate": "Start",
+    "endDate": "End",
+    "statusActive": "Active",
+    "statusInactive": "Inactive"
   }
 }

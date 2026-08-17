@@ -7,6 +7,7 @@ import com.berkay.product_service.category.repository.InnerTypeRepository;
 import com.berkay.product_service.product.dto.ProductRequest;
 import com.berkay.product_service.product.dto.ProductResponse;
 import com.berkay.product_service.product.dto.ProductTranslationInput;
+import com.berkay.product_service.product.dto.SimpleProductDTO;
 import com.berkay.product_service.product.entity.Product;
 import com.berkay.product_service.product.entity.ProductKeyFeature;
 import com.berkay.product_service.product.entity.ProductPhoto;
@@ -63,6 +64,43 @@ public class ProductService {
 		return productRepository.findActiveBySellerId(sellerId).stream()
 				.map(p -> ProductResponse.from(p, locale))
 				.toList();
+	}
+
+	@Transactional(readOnly = true)
+	public SimpleProductDTO getSimpleProductDTO(Long id, String locale) {
+		Product product = findActiveOrThrow(id);
+		String name = null;
+		for (ProductTranslation trans : product.getTranslations()) {
+			if (locale.equals(trans.getLocaleCode())) {
+				name = trans.getName();
+				break;
+			}
+		}
+		if (name == null && !product.getTranslations().isEmpty()) {
+			name = product.getTranslations().get(0).getName();
+		}
+		if (name == null) {
+			name = "";
+		}
+
+		String photoUrl = null;
+		if (product.getPhotos() != null && !product.getPhotos().isEmpty()) {
+			ProductPhoto photo = product.getPhotos().stream()
+					.filter(p -> !p.isDeleted())
+					.findFirst()
+					.orElse(null);
+			if (photo != null) {
+				photoUrl = "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(photo.getImageData());
+			}
+		}
+
+		return new SimpleProductDTO(
+				product.getId(),
+				name,
+				product.getPrice(),
+				photoUrl,
+				0.0  // Real rating will be populated by ProductDetailService
+		);
 	}
 
 	/**

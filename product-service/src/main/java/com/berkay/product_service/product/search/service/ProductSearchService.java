@@ -1,5 +1,6 @@
 package com.berkay.product_service.product.search.service;
 
+import com.berkay.product_service.follow.service.FollowService;
 import com.berkay.product_service.product.entity.Product;
 import com.berkay.product_service.product.entity.ProductTranslation;
 import com.berkay.product_service.product.repository.ProductRepository;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -31,11 +33,14 @@ public class ProductSearchService {
 
 	private final ProductRepository productRepository;
 	private final ProductSearchRepository searchRepository;
+	private final FollowService followService;
 
 	public ProductSearchService(ProductRepository productRepository,
-			ProductSearchRepository searchRepository) {
+			ProductSearchRepository searchRepository,
+			FollowService followService) {
 		this.productRepository = productRepository;
 		this.searchRepository = searchRepository;
+		this.followService = followService;
 	}
 
 	/**
@@ -49,11 +54,12 @@ public class ProductSearchService {
 	 * @param maxPrice          maximum price filter (optional)
 	 * @param sortOption        one of the 7 RULES.md sort options (required)
 	 * @param page              0-indexed page number (default 0)
+	 * @param callerId          optional buyer ID for boosting followed sellers in "Suggested Ranking"
 	 * @return page of products with metadata for infinite scroll
 	 */
 	public Page<ProductDocument> search(String query, Long mainCategoryId, Long subTypeId,
 			Long innerTypeId, BigDecimal minPrice, BigDecimal maxPrice,
-			String sortOption, int page) {
+			String sortOption, int page, String callerId) {
 
 		// Fetch all active products (in production, this would be Elasticsearch)
 		List<Product> allProducts = productRepository.findAllActive();
@@ -70,8 +76,8 @@ public class ProductSearchService {
 				.map(this::toProductDocument)
 				.collect(Collectors.toList());
 
-		// Sort
-		sortDocuments(documents, sortOption);
+		// Sort with optional follower boost for "Suggested Ranking"
+		sortDocuments(documents, sortOption, callerId);
 
 		// Paginate
 		int totalElements = documents.size();
@@ -132,14 +138,19 @@ public class ProductSearchService {
 		return true;
 	}
 
-	private void sortDocuments(List<ProductDocument> documents, String sortOption) {
-		Comparator<ProductDocument> comparator = buildComparator(sortOption);
+	private void sortDocuments(List<ProductDocument> documents, String sortOption, String callerId) {
+		Comparator<ProductDocument> comparator = buildComparator(sortOption, callerId);
 		documents.sort(comparator);
 	}
 
-	private Comparator<ProductDocument> buildComparator(String sortOption) {
+	private Comparator<ProductDocument> buildComparator(String sortOption, String callerId) {
 		if (sortOption == null || sortOption.isBlank()) {
 			sortOption = "Suggested Ranking";
+		}
+
+		// For "Suggested Ranking", boost products from sellers the caller follows
+		if ("Suggested Ranking".equals(sortOption) && callerId != null && !callerId.isBlank()) {
+			return buildSuggestedRankingWithFollowBoost(callerId);
 		}
 
 		return switch (sortOption) {
@@ -160,6 +171,22 @@ public class ProductSearchService {
 			default ->
 					Comparator.comparing(ProductDocument::getCreatedAt, Comparator.reverseOrder());
 		};
+	}
+
+	private Comparator<ProductDocument> buildSuggestedRankingWithFollowBoost(String callerId) {
+		// Build set of seller IDs the caller follows
+		Set<Long> followedSellers = productRepository.findAllActive().stream()
+				.map(Product::getSellerId)
+				.filter(sellerId -> followService.isFollowing(sellerId.toString(), callerId))
+				.collect(Collectors.toSet());
+
+		// Primary sort: products from followed sellers first (true > false in reverse order)
+		// Secondary sort: by createdAt descending
+		return Comparator.comparing(
+					(ProductDocument doc) -> followedSellers.contains(doc.getSellerId()),
+					Comparator.reverseOrder()
+			)
+			.thenComparing(ProductDocument::getCreatedAt, Comparator.reverseOrder());
 	}
 
 	private ProductDocument toProductDocument(Product product) {

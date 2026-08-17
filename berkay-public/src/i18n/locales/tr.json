@@ -16,7 +16,8 @@
     "login": "Giriş Yap",
     "signUp": "Kayıt Ol",
     "categories": "Kategoriler",
-    "showMore": "Tümünü Gör"
+    "showMore": "Tümünü Gör",
+    "myFavorites": "Favorilerim"
   },
   "auth": {
     "signUp": {
@@ -300,5 +301,24 @@
     "notVerified": "Doğrulanmadı",
     "verifyNow": "Şimdi Doğrula",
     "backToAccount": "Hesaba Dön"
+  },
+  "myFavorites": {
+    "title": "Favorilerim",
+    "empty": "Henüz hiç favori ürün eklemediniz",
+    "continueShopping": "Alışverişe Devam Et",
+    "itemsCount": "ürün",
+    "remove": "Favorilerden Kaldır",
+    "loadingError": "Favoriler yüklenirken hata oluştu"
+  },
+  "campaigns": {
+    "title": "Aktif Kampanyalar",
+    "subtitle": "En son promosyonları ve öne çıkan ürünleri keşfedin",
+    "empty": "Şu anda aktif kampanya yok",
+    "browseCatalog": "Kataloğu Gözat",
+    "loadingError": "Kampanyalar yüklenirken hata oluştu",
+    "startDate": "Başlangıç",
+    "endDate": "Bitiş",
+    "statusActive": "Aktif",
+    "statusInactive": "İnaktif"
   }
 }
