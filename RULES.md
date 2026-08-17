@@ -42,6 +42,7 @@ This will be a enterprise e-commerce project which will include all of the main 
 ## Expectations
 * Always stick to SOLID principles.
 * This will be a microservice enterpise project. Each application needs to be kept under different folders. Avoid using general foldering names like "frontend" or "backend".
+* This is not a real enterprise project. Only for applying enterprise level architecture for prototyping and practicing.
 * No critical or unwanted data will be sent to front-end.
 * Create environments for all applications but for development; use localhost values.
 * Never delete a value, only soft delete. Also datas should keep dates.
