@@ -11,6 +11,7 @@ import com.berkay.product_service.product.entity.Product;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
 import com.berkay.product_service.product.exception.ProductOwnershipException;
 import com.berkay.product_service.product.repository.ProductRepository;
+import com.berkay.product_service.product.search.service.ProductSearchService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -36,6 +37,9 @@ class ProductServiceTest {
 	@Mock
 	private InnerTypeRepository innerTypeRepository;
 
+	@Mock
+	private ProductSearchService searchService;
+
 	private ProductService service;
 	private MainCategory mainCategory;
 	private SubType subType;
@@ -43,7 +47,7 @@ class ProductServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		service = new ProductService(productRepository, innerTypeRepository);
+		service = new ProductService(productRepository, innerTypeRepository, searchService);
 		mainCategory = new MainCategory("PLACEHOLDER");
 		subType = new SubType(mainCategory, "PLACEHOLDER");
 		innerType = new InnerType(subType, "PLACEHOLDER");

@@ -27,5 +27,10 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
 			"WHERE p.sellerId = :sellerId AND p.deleted = false ORDER BY p.id")
 	List<Product> findActiveBySellerId(@Param("sellerId") Long sellerId);
 
+	@Query("SELECT p FROM Product p LEFT JOIN FETCH p.translations " +
+			"LEFT JOIN FETCH p.photos LEFT JOIN FETCH p.keyFeatures " +
+			"WHERE p.innerType.id = :innerTypeId AND p.deleted = false ORDER BY p.id")
+	List<Product> findActiveByInnerTypeId(@Param("innerTypeId") Long innerTypeId);
+
 	boolean existsByIdAndDeletedFalse(Long id);
 }

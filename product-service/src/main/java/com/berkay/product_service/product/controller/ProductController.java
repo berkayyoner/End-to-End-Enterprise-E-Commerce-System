@@ -1,7 +1,9 @@
 package com.berkay.product_service.product.controller;
 
+import com.berkay.product_service.product.dto.ProductDetailDTO;
 import com.berkay.product_service.product.dto.ProductRequest;
 import com.berkay.product_service.product.dto.ProductResponse;
+import com.berkay.product_service.product.service.ProductDetailService;
 import com.berkay.product_service.product.service.ProductService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -20,17 +22,19 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 /**
- * REST endpoints for Product CRUD. Create/update/delete require seller authentication.
- * GET/list are public (no auth required).
+ * REST endpoints for Product CRUD and detail. Create/update/delete require seller authentication.
+ * GET/list/detail are public (no auth required).
  */
 @RestController
 @RequestMapping("/products")
 public class ProductController {
 
 	private final ProductService productService;
+	private final ProductDetailService productDetailService;
 
-	public ProductController(ProductService productService) {
+	public ProductController(ProductService productService, ProductDetailService productDetailService) {
 		this.productService = productService;
+		this.productDetailService = productDetailService;
 	}
 
 	@GetMapping
@@ -44,6 +48,13 @@ public class ProductController {
 			@PathVariable Long id,
 			@RequestParam(name = "locale", defaultValue = "tr") String locale) {
 		return productService.get(id, locale);
+	}
+
+	@GetMapping("/{id}/detail")
+	public ProductDetailDTO getDetail(
+			@PathVariable Long id,
+			@RequestParam(name = "locale", defaultValue = "tr") String locale) {
+		return productDetailService.getProductDetail(id, locale);
 	}
 
 	@PostMapping
