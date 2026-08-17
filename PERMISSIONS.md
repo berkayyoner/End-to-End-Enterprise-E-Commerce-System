@@ -22,6 +22,6 @@ session side); auth-service's own personnel endpoints check the session authorit
 | P4 | Categories (Main/Sub/Inner category management) | product-service | task 2.1 |
 | P5 | Products (list/edit/soft-delete seller products) | product-service | task 3.6 |
 | P6 | Campaigns (create/edit/delete campaigns, manage product associations) | product-service | task 6.4 |
-
-Not yet assigned (RULES.md names these pages; codes are assigned when each is actually built):
-Personnel, User Logs, Personnel Logs (Phase 7).
+| P7 | Personnel (create accounts, assign/reassign permission groups) | auth-service | task 7.1 |
+| P8 | User Logs (read-only activity log for public users/customers/sellers) | log-service | task 7.4 |
+| P9 | Personnel Logs (read-only activity log for internal personnel) | log-service | task 7.4 |

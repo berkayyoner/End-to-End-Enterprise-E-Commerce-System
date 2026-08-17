@@ -71,6 +71,48 @@ export function Layout() {
                     </Link>
                   </li>
                 )}
+                {hasPermission('P7') && (
+                  <li>
+                    <Link to="/personnel" className={`menu-link ${location.pathname === '/personnel' ? 'active' : ''}`}>
+                      {t('personnel.title')}
+                    </Link>
+                  </li>
+                )}
+                {hasPermission('P3') && (
+                  <li>
+                    <Link to="/users" className={`menu-link ${location.pathname === '/users' ? 'active' : ''}`}>
+                      {t('users.title')}
+                    </Link>
+                  </li>
+                )}
+                {hasPermission('P1', 'VIEW') && (
+                  <li>
+                    <Link to="/id-applications" className={`menu-link ${location.pathname === '/id-applications' ? 'active' : ''}`}>
+                      {t('idApplications.title')}
+                    </Link>
+                  </li>
+                )}
+                {hasPermission('P2', 'VIEW') && (
+                  <li>
+                    <Link to="/seller-applications" className={`menu-link ${location.pathname === '/seller-applications' ? 'active' : ''}`}>
+                      {t('sellerApplications.title')}
+                    </Link>
+                  </li>
+                )}
+                {hasPermission('P8') && (
+                  <li>
+                    <Link to="/user-logs" className={`menu-link ${location.pathname === '/user-logs' ? 'active' : ''}`}>
+                      {t('userLogs.title')}
+                    </Link>
+                  </li>
+                )}
+                {hasPermission('P9') && (
+                  <li>
+                    <Link to="/personnel-logs" className={`menu-link ${location.pathname === '/personnel-logs' ? 'active' : ''}`}>
+                      {t('personnelLogs.title')}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
           </aside>

@@ -34,7 +34,11 @@
     "reviewedAt": "İncelendi",
     "reviewedBy": "İnceleyen",
     "rejectionReason": "Red Nedeni",
-    "accessDenied": "Bu sayfaya erişme izniniz yok"
+    "accessDenied": "Bu sayfaya erişme izniniz yok",
+    "permissionDenied": "Bu sayfaya erişme izniniz yok",
+    "page": "Sayfa",
+    "previous": "Önceki",
+    "next": "Sonraki"
   },
   "auth": {
     "login": {
@@ -108,5 +112,126 @@
     "longDescEn": "Uzun Açıklama (İngilizce)",
     "keyFeatures": "Temel Özellikler",
     "addFeature": "Özellik ekle..."
+  },
+  "personnel": {
+    "title": "Personel Yönetimi",
+    "createButton": "Yeni Personel Oluştur",
+    "listTitle": "Personel Listesi",
+    "emptyList": "Hiçbir personel bulunamadı",
+    "createForm": {
+      "title": "Yeni Personel Oluştur",
+      "email": "Email",
+      "emailPlaceholder": "example@berkay.com",
+      "password": "Şifre",
+      "passwordPlaceholder": "En az 8 karakter",
+      "firstName": "Ad",
+      "firstNamePlaceholder": "John",
+      "lastName": "Soyadı",
+      "lastNamePlaceholder": "Doe",
+      "permissionGroup": "İzin Grubu",
+      "selectGroup": "İzin Grubu Seçin",
+      "submit": "Personel Oluştur",
+      "requiredFields": "Tüm alanlar gereklidir"
+    },
+    "reassignForm": {
+      "changeButton": "Değiştir",
+      "selectGroup": "Grubu Seçin",
+      "confirm": "Onayla"
+    },
+    "table": {
+      "email": "Email",
+      "name": "Ad Soyad",
+      "permissionGroup": "İzin Grubu",
+      "createdAt": "Oluşturulma Tarihi",
+      "actions": "İşlemler"
+    },
+    "noPermission": "Bu işlem için izniniz yok"
+  },
+  "users": {
+    "title": "Kullanıcı Yönetimi",
+    "listTitle": "Kullanıcı Listesi",
+    "emptyList": "Hiçbir kullanıcı bulunamadı",
+    "editButton": "Düzenle",
+    "deleteButton": "Sil",
+    "banButton": "Yasakla",
+    "editForm": {
+      "title": "Kullanıcı Düzenle",
+      "firstName": "Ad",
+      "lastName": "Soyadı",
+      "phoneNumber": "Telefon Numarası",
+      "submit": "Kaydet",
+      "cancel": "İptal",
+      "requiredFields": "Ad ve soyadı gereklidir"
+    },
+    "deleteConfirm": "Bu kullanıcıyı silmek istediğinize emin misiniz?",
+    "banConfirm": "Bu kullanıcıyı yasaklamak istediğinize emin misiniz?",
+    "banReason": "Yasaklama Nedeni",
+    "banReasonPlaceholder": "Yasaklama nedenini girin...",
+    "deleteSuccess": "Kullanıcı başarıyla silindi",
+    "banSuccess": "Kullanıcı başarıyla yasaklandı",
+    "editSuccess": "Kullanıcı başarıyla düzenlendi",
+    "table": {
+      "email": "Email",
+      "name": "Ad Soyad",
+      "phone": "Telefon",
+      "idVerified": "ID Doğrulandı",
+      "seller": "Satıcı",
+      "banned": "Yasaklı",
+      "createdAt": "Oluşturulma Tarihi",
+      "actions": "İşlemler"
+    }
+  },
+  "idApplications": {
+    "title": "ID Uygulamaları",
+    "listTitle": "Beklemede Olan ID Uygulamaları",
+    "noPending": "Hiçbir bekleme başvurusu bulunamadı",
+    "loading": "Başvurular yükleniyor...",
+    "error": "Başvurular yüklenirken hata oluştu",
+    "approveSuccess": "Başvuru onaylandı",
+    "rejectSuccess": "Başvuru reddedildi",
+    "errorApproving": "Başvuru onaylanırken hata oluştu",
+    "errorRejecting": "Başvuru reddedilirken hata oluştu",
+    "confirmApprove": "Bu başvuruyu onaylamak istediğinize emin misiniz?",
+    "reasonRequired": "Red nedeni gereklidir",
+    "idNumber": "ID Numarası",
+    "photos": "ID Fotoğrafları",
+    "frontPhoto": "Ön Taraf",
+    "backPhoto": "Arka Taraf"
+  },
+  "sellerApplications": {
+    "title": "Satıcı Uygulamaları",
+    "listTitle": "Beklemede Olan Satıcı Uygulamaları",
+    "noPending": "Hiçbir bekleme başvurusu bulunamadı",
+    "loading": "Başvurular yükleniyor...",
+    "error": "Başvurular yüklenirken hata oluştu",
+    "approveSuccess": "Başvuru onaylandı",
+    "rejectSuccess": "Başvuru reddedildi",
+    "errorApproving": "Başvuru onaylanırken hata oluştu",
+    "errorRejecting": "Başvuru reddedilirken hata oluştu",
+    "confirmApprove": "Bu başvuruyu onaylamak istediğinize emin misiniz?",
+    "reasonRequired": "Red nedeni gereklidir",
+    "companyName": "Şirket Adı",
+    "taxId": "Vergi Numarası",
+    "companyPhone": "Şirket Telefonu",
+    "companyAddress": "Şirket Adresi"
+  },
+  "userLogs": {
+    "title": "Kullanıcı Aktivite Günlüğü",
+    "emptyList": "Hiçbir aktivite bulunamadı"
+  },
+  "personnelLogs": {
+    "title": "Personel Aktivite Günlüğü",
+    "emptyList": "Hiçbir aktivite bulunamadı"
+  },
+  "logs": {
+    "table": {
+      "id": "ID",
+      "actorId": "Aktör ID",
+      "action": "İşlem",
+      "sourceService": "Kaynak Hizmet",
+      "details": "Detaylar",
+      "ipAddress": "IP Adresi",
+      "timestamp": "Zaman"
+    }
   }
 }

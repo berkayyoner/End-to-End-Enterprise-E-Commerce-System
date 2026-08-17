@@ -5,6 +5,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface PersonnelRepository extends JpaRepository<Personnel, Long> {
@@ -27,4 +28,21 @@ public interface PersonnelRepository extends JpaRepository<Personnel, Long> {
 	 */
 	@Query("select p from Personnel p join fetch p.permissionGroup pg left join fetch pg.entries where p.email = :email and p.deleted = false")
 	Optional<Personnel> findByEmailWithPermissionsAndNotDeleted(@Param("email") String email);
+
+	/**
+	 * Fetches all non-deleted personnel with their permission groups for list operations.
+	 */
+	@Query("select p from Personnel p join fetch p.permissionGroup pg where p.deleted = false")
+	List<Personnel> findAllActiveWithPermissionGroups();
+
+	/**
+	 * Counts how many non-deleted personnel have P0 (Permissions page) access by checking
+	 * if their permission group has a P0 entry. Used to guard against removing the last P0 admin.
+	 */
+	@Query("select count(distinct p.id) from Personnel p " +
+			"join p.permissionGroup pg " +
+			"join pg.entries pe " +
+			"where p.deleted = false and pe.pageCode = 'P0'")
+	long countWithP0Access();
 }
+

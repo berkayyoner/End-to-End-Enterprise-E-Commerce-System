@@ -9,6 +9,11 @@ spring:
       ddl-auto: validate
     open-in-view: false
     show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI}
   config:
     import: "configserver:${CONFIG_SERVER_URI}"
 

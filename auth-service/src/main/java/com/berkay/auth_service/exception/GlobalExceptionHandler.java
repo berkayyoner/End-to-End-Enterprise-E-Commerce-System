@@ -52,7 +52,8 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler({DuplicatePendingIdVerificationException.class, AlreadyIdVerifiedException.class,
 			IdVerificationAlreadyReviewedException.class, DuplicatePendingSellerApplicationException.class,
 			AlreadySellerException.class, SellerApplicationAlreadyReviewedException.class, IdNotVerifiedException.class,
-			UserAlreadyBannedException.class})
+			UserAlreadyBannedException.class, DuplicatePersonnelEmailException.class,
+			CannotRemoveLastP0AdminException.class})
 	public ResponseEntity<Map<String, Object>> handleConflict(RuntimeException ex) {
 		return ResponseEntity.status(HttpStatus.CONFLICT).body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
 	}

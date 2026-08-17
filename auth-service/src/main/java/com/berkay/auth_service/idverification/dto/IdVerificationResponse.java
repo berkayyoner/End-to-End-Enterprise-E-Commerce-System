@@ -4,6 +4,7 @@ import com.berkay.auth_service.idverification.entity.IdVerificationApplication;
 import com.berkay.auth_service.idverification.entity.IdVerificationStatus;
 
 import java.time.Instant;
+import java.util.Base64;
 
 public record IdVerificationResponse(
 		Long id,
@@ -14,9 +15,20 @@ public record IdVerificationResponse(
 		String reviewedByEmail,
 		Instant reviewedAt,
 		String rejectionReason,
-		Instant createdAt) {
+		Instant createdAt,
+		String frontPhotoBase64,
+		String frontPhotoContentType,
+		String backPhotoBase64,
+		String backPhotoContentType) {
 
 	public static IdVerificationResponse from(IdVerificationApplication application) {
+		String frontPhotoBase64 = application.getFrontPhoto() != null
+				? "data:" + application.getFrontPhotoContentType() + ";base64," + Base64.getEncoder().encodeToString(application.getFrontPhoto())
+				: null;
+		String backPhotoBase64 = application.getBackPhoto() != null
+				? "data:" + application.getBackPhotoContentType() + ";base64," + Base64.getEncoder().encodeToString(application.getBackPhoto())
+				: null;
+
 		return new IdVerificationResponse(
 				application.getId(),
 				application.getAppUser().getId(),
@@ -26,6 +38,10 @@ public record IdVerificationResponse(
 				application.getReviewedByEmail(),
 				application.getReviewedAt(),
 				application.getRejectionReason(),
-				application.getCreatedAt());
+				application.getCreatedAt(),
+				frontPhotoBase64,
+				application.getFrontPhotoContentType(),
+				backPhotoBase64,
+				application.getBackPhotoContentType());
 	}
 }

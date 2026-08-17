@@ -9,6 +9,11 @@ spring:
       ddl-auto: update
     open-in-view: false
     show-sql: true
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/api/auth
 
 eureka:
   instance:
