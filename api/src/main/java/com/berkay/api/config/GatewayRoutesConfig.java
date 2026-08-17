@@ -37,4 +37,13 @@ public class GatewayRoutesConfig {
 				.filter(LoadBalancerFilterFunctions.lb("product-service"))
 				.build();
 	}
+
+	@Bean
+	public RouterFunction<ServerResponse> orderServiceRoute() {
+		return GatewayRouterFunctions.route("order-service")
+				.route(RequestPredicates.path("/api/orders/**"), HandlerFunctions.http())
+				.filter(FilterFunctions.stripPrefix(2))
+				.filter(LoadBalancerFilterFunctions.lb("order-service"))
+				.build();
+	}
 }

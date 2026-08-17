@@ -128,6 +128,8 @@ services:
         condition: service_started
       product-service:
         condition: service_started
+      order-service:
+        condition: service_started
       log-service:
         condition: service_started
     networks:
@@ -167,6 +169,25 @@ services:
       redis:
         condition: service_healthy
       elasticsearch:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+      config-server:
+        condition: service_healthy
+    networks:
+      - berkay-net
+
+  order-service:
+    build:
+      context: .
+      dockerfile: order-service/Dockerfile
+    container_name: berkay-order-service
+    environment:
+      SPRING_PROFILES_ACTIVE: development
+    ports:
+      - "8084:8084"
+    depends_on:
+      oracle-db:
         condition: service_healthy
       discovery-service:
         condition: service_healthy
