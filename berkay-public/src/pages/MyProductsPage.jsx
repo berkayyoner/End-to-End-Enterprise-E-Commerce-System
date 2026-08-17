@@ -4,6 +4,7 @@ import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth'
 import { getSellerProducts, deleteProduct, updateProduct } from '../api/sellerApi'
 import { getMainCategories, getSubTypesByMainCategory, getInnerTypesBySubType } from '../api/categoryApi'
+import { getProductQuestions, answerQuestion } from '../api/qnaApi'
 import '../styles/myProducts.css'
 
 export function MyProductsPage() {
@@ -21,12 +22,38 @@ export function MyProductsPage() {
   const [success, setSuccess] = useState(null)
   const [editForm, setEditForm] = useState({})
 
+  // Unanswered questions state
+  const [unansweredQuestions, setUnansweredQuestions] = useState([])
+  const [showAnswerForm, setShowAnswerForm] = useState(null)
+  const [answerText, setAnswerText] = useState('')
+  const [submittingAnswer, setSubmittingAnswer] = useState(false)
+  const [answerError, setAnswerError] = useState(null)
+
   const loadProducts = useCallback(async () => {
     if (!user?.id) return
     try {
       setLoading(true)
       const data = await getSellerProducts(user.id, language)
       setProducts(data)
+
+      // Load questions for all products and find unanswered ones
+      const allQuestions = []
+      for (const product of data) {
+        try {
+          const questions = await getProductQuestions(product.id)
+          const unanswered = questions.filter((q) => !q.answer)
+          allQuestions.push(
+            ...unanswered.map((q) => ({
+              ...q,
+              productId: product.id,
+              productName: product.name,
+            }))
+          )
+        } catch (err) {
+          console.error(`Failed to load questions for product ${product.id}:`, err)
+        }
+      }
+      setUnansweredQuestions(allQuestions)
     } catch (err) {
       setError(err?.message || t('myProducts.loadError') || 'Failed to load products')
     } finally {
@@ -144,6 +171,34 @@ export function MyProductsPage() {
     return product.name || ''
   }
 
+  const handleSubmitAnswer = async (question) => {
+    if (!answerText.trim()) {
+      setAnswerError(t('myProducts.answerRequired') || 'Answer cannot be empty')
+      return
+    }
+
+    try {
+      setSubmittingAnswer(true)
+      setAnswerError(null)
+
+      await answerQuestion(question.productId, question.id, {
+        answerText: answerText.trim(),
+      })
+
+      // Clear form and refresh questions
+      setAnswerText('')
+      setShowAnswerForm(null)
+      setTimeout(() => {
+        loadProducts()
+      }, 500)
+    } catch (err) {
+      setAnswerError(err.message || t('myProducts.answerError') || 'Failed to submit answer')
+      console.error('Failed to submit answer:', err)
+    } finally {
+      setSubmittingAnswer(false)
+    }
+  }
+
   return (
     <section className="my-products-container">
       <div className="my-products-header">
@@ -256,6 +311,68 @@ export function MyProductsPage() {
               ))}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Unanswered Questions Section */}
+      {unansweredQuestions.length > 0 && (
+        <div className="unanswered-questions-section">
+          <h2>{t('myProducts.unansweredQuestions') || 'Unanswered Questions'} ({unansweredQuestions.length})</h2>
+          {answerError && <div className="error-banner">{answerError}</div>}
+          <div className="questions-container">
+            {unansweredQuestions.map((question) => (
+              <div key={question.id} className="question-item-seller">
+                <div className="question-product">
+                  <strong>{question.productName}</strong>
+                </div>
+                <div className="question-text">{question.questionText}</div>
+                <div className="question-date">
+                  {new Date(question.createdAt).toLocaleDateString()}
+                </div>
+
+                {showAnswerForm === question.id ? (
+                  <div className="answer-form">
+                    <textarea
+                      value={answerText}
+                      onChange={(e) => setAnswerText(e.target.value)}
+                      placeholder={t('myProducts.answerPlaceholder') || 'Type your answer...'}
+                      rows="3"
+                    />
+                    <div className="answer-form-buttons">
+                      <button
+                        className="btn-submit-answer"
+                        onClick={() => handleSubmitAnswer(question)}
+                        disabled={submittingAnswer}
+                      >
+                        {submittingAnswer ? t('common.loading') : t('myProducts.submitAnswer') || 'Submit Answer'}
+                      </button>
+                      <button
+                        className="btn-cancel-answer"
+                        onClick={() => {
+                          setShowAnswerForm(null)
+                          setAnswerText('')
+                          setAnswerError(null)
+                        }}
+                      >
+                        {t('myProducts.cancel') || 'Cancel'}
+                      </button>
+                    </div>
+                  </div>
+                ) : (
+                  <button
+                    className="btn-answer"
+                    onClick={() => {
+                      setShowAnswerForm(question.id)
+                      setAnswerText('')
+                      setAnswerError(null)
+                    }}
+                  >
+                    {t('myProducts.answerQuestion') || 'Answer'}
+                  </button>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       )}
 

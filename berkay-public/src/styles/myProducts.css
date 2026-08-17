@@ -256,6 +256,135 @@
   background: var(--bg-hover);
 }
 
+/* Unanswered Questions Section */
+.unanswered-questions-section {
+  margin-top: 40px;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+}
+
+.unanswered-questions-section h2 {
+  font-size: 18px;
+  color: var(--accent);
+  margin: 0 0 20px 0;
+}
+
+.questions-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.question-item-seller {
+  background: var(--bg-primary);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+}
+
+.question-product {
+  font-size: 14px;
+  color: var(--accent);
+  margin-bottom: 8px;
+}
+
+.question-text {
+  font-size: 14px;
+  color: var(--text-primary);
+  margin-bottom: 8px;
+  line-height: 1.5;
+}
+
+.question-date {
+  font-size: 12px;
+  color: var(--text-secondary);
+  margin-bottom: 12px;
+}
+
+.answer-form {
+  background: var(--accent-bg);
+  border-radius: 6px;
+  padding: 12px;
+  margin-top: 12px;
+}
+
+.answer-form textarea {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  background: var(--bg-primary);
+  color: var(--text-primary);
+  margin-bottom: 12px;
+}
+
+.answer-form textarea:focus {
+  outline: none;
+  border-color: var(--accent);
+}
+
+.answer-form-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-submit-answer,
+.btn-cancel-answer {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-submit-answer {
+  background: var(--accent);
+  color: white;
+}
+
+.btn-submit-answer:hover:not(:disabled) {
+  background: #ff6b6b;
+}
+
+.btn-submit-answer:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-cancel-answer {
+  background: var(--border);
+  color: var(--text-primary);
+}
+
+.btn-cancel-answer:hover {
+  background: var(--bg-hover);
+}
+
+.btn-answer {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  margin-top: 8px;
+}
+
+.btn-answer:hover {
+  background: #ff6b6b;
+}
+
 @media (max-width: 768px) {
   .my-products-header {
     flex-direction: column;
@@ -281,5 +410,17 @@
   .btn-save,
   .btn-cancel {
     width: 100%;
+  }
+
+  .unanswered-questions-section {
+    padding: 16px;
+  }
+
+  .unanswered-questions-section h2 {
+    font-size: 16px;
+  }
+
+  .answer-form-buttons {
+    flex-direction: column;
   }
 }

@@ -320,5 +320,42 @@
     "endDate": "End",
     "statusActive": "Active",
     "statusInactive": "Inactive"
+  },
+  "productDetail": {
+    "reviewsSection": "Reviews",
+    "submitReview": "Write a Review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "commentPlaceholder": "Share your experience...",
+    "reviewError": "Error submitting review",
+    "reviewSubmitted": "Your review has been submitted successfully!",
+    "allReviews": "All Reviews",
+    "noReviews": "No reviews yet",
+    "reviewAlreadySubmitted": "You have already submitted a review for this product or you haven't purchased it",
+    "askQuestion": "Ask a Question",
+    "questionPlaceholder": "Type your question...",
+    "questionRequired": "Please enter a question",
+    "questionError": "Error submitting question",
+    "allQuestions": "Questions & Answers",
+    "answer": "Answer",
+    "answerPending": "Awaiting seller response..."
+  },
+  "myProducts": {
+    "updateSuccess": "Product updated successfully",
+    "loadError": "Error loading products",
+    "unansweredQuestions": "Unanswered Questions",
+    "answerQuestion": "Answer",
+    "answerPlaceholder": "Type your answer...",
+    "answerRequired": "Please enter an answer",
+    "submitAnswer": "Submit Answer",
+    "answerError": "Error submitting answer",
+    "cancel": "Cancel"
+  },
+  "myCoupons": {
+    "discount": "discount",
+    "loadError": "Error loading coupons"
+  },
+  "common": {
+    "retry": "Retry"
   }
 }

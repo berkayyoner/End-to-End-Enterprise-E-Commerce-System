@@ -320,5 +320,42 @@
     "endDate": "Bitiş",
     "statusActive": "Aktif",
     "statusInactive": "İnaktif"
+  },
+  "productDetail": {
+    "reviewsSection": "Yorumlar",
+    "submitReview": "Yorum Yazın",
+    "rating": "Puan",
+    "comment": "Yorum",
+    "commentPlaceholder": "Deneyiminizi paylaşın...",
+    "reviewError": "Yorum yazarken hata oluştu",
+    "reviewSubmitted": "Yorumunuz başarıyla kaydedildi!",
+    "allReviews": "Tüm Yorumlar",
+    "noReviews": "Henüz yorum yok",
+    "reviewAlreadySubmitted": "Bu ürün için zaten bir yorum yazdınız veya bu ürünü satın almadınız",
+    "askQuestion": "Soru Sorun",
+    "questionPlaceholder": "Sorunuzu yazın...",
+    "questionRequired": "Lütfen bir soru yazın",
+    "questionError": "Soru yazarken hata oluştu",
+    "allQuestions": "Sorular ve Cevaplar",
+    "answer": "Cevap",
+    "answerPending": "Satıcı yanıt beklemede..."
+  },
+  "myProducts": {
+    "updateSuccess": "Ürün başarıyla güncellendi",
+    "loadError": "Ürünler yüklenirken hata oluştu",
+    "unansweredQuestions": "Cevaplanmayan Sorular",
+    "answerQuestion": "Cevap Ver",
+    "answerPlaceholder": "Cevabınızı yazın...",
+    "answerRequired": "Lütfen bir cevap yazın",
+    "submitAnswer": "Cevap Gönder",
+    "answerError": "Cevap gönderilirken hata oluştu",
+    "cancel": "İptal"
+  },
+  "myCoupons": {
+    "discount": "indirim",
+    "loadError": "Kuponlar yüklenirken hata oluştu"
+  },
+  "common": {
+    "retry": "Tekrar Dene"
   }
 }
