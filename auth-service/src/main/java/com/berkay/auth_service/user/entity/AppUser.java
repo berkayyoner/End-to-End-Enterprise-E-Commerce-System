@@ -37,6 +37,12 @@ public class AppUser extends BaseEntity {
 	@Column(name = "seller", nullable = false)
 	private boolean seller = false;
 
+	@Column(name = "store_name", length = 255)
+	private String storeName;
+
+	@Column(name = "follower_count", nullable = false)
+	private int followerCount = 0;
+
 	protected AppUser() {
 	}
 
@@ -82,5 +88,21 @@ public class AppUser extends BaseEntity {
 
 	public void approveAsSeller() {
 		this.seller = true;
+	}
+
+	public String getStoreName() {
+		return storeName;
+	}
+
+	public void setStoreName(String storeName) {
+		this.storeName = storeName;
+	}
+
+	public int getFollowerCount() {
+		return followerCount;
+	}
+
+	public void setFollowerCount(int followerCount) {
+		this.followerCount = followerCount;
 	}
 }

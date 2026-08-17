@@ -57,6 +57,13 @@ public class ProductController {
 		return productDetailService.getProductDetail(id, locale);
 	}
 
+	@GetMapping("/by-seller/{sellerId}")
+	public List<ProductResponse> listBySeller(
+			@PathVariable Long sellerId,
+			@RequestParam(name = "locale", defaultValue = "tr") String locale) {
+		return productService.listBySeller(sellerId, locale);
+	}
+
 	@PostMapping
 	public ResponseEntity<ProductResponse> create(
 			Authentication authentication,

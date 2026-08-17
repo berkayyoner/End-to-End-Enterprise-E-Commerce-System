@@ -87,6 +87,12 @@ export function ProductDetailPage() {
     navigate(`/products/${productId}`)
   }
 
+  const handleGoToMarket = () => {
+    if (product?.sellerId) {
+      navigate(`/sellers/${product.sellerId}`)
+    }
+  }
+
   const getProductName = (product) => {
     if (!product) return ''
     // Backend already provides translated name based on Accept-Language header
@@ -274,6 +280,9 @@ export function ProductDetailPage() {
             </button>
             <button className={`btn-follow-seller ${isFollowing ? 'following' : ''}`} onClick={handleFollowSeller}>
               {isFollowing ? t('productDetail.followingSeller') : t('productDetail.followSeller')}
+            </button>
+            <button className="btn-go-to-market" onClick={handleGoToMarket}>
+              🏪 {t('productDetail.goToMarket') || 'Go to Market'}
             </button>
           </div>
         </div>

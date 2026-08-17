@@ -10,6 +10,9 @@ import { IdVerificationPage } from './pages/auth/IdVerificationPage.jsx'
 import { SearchPage } from './pages/SearchPage.jsx'
 import { ProductDetailPage } from './pages/ProductDetailPage.jsx'
 import { ComingSoonPage } from './pages/ComingSoonPage.jsx'
+import { AddProductPage } from './pages/AddProductPage.jsx'
+import { MyProductsPage } from './pages/MyProductsPage.jsx'
+import { SellerProfilePage } from './pages/SellerProfilePage.jsx'
 
 function App() {
   return (
@@ -37,6 +40,23 @@ function App() {
             </RequireAuth>
           }
         />
+        <Route
+          path="/add-product"
+          element={
+            <RequireAuth>
+              <AddProductPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-products"
+          element={
+            <RequireAuth>
+              <MyProductsPage />
+            </RequireAuth>
+          }
+        />
+        <Route path="/sellers/:id" element={<SellerProfilePage />} />
       </Route>
     </Routes>
   )

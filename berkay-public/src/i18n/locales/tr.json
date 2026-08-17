@@ -148,6 +148,7 @@
     "addToBasket": "Sepete Ekle",
     "followSeller": "Satıcıyı Takip Et",
     "followingSeller": "Takip Ediliyor",
+    "goToMarket": "Satıcının Mağazası",
     "idVerificationRequired": "Bu işlemi yapmak için kimliğinizi doğrulamanız gerekir",
     "similarProducts": "Benzer Ürünler",
     "recommendedProducts": "Önerilen Ürünler",
@@ -157,5 +158,52 @@
     "popularPages": "Popüler Ürünler",
     "estimatedDelivery": "Tahmini Teslimat Süresi",
     "comingSoon": "Yakında"
+  },
+  "myStore": {
+    "title": "Mağazam",
+    "earnedMoney": "Kazanılan Para",
+    "myProducts": "Ürünlerim",
+    "addNewProduct": "Yeni Ürün Ekle"
+  },
+  "addProduct": {
+    "title": "Yeni Ürün Ekle",
+    "name": "Ürün Adı (Türkçe)",
+    "nameEn": "Ürün Adı (İngilizce)",
+    "shortDesc": "Kısa Açıklama (Türkçe)",
+    "shortDescEn": "Kısa Açıklama (İngilizce)",
+    "longDesc": "Detaylı Açıklama (Türkçe)",
+    "longDescEn": "Detaylı Açıklama (İngilizce)",
+    "price": "Fiyat",
+    "stock": "Stok",
+    "innerType": "Kategori",
+    "keyFeatures": "Öne Çıkan Özellikler",
+    "addFeature": "Özellik Ekle",
+    "photos": "Ürün Fotoğrafları",
+    "uploadPhotos": "Fotoğraf Yükle (En fazla 10)",
+    "maxPhotos": "En fazla 10 fotoğraf yükleyebilirsiniz",
+    "submit": "Ürünü Ekle",
+    "submitting": "Ekleniyor...",
+    "success": "Ürün başarıyla eklendi",
+    "error": "Ürün eklenirken hata oluştu"
+  },
+  "myProducts": {
+    "title": "Ürünlerim",
+    "empty": "Henüz ürün eklememişsiniz",
+    "addFirst": "Yeni ürün eklemek için başlayın",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "deleteConfirm": "Bu ürünü silmek istediğinize emin misiniz?",
+    "deleteSuccess": "Ürün başarıyla silindi",
+    "deleteError": "Ürün silinirken hata oluştu"
+  },
+  "sellerProfile": {
+    "storeName": "Mağaza Adı",
+    "followers": "Takipçi",
+    "followSeller": "Satıcıyı Takip Et",
+    "followingSeller": "Takip Ediliyor",
+    "products": "Satıcının Ürünleri",
+    "noProducts": "Bu satıcının ürünü bulunmuyor",
+    "qnaSection": "Satıcının Sorular ve Cevapları",
+    "noQna": "Henüz soru bulunmuyor"
   }
 }

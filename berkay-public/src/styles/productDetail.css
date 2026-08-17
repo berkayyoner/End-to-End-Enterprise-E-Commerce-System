@@ -359,7 +359,8 @@
 
 .btn-buy-now,
 .btn-add-basket,
-.btn-follow-seller {
+.btn-follow-seller,
+.btn-go-to-market {
   flex: 1;
   min-width: 140px;
   padding: 0.875rem 1.5rem;
@@ -416,6 +417,19 @@
   background: rgba(211, 47, 47, 0.1);
   color: var(--accent);
   border-color: var(--accent);
+}
+
+.btn-go-to-market {
+  background: transparent;
+  color: var(--text-primary);
+  border: 2px solid var(--border);
+  flex: 0.8;
+}
+
+.btn-go-to-market:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: rgba(211, 47, 47, 0.05);
 }
 
 .btn-disabled {

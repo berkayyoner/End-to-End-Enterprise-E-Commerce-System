@@ -148,6 +148,7 @@
     "addToBasket": "Add to Basket",
     "followSeller": "Follow Seller",
     "followingSeller": "Following",
+    "goToMarket": "Seller's Shop",
     "idVerificationRequired": "You need to verify your identity to perform this action",
     "similarProducts": "Similar Products",
     "recommendedProducts": "Recommended Products",
@@ -157,5 +158,52 @@
     "popularPages": "Popular Products",
     "estimatedDelivery": "Estimated Delivery Time",
     "comingSoon": "Coming Soon"
+  },
+  "myStore": {
+    "title": "My Store",
+    "earnedMoney": "Earned Money",
+    "myProducts": "My Products",
+    "addNewProduct": "Add New Product"
+  },
+  "addProduct": {
+    "title": "Add New Product",
+    "name": "Product Name (Turkish)",
+    "nameEn": "Product Name (English)",
+    "shortDesc": "Short Description (Turkish)",
+    "shortDescEn": "Short Description (English)",
+    "longDesc": "Long Description (Turkish)",
+    "longDescEn": "Long Description (English)",
+    "price": "Price",
+    "stock": "Stock",
+    "innerType": "Category",
+    "keyFeatures": "Key Features",
+    "addFeature": "Add Feature",
+    "photos": "Product Photos",
+    "uploadPhotos": "Upload Photos (Max 10)",
+    "maxPhotos": "You can upload a maximum of 10 photos",
+    "submit": "Add Product",
+    "submitting": "Adding...",
+    "success": "Product added successfully",
+    "error": "Error adding product"
+  },
+  "myProducts": {
+    "title": "My Products",
+    "empty": "You haven't added any products yet",
+    "addFirst": "Start by adding a new product",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "deleteSuccess": "Product deleted successfully",
+    "deleteError": "Error deleting product"
+  },
+  "sellerProfile": {
+    "storeName": "Store Name",
+    "followers": "Followers",
+    "followSeller": "Follow Seller",
+    "followingSeller": "Following",
+    "products": "Seller's Products",
+    "noProducts": "This seller has no products",
+    "qnaSection": "Seller's Q&A",
+    "noQna": "No questions yet"
   }
 }

@@ -66,7 +66,8 @@ public class SecurityConfig {
 
 		http
 				.securityMatcher("/register", "/login", "/logout", "/csrf-token", "/me", "/id-verifications",
-						"/id-verifications/me", "/seller-applications", "/seller-applications/me")
+						"/id-verifications/me", "/seller-applications", "/seller-applications/me", "/sellers/me",
+						"/sellers/me/store-name")
 				.authenticationProvider(provider)
 				.csrf(csrf -> csrf
 						.csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
@@ -76,7 +77,7 @@ public class SecurityConfig {
 						.ignoringRequestMatchers("/register"))
 				.exceptionHandling(exceptions -> exceptions.authenticationEntryPoint(jsonAuthenticationEntryPoint()))
 				.authorizeHttpRequests(authorize -> authorize
-						.requestMatchers("/register", "/csrf-token").permitAll()
+						.requestMatchers("/register", "/csrf-token", "/sellers/*/public-profile").permitAll()
 						.anyRequest().authenticated())
 				.formLogin(form -> form
 						.loginProcessingUrl("/login")

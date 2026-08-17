@@ -2,11 +2,12 @@ import { Link, Outlet } from 'react-router-dom'
 import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth.js'
 import { CategoryNav } from './CategoryNav.jsx'
+import { MyStoreMenu } from './MyStoreMenu.jsx'
 import './Layout.css'
 
 export function Layout() {
   const { t, language, changeLanguage, supportedLanguages } = useTranslation()
-  const { isAuthenticated, status, logout } = useAuth()
+  const { isAuthenticated, status, logout, user } = useAuth()
 
   return (
     <>
@@ -20,6 +21,7 @@ export function Layout() {
 
           {status === 'loading' ? null : isAuthenticated ? (
             <>
+              {user?.seller && <MyStoreMenu />}
               <Link to="/profile">{t('common.profile')}</Link>
               <button type="button" className="link-button" onClick={logout}>
                 {t('common.logout')}
