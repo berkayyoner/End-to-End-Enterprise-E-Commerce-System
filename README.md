@@ -62,7 +62,7 @@ For createing all of the containers in your Docker application at once:
 > CMD: `cd [project directory]` <br />
 > CMD: `docker-compose up` <br />
 
-## How To Get Project Builts
+## How To Get Project Builds
 > CMD: `cd [project directory]` <br />
 > CMD: `mvnv` <br />
 
