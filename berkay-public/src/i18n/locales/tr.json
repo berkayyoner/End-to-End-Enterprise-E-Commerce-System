@@ -1,0 +1,361 @@
+{
+  "common": {
+    "appName": "Berkay",
+    "loading": "Yükleniyor...",
+    "language": "Dil",
+    "home": "Ana Sayfa",
+    "profile": "Hesabım",
+    "logout": "Çıkış Yap"
+  },
+  "home": {
+    "title": "Berkay'a Hoş Geldiniz",
+    "subtitle": "Türkiye'nin yeni nesil e-ticaret deneyimi.",
+    "comingSoon": "Mağaza çok yakında burada."
+  },
+  "nav": {
+    "login": "Giriş Yap",
+    "signUp": "Kayıt Ol",
+    "categories": "Kategoriler",
+    "showMore": "Tümünü Gör",
+    "myFavorites": "Favorilerim"
+  },
+  "auth": {
+    "signUp": {
+      "title": "Hesap oluştur",
+      "subtitle": "Alışveriş yapmak, satıcıları takip etmek ve siparişlerini takip etmek için kayıt ol.",
+      "firstName": "Ad",
+      "lastName": "Soyad",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "passwordHint": "En az 8 karakter.",
+      "phoneNumber": "Telefon numarası (opsiyonel)",
+      "submit": "Hesap oluştur",
+      "submitting": "Hesap oluşturuluyor...",
+      "haveAccount": "Zaten bir hesabın var mı?",
+      "loginLink": "Giriş yap"
+    },
+    "login": {
+      "title": "Tekrar hoş geldin",
+      "subtitle": "Berkay'a devam etmek için giriş yap.",
+      "email": "E-posta adresi",
+      "password": "Şifre",
+      "submit": "Giriş yap",
+      "submitting": "Giriş yapılıyor...",
+      "noAccount": "Hesabın yok mu?",
+      "signUpLink": "Kayıt ol"
+    }
+  },
+  "profile": {
+    "title": "Hesabım",
+    "subtitle": "Kimlik doğrulama ve satıcı durumunu yönet.",
+    "memberSince": "Üyelik tarihi: {date}",
+    "accountInfo": "Hesap bilgileri",
+    "email": "E-posta",
+    "phone": "Telefon numarası",
+    "accountType": "Hesap türü",
+    "typeSeller": "Satıcı",
+    "typeCustomer": "Müşteri",
+    "idVerification": {
+      "title": "Kimlik doğrulama",
+      "verifiedNotice": "Kimliğiniz doğrulandı.",
+      "notVerifiedNotice": "Berkay'da alışveriş yapabilmek veya satış yapabilmek için önce kimliğinizi doğrulamanız gerekir.",
+      "verifyButton": "Kimliğimi doğrula",
+      "pendingNotice": "Kimlik doğrulama başvurunuz incelemede.",
+      "rejectedNotice": "Kimlik doğrulama başvurunuz reddedildi: {reason}",
+      "tryAgain": "Tekrar başvur"
+    },
+    "seller": {
+      "title": "Satıcı ol",
+      "alreadySellerNotice": "Berkay'da onaylı bir satıcısınız.",
+      "mustVerifyNotice": "Satıcı başvurusu yapabilmek için önce kimliğinizi doğrulayın.",
+      "applyPrompt": "Berkay'da satışa başlamak için şirketiniz hakkında bilgi verin.",
+      "companyName": "Şirket adı",
+      "taxId": "Vergi numarası",
+      "companyPhone": "Şirket telefonu",
+      "companyAddress": "Şirket adresi",
+      "submit": "Başvuruyu gönder",
+      "submitting": "Gönderiliyor...",
+      "pendingNotice": "Satıcı başvurunuz incelemede.",
+      "rejectedNotice": "Satıcı başvurunuz reddedildi: {reason}",
+      "tryAgain": "Tekrar başvur"
+    }
+  },
+  "idVerification": {
+    "title": "Kimliğini doğrula",
+    "subtitle": "Bu bir demo amaçlı sahte doğrulamadır - herhangi bir kimlik numarası ve iki fotoğraf kabul edilir.",
+    "idNumber": "Kimlik numarası",
+    "frontPhoto": "Kimliğin ön yüzü",
+    "backPhoto": "Kimliğin arka yüzü ve yüzünüz",
+    "submit": "İncelemeye gönder",
+    "submitting": "Gönderiliyor...",
+    "missingPhotos": "Lütfen her iki fotoğrafı da seçin.",
+    "alreadyVerifiedNotice": "Zaten doğrulanmış durumdasınız.",
+    "pendingNotice": "İncelemede olan bir doğrulama başvurunuz zaten var.",
+    "backToProfile": "Hesabıma dön"
+  },
+  "status": {
+    "pending": "İncelemede",
+    "approved": "Onaylandı",
+    "rejected": "Reddedildi"
+  },
+  "search": {
+    "placeholder": "Arama sayfası yakında burada olacak.",
+    "title": "Arama Sonuçları",
+    "noResults": "Aradığınız ürün bulunamadı.",
+    "tryDifferentFilters": "Farklı filtreler denemeyi deneyin.",
+    "loading": "Ürünler yükleniyor...",
+    "error": "Arama sırasında bir hata oluştu.",
+    "sort": {
+      "label": "Sırala",
+      "suggestedRanking": "Önerilen Sıralama",
+      "mostExpensive": "En Pahalı",
+      "cheapest": "En Ucuz",
+      "newest": "En Yeni",
+      "mostSelling": "En Çok Satan",
+      "mostFavorited": "En Çok Beğenilen",
+      "mostRated": "En Çok Puan Alan"
+    },
+    "filter": {
+      "title": "Filtreler",
+      "categories": "Kategoriler",
+      "mainCategory": "Ana Kategori",
+      "subType": "Alt Tip",
+      "innerType": "İç Tip",
+      "priceRange": "Fiyat Aralığı",
+      "minPrice": "En Düşük Fiyat",
+      "maxPrice": "En Yüksek Fiyat",
+      "apply": "Uygula"
+    }
+  },
+  "productDetail": {
+    "notFound": "Ürün bulunamadı",
+    "loadingError": "Ürün yüklenirken hata oluştu",
+    "price": "Fiyat",
+    "stock": "Stok",
+    "stockLabel": "Stokta",
+    "outOfStock": "Stok Yok",
+    "description": "Açıklama",
+    "showMore": "Daha Fazla Göster",
+    "showLess": "Daha Az Göster",
+    "keyFeatures": "Öne Çıkan Özellikler",
+    "ratings": "Puanlar",
+    "noRatings": "Henüz puan yok",
+    "ratingCount": "{count} puan",
+    "qnaSection": "Sorular ve Cevaplar",
+    "noQna": "Henüz soru bulunmuyor",
+    "campaignsSection": "Kampanyalar",
+    "noCampaigns": "Aktif kampanya bulunmuyor",
+    "buyNow": "Hemen Satın Al",
+    "addToBasket": "Sepete Ekle",
+    "followSeller": "Satıcıyı Takip Et",
+    "followingSeller": "Takip Ediliyor",
+    "goToMarket": "Satıcının Mağazası",
+    "idVerificationRequired": "Bu işlemi yapmak için kimliğinizi doğrulamanız gerekir",
+    "similarProducts": "Benzer Ürünler",
+    "recommendedProducts": "Önerilen Ürünler",
+    "boughtTogether": "Birlikte Satın Alınanlar",
+    "mightInterest": "Sizi İlgilendirebilecek Ürünler",
+    "popularBrands": "Popüler Satıcılar",
+    "popularPages": "Popüler Ürünler",
+    "estimatedDelivery": "Tahmini Teslimat Süresi",
+    "comingSoon": "Yakında"
+  },
+  "myStore": {
+    "title": "Mağazam",
+    "earnedMoney": "Kazanılan Para",
+    "myProducts": "Ürünlerim",
+    "addNewProduct": "Yeni Ürün Ekle"
+  },
+  "addProduct": {
+    "title": "Yeni Ürün Ekle",
+    "name": "Ürün Adı (Türkçe)",
+    "nameEn": "Ürün Adı (İngilizce)",
+    "shortDesc": "Kısa Açıklama (Türkçe)",
+    "shortDescEn": "Kısa Açıklama (İngilizce)",
+    "longDesc": "Detaylı Açıklama (Türkçe)",
+    "longDescEn": "Detaylı Açıklama (İngilizce)",
+    "price": "Fiyat",
+    "stock": "Stok",
+    "innerType": "Kategori",
+    "keyFeatures": "Öne Çıkan Özellikler",
+    "addFeature": "Özellik Ekle",
+    "photos": "Ürün Fotoğrafları",
+    "uploadPhotos": "Fotoğraf Yükle (En fazla 10)",
+    "maxPhotos": "En fazla 10 fotoğraf yükleyebilirsiniz",
+    "submit": "Ürünü Ekle",
+    "submitting": "Ekleniyor...",
+    "success": "Ürün başarıyla eklendi",
+    "error": "Ürün eklenirken hata oluştu"
+  },
+  "myProducts": {
+    "title": "Ürünlerim",
+    "empty": "Henüz ürün eklememişsiniz",
+    "addFirst": "Yeni ürün eklemek için başlayın",
+    "edit": "Düzenle",
+    "delete": "Sil",
+    "deleteConfirm": "Bu ürünü silmek istediğinize emin misiniz?",
+    "deleteSuccess": "Ürün başarıyla silindi",
+    "deleteError": "Ürün silinirken hata oluştu"
+  },
+  "sellerProfile": {
+    "storeName": "Mağaza Adı",
+    "followers": "Takipçi",
+    "followSeller": "Satıcıyı Takip Et",
+    "followingSeller": "Takip Ediliyor",
+    "products": "Satıcının Ürünleri",
+    "noProducts": "Bu satıcının ürünü bulunmuyor",
+    "qnaSection": "Satıcının Sorular ve Cevapları",
+    "noQna": "Henüz soru bulunmuyor"
+  },
+  "myAccount": {
+    "title": "Hesabım",
+    "myOrders": "Tüm Siparişlerim",
+    "myReviews": "Yorumlarım",
+    "myCoupons": "İndirim Kuponlarım",
+    "sellerMessages": "Satıcı Mesajları",
+    "myUserInfo": "Kullanıcı Bilgilerim"
+  },
+  "basket": {
+    "title": "Sepetim",
+    "empty": "Sepetiniz boş",
+    "addItems": "Alışverişe başlamak için ürün ekleyin",
+    "items": "Ürün",
+    "subtotal": "Ara Toplam",
+    "total": "Toplam",
+    "checkout": "Ödemeye Devam Et",
+    "continueShopping": "Alışverişe Devam Et",
+    "quantity": "Miktar",
+    "price": "Fiyat",
+    "remove": "Kaldır",
+    "update": "Güncelle",
+    "removeConfirm": "Bu ürünü sepetten kaldırmak istediğinize emin misiniz?"
+  },
+  "checkout": {
+    "title": "Ödeme",
+    "paymentInfo": "Ödeme Bilgileri",
+    "cardNumber": "Kart Numarası",
+    "expiryMonth": "Ay",
+    "expiryYear": "Yıl",
+    "cvv": "CVV",
+    "cardHolderName": "Kart Sahibinin Adı",
+    "saveCard": "Gelecek alışverişlerde bu kartı kaydet",
+    "orderSummary": "Sipariş Özeti",
+    "coupon": "Kupon Kodu (İsteğe bağlı)",
+    "subtotal": "Ara Toplam",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "placeOrder": "Siparişi Onayla",
+    "processing": "İşlem yapılıyor...",
+    "success": "Siparişiniz başarıyla oluşturuldu",
+    "error": "Ödeme sırasında hata oluştu",
+    "backToBasket": "Sepete Dön",
+    "autofilled": "Kayıtlı kartınız otomatik olarak dolduruldu"
+  },
+  "myOrders": {
+    "title": "Siparişlerim",
+    "empty": "Henüz siparişiniz bulunmuyor",
+    "startShopping": "Alışverişe başlayın",
+    "orderNumber": "Sipariş No",
+    "date": "Tarih",
+    "total": "Toplam",
+    "status": "Durum",
+    "viewDetails": "Detayları Gör",
+    "orderStatus": {
+      "pending": "Beklemede",
+      "paid": "Ödendi"
+    }
+  },
+  "orderDetails": {
+    "title": "Sipariş Detayları",
+    "orderId": "Sipariş No",
+    "date": "Sipariş Tarihi",
+    "status": "Durum",
+    "total": "Toplam",
+    "items": "Ürünler",
+    "quantity": "Miktar",
+    "unitPrice": "Birim Fiyatı",
+    "backToOrders": "Siparişlere Dön"
+  },
+  "myReviews": {
+    "title": "Yorumlarım",
+    "empty": "Henüz yorum yazmadınız",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "myCoupons": {
+    "title": "İndirim Kuponlarım",
+    "empty": "Henüz kuponunuz bulunmuyor",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "sellerMessages": {
+    "title": "Satıcı Mesajları",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "myUserInfo": {
+    "title": "Kullanıcı Bilgilerim",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "memberSince": "Üyelik Tarihi",
+    "accountType": "Hesap Türü",
+    "idVerification": "Kimlik Doğrulama",
+    "verified": "Doğrulandı",
+    "notVerified": "Doğrulanmadı",
+    "verifyNow": "Şimdi Doğrula",
+    "backToAccount": "Hesaba Dön"
+  },
+  "myFavorites": {
+    "title": "Favorilerim",
+    "empty": "Henüz hiç favori ürün eklemediniz",
+    "continueShopping": "Alışverişe Devam Et",
+    "itemsCount": "ürün",
+    "remove": "Favorilerden Kaldır",
+    "loadingError": "Favoriler yüklenirken hata oluştu"
+  },
+  "campaigns": {
+    "title": "Aktif Kampanyalar",
+    "subtitle": "En son promosyonları ve öne çıkan ürünleri keşfedin",
+    "empty": "Şu anda aktif kampanya yok",
+    "browseCatalog": "Kataloğu Gözat",
+    "loadingError": "Kampanyalar yüklenirken hata oluştu",
+    "startDate": "Başlangıç",
+    "endDate": "Bitiş",
+    "statusActive": "Aktif",
+    "statusInactive": "İnaktif"
+  },
+  "productDetail": {
+    "reviewsSection": "Yorumlar",
+    "submitReview": "Yorum Yazın",
+    "rating": "Puan",
+    "comment": "Yorum",
+    "commentPlaceholder": "Deneyiminizi paylaşın...",
+    "reviewError": "Yorum yazarken hata oluştu",
+    "reviewSubmitted": "Yorumunuz başarıyla kaydedildi!",
+    "allReviews": "Tüm Yorumlar",
+    "noReviews": "Henüz yorum yok",
+    "reviewAlreadySubmitted": "Bu ürün için zaten bir yorum yazdınız veya bu ürünü satın almadınız",
+    "askQuestion": "Soru Sorun",
+    "questionPlaceholder": "Sorunuzu yazın...",
+    "questionRequired": "Lütfen bir soru yazın",
+    "questionError": "Soru yazarken hata oluştu",
+    "allQuestions": "Sorular ve Cevaplar",
+    "answer": "Cevap",
+    "answerPending": "Satıcı yanıt beklemede..."
+  },
+  "myProducts": {
+    "updateSuccess": "Ürün başarıyla güncellendi",
+    "loadError": "Ürünler yüklenirken hata oluştu",
+    "unansweredQuestions": "Cevaplanmayan Sorular",
+    "answerQuestion": "Cevap Ver",
+    "answerPlaceholder": "Cevabınızı yazın...",
+    "answerRequired": "Lütfen bir cevap yazın",
+    "submitAnswer": "Cevap Gönder",
+    "answerError": "Cevap gönderilirken hata oluştu",
+    "cancel": "İptal"
+  },
+  "myCoupons": {
+    "discount": "indirim",
+    "loadError": "Kuponlar yüklenirken hata oluştu"
+  },
+  "common": {
+    "retry": "Tekrar Dene"
+  }
+}

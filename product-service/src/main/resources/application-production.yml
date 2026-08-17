@@ -1,0 +1,37 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: ${REDIS_PORT:6379}
+  elasticsearch:
+    uris: ${ELASTICSEARCH_URIS}
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
+
+order-service:
+  url: ${ORDER_SERVICE_URI}
+
+logging:
+  level:
+    root: WARN
+    com.berkay: INFO

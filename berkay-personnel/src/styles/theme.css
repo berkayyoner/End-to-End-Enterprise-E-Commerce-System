@@ -1,0 +1,36 @@
+/* Light theme (default) */
+[data-theme="light"],
+:root:not([data-theme]) {
+  --color-accent: #d32f2f;
+  --color-accent-light: rgba(211, 47, 47, 0.1);
+  --color-accent-border: rgba(211, 47, 47, 0.5);
+
+  --text: #6b6375;
+  --text-h: #08060d;
+  --bg: #fff;
+  --border: #e5e4e7;
+  --code-bg: #f4f3ec;
+  --accent: var(--color-accent);
+  --accent-bg: var(--color-accent-light);
+  --accent-border: var(--color-accent-border);
+  --social-bg: rgba(244, 243, 236, 0.5);
+  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+}
+
+/* Dark theme */
+[data-theme="dark"] {
+  --color-accent: #ff6b6b;
+  --color-accent-light: rgba(255, 107, 107, 0.15);
+  --color-accent-border: rgba(255, 107, 107, 0.5);
+
+  --text: #9ca3af;
+  --text-h: #f3f4f6;
+  --bg: #16171d;
+  --border: #2e303a;
+  --code-bg: #1f2028;
+  --accent: var(--color-accent);
+  --accent-bg: var(--color-accent-light);
+  --accent-border: var(--color-accent-border);
+  --social-bg: rgba(47, 48, 58, 0.5);
+  --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
+}

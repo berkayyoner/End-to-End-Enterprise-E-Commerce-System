@@ -1,0 +1,28 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    open-in-view: false
+    show-sql: false
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI}
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
+
+logging:
+  level:
+    root: WARN
+    com.berkay: INFO

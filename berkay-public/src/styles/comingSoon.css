@@ -1,0 +1,78 @@
+/* Coming Soon Page Styles */
+
+.coming-soon-container {
+  width: 100%;
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.coming-soon-content {
+  text-align: center;
+  padding: 3rem 2rem;
+  background: var(--bg-secondary);
+  border: 2px solid var(--border);
+  border-radius: 12px;
+  max-width: 500px;
+}
+
+.coming-soon-icon {
+  font-size: 4rem;
+  margin-bottom: 1.5rem;
+}
+
+.coming-soon-content h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin: 0 0 1rem 0;
+}
+
+.coming-soon-content p {
+  font-size: 1rem;
+  color: var(--text-secondary);
+  margin: 0 0 2rem 0;
+  line-height: 1.6;
+}
+
+.back-button {
+  padding: 0.875rem 2rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.back-button:hover {
+  background: var(--accent-hover);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(211, 47, 47, 0.3);
+}
+
+@media (max-width: 768px) {
+  .coming-soon-container {
+    min-height: 300px;
+    padding: 1.5rem 1rem;
+  }
+
+  .coming-soon-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .coming-soon-icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+  }
+
+  .coming-soon-content h1 {
+    font-size: 1.5rem;
+  }
+}

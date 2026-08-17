@@ -1,0 +1,18 @@
+spring:
+  config:
+    import: "configserver:${CONFIG_SERVER_URI}"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_URI}
+
+berkay:
+  cors:
+    public-allowed-origins: ${PUBLIC_ALLOWED_ORIGINS}
+    personnel-allowed-origins: ${PERSONNEL_ALLOWED_ORIGINS}
+
+logging:
+  level:
+    root: WARN
+    com.berkay: INFO

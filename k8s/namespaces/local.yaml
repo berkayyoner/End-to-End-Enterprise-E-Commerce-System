@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: berkay-local
+  labels:
+    app.kubernetes.io/part-of: berkay
+    environment: local

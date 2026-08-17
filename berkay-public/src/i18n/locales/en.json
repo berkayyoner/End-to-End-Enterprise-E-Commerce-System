@@ -1,0 +1,361 @@
+{
+  "common": {
+    "appName": "Berkay",
+    "loading": "Loading...",
+    "language": "Language",
+    "home": "Home",
+    "profile": "Profile",
+    "logout": "Log out"
+  },
+  "home": {
+    "title": "Welcome to Berkay",
+    "subtitle": "Turkey's next-generation e-commerce experience.",
+    "comingSoon": "The storefront is coming soon."
+  },
+  "nav": {
+    "login": "Log in",
+    "signUp": "Sign up",
+    "categories": "Categories",
+    "showMore": "Show More",
+    "myFavorites": "My Favorites"
+  },
+  "auth": {
+    "signUp": {
+      "title": "Create your account",
+      "subtitle": "Sign up to shop, follow sellers and track your orders.",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email address",
+      "password": "Password",
+      "passwordHint": "At least 8 characters.",
+      "phoneNumber": "Phone number (optional)",
+      "submit": "Create account",
+      "submitting": "Creating account...",
+      "haveAccount": "Already have an account?",
+      "loginLink": "Log in"
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Log in to continue to Berkay.",
+      "email": "Email address",
+      "password": "Password",
+      "submit": "Log in",
+      "submitting": "Logging in...",
+      "noAccount": "Don't have an account?",
+      "signUpLink": "Sign up"
+    }
+  },
+  "profile": {
+    "title": "My account",
+    "subtitle": "Manage your identity verification and seller status.",
+    "memberSince": "Member since {date}",
+    "accountInfo": "Account information",
+    "email": "Email",
+    "phone": "Phone number",
+    "accountType": "Account type",
+    "typeSeller": "Seller",
+    "typeCustomer": "Customer",
+    "idVerification": {
+      "title": "Identity verification",
+      "verifiedNotice": "Your identity has been verified.",
+      "notVerifiedNotice": "You need to verify your identity before you can buy or sell on Berkay.",
+      "verifyButton": "Verify my identity",
+      "pendingNotice": "Your identity verification is pending review.",
+      "rejectedNotice": "Your identity verification was rejected: {reason}",
+      "tryAgain": "Submit again"
+    },
+    "seller": {
+      "title": "Become a seller",
+      "alreadySellerNotice": "You are already an approved seller on Berkay.",
+      "mustVerifyNotice": "Verify your identity first to apply for a seller account.",
+      "applyPrompt": "Tell us about your company to start selling on Berkay.",
+      "companyName": "Company name",
+      "taxId": "Tax ID",
+      "companyPhone": "Company phone",
+      "companyAddress": "Company address",
+      "submit": "Submit application",
+      "submitting": "Submitting...",
+      "pendingNotice": "Your seller application is pending review.",
+      "rejectedNotice": "Your seller application was rejected: {reason}",
+      "tryAgain": "Apply again"
+    }
+  },
+  "idVerification": {
+    "title": "Verify your identity",
+    "subtitle": "This is a dummy verification for demo purposes - any ID number and two photos are accepted.",
+    "idNumber": "ID number",
+    "frontPhoto": "Front of ID",
+    "backPhoto": "Back of ID with your face",
+    "submit": "Submit for review",
+    "submitting": "Submitting...",
+    "missingPhotos": "Please select both photos.",
+    "alreadyVerifiedNotice": "You are already verified.",
+    "pendingNotice": "You already have a verification pending review.",
+    "backToProfile": "Back to my account"
+  },
+  "status": {
+    "pending": "Pending",
+    "approved": "Approved",
+    "rejected": "Rejected"
+  },
+  "search": {
+    "placeholder": "Search page coming soon.",
+    "title": "Search Results",
+    "noResults": "No products found.",
+    "tryDifferentFilters": "Try different filters.",
+    "loading": "Loading products...",
+    "error": "An error occurred while searching.",
+    "sort": {
+      "label": "Sort by",
+      "suggestedRanking": "Suggested Ranking",
+      "mostExpensive": "The Most Expensive",
+      "cheapest": "The Cheapest",
+      "newest": "Newest",
+      "mostSelling": "The Most Selling",
+      "mostFavorited": "The Most Favorited",
+      "mostRated": "The Most Rated"
+    },
+    "filter": {
+      "title": "Filters",
+      "categories": "Categories",
+      "mainCategory": "Main Category",
+      "subType": "Sub Type",
+      "innerType": "Inner Type",
+      "priceRange": "Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "apply": "Apply"
+    }
+  },
+  "productDetail": {
+    "notFound": "Product not found",
+    "loadingError": "Failed to load product",
+    "price": "Price",
+    "stock": "Stock",
+    "stockLabel": "In Stock",
+    "outOfStock": "Out of Stock",
+    "description": "Description",
+    "showMore": "Show More",
+    "showLess": "Show Less",
+    "keyFeatures": "Key Features",
+    "ratings": "Ratings",
+    "noRatings": "No ratings yet",
+    "ratingCount": "{count} ratings",
+    "qnaSection": "Questions & Answers",
+    "noQna": "No questions yet",
+    "campaignsSection": "Campaigns",
+    "noCampaigns": "No active campaigns",
+    "buyNow": "Buy Now",
+    "addToBasket": "Add to Basket",
+    "followSeller": "Follow Seller",
+    "followingSeller": "Following",
+    "goToMarket": "Seller's Shop",
+    "idVerificationRequired": "You need to verify your identity to perform this action",
+    "similarProducts": "Similar Products",
+    "recommendedProducts": "Recommended Products",
+    "boughtTogether": "Bought Together",
+    "mightInterest": "You Might Also Like",
+    "popularBrands": "Popular Sellers",
+    "popularPages": "Popular Products",
+    "estimatedDelivery": "Estimated Delivery Time",
+    "comingSoon": "Coming Soon"
+  },
+  "myStore": {
+    "title": "My Store",
+    "earnedMoney": "Earned Money",
+    "myProducts": "My Products",
+    "addNewProduct": "Add New Product"
+  },
+  "addProduct": {
+    "title": "Add New Product",
+    "name": "Product Name (Turkish)",
+    "nameEn": "Product Name (English)",
+    "shortDesc": "Short Description (Turkish)",
+    "shortDescEn": "Short Description (English)",
+    "longDesc": "Long Description (Turkish)",
+    "longDescEn": "Long Description (English)",
+    "price": "Price",
+    "stock": "Stock",
+    "innerType": "Category",
+    "keyFeatures": "Key Features",
+    "addFeature": "Add Feature",
+    "photos": "Product Photos",
+    "uploadPhotos": "Upload Photos (Max 10)",
+    "maxPhotos": "You can upload a maximum of 10 photos",
+    "submit": "Add Product",
+    "submitting": "Adding...",
+    "success": "Product added successfully",
+    "error": "Error adding product"
+  },
+  "myProducts": {
+    "title": "My Products",
+    "empty": "You haven't added any products yet",
+    "addFirst": "Start by adding a new product",
+    "edit": "Edit",
+    "delete": "Delete",
+    "deleteConfirm": "Are you sure you want to delete this product?",
+    "deleteSuccess": "Product deleted successfully",
+    "deleteError": "Error deleting product"
+  },
+  "sellerProfile": {
+    "storeName": "Store Name",
+    "followers": "Followers",
+    "followSeller": "Follow Seller",
+    "followingSeller": "Following",
+    "products": "Seller's Products",
+    "noProducts": "This seller has no products",
+    "qnaSection": "Seller's Q&A",
+    "noQna": "No questions yet"
+  },
+  "myAccount": {
+    "title": "My Account",
+    "myOrders": "All My Orders",
+    "myReviews": "My Reviews",
+    "myCoupons": "My Discount Coupons",
+    "sellerMessages": "Seller Messages",
+    "myUserInfo": "My User Information"
+  },
+  "basket": {
+    "title": "My Basket",
+    "empty": "Your basket is empty",
+    "addItems": "Add items to your basket to get started",
+    "items": "Items",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "quantity": "Quantity",
+    "price": "Price",
+    "remove": "Remove",
+    "update": "Update",
+    "removeConfirm": "Are you sure you want to remove this item from your basket?"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "paymentInfo": "Payment Information",
+    "cardNumber": "Card Number",
+    "expiryMonth": "Month",
+    "expiryYear": "Year",
+    "cvv": "CVV",
+    "cardHolderName": "Card Holder Name",
+    "saveCard": "Save this card for future purchases",
+    "orderSummary": "Order Summary",
+    "coupon": "Coupon Code (Optional)",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "success": "Your order was placed successfully",
+    "error": "An error occurred during payment",
+    "backToBasket": "Back to Basket",
+    "autofilled": "Your saved card has been automatically filled"
+  },
+  "myOrders": {
+    "title": "My Orders",
+    "empty": "You haven't placed any orders yet",
+    "startShopping": "Start shopping",
+    "orderNumber": "Order #",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "viewDetails": "View Details",
+    "orderStatus": {
+      "pending": "Pending",
+      "paid": "Paid"
+    }
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order #",
+    "date": "Order Date",
+    "status": "Status",
+    "total": "Total",
+    "items": "Items",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "backToOrders": "Back to Orders"
+  },
+  "myReviews": {
+    "title": "My Reviews",
+    "empty": "You haven't written any reviews yet",
+    "comingSoon": "This feature will be available soon"
+  },
+  "myCoupons": {
+    "title": "My Discount Coupons",
+    "empty": "You don't have any coupons yet",
+    "comingSoon": "This feature will be available soon"
+  },
+  "sellerMessages": {
+    "title": "Seller Messages",
+    "comingSoon": "This feature will be available soon"
+  },
+  "myUserInfo": {
+    "title": "My User Information",
+    "email": "Email",
+    "phone": "Phone",
+    "memberSince": "Member Since",
+    "accountType": "Account Type",
+    "idVerification": "Identity Verification",
+    "verified": "Verified",
+    "notVerified": "Not Verified",
+    "verifyNow": "Verify Now",
+    "backToAccount": "Back to Account"
+  },
+  "myFavorites": {
+    "title": "My Favorites",
+    "empty": "You haven't added any favorite products yet",
+    "continueShopping": "Continue Shopping",
+    "itemsCount": "items",
+    "remove": "Remove from Favorites",
+    "loadingError": "Error loading favorites"
+  },
+  "campaigns": {
+    "title": "Active Campaigns",
+    "subtitle": "Discover our latest promotions and featured products",
+    "empty": "No active campaigns at the moment",
+    "browseCatalog": "Browse Catalog",
+    "loadingError": "Error loading campaigns",
+    "startDate": "Start",
+    "endDate": "End",
+    "statusActive": "Active",
+    "statusInactive": "Inactive"
+  },
+  "productDetail": {
+    "reviewsSection": "Reviews",
+    "submitReview": "Write a Review",
+    "rating": "Rating",
+    "comment": "Comment",
+    "commentPlaceholder": "Share your experience...",
+    "reviewError": "Error submitting review",
+    "reviewSubmitted": "Your review has been submitted successfully!",
+    "allReviews": "All Reviews",
+    "noReviews": "No reviews yet",
+    "reviewAlreadySubmitted": "You have already submitted a review for this product or you haven't purchased it",
+    "askQuestion": "Ask a Question",
+    "questionPlaceholder": "Type your question...",
+    "questionRequired": "Please enter a question",
+    "questionError": "Error submitting question",
+    "allQuestions": "Questions & Answers",
+    "answer": "Answer",
+    "answerPending": "Awaiting seller response..."
+  },
+  "myProducts": {
+    "updateSuccess": "Product updated successfully",
+    "loadError": "Error loading products",
+    "unansweredQuestions": "Unanswered Questions",
+    "answerQuestion": "Answer",
+    "answerPlaceholder": "Type your answer...",
+    "answerRequired": "Please enter an answer",
+    "submitAnswer": "Submit Answer",
+    "answerError": "Error submitting answer",
+    "cancel": "Cancel"
+  },
+  "myCoupons": {
+    "discount": "discount",
+    "loadError": "Error loading coupons"
+  },
+  "common": {
+    "retry": "Retry"
+  }
+}

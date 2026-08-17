@@ -1,0 +1,38 @@
+spring:
+  datasource:
+    url: jdbc:oracle:thin:@localhost:1521/XEPDB1
+    username: berkay
+    password: "1234"
+    driver-class-name: oracle.jdbc.OracleDriver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    show-sql: true
+
+eureka:
+  instance:
+    hostname: localhost
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+
+berkay:
+  oauth2:
+    issuer-uri: http://localhost:8080/api/auth
+    public-client:
+      redirect-uris:
+        - http://localhost:5173/oauth2/callback
+        - http://localhost:4173/oauth2/callback
+    personnel-client:
+      redirect-uris:
+        - http://localhost:5174/oauth2/callback
+        - http://localhost:4174/oauth2/callback
+  personnel:
+    bootstrap:
+      email: admin@berkay.local
+      password: ChangeMe123!
+
+logging:
+  level:
+    org.hibernate.SQL: DEBUG

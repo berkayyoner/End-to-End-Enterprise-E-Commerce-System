@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: berkay-development
+  labels:
+    app.kubernetes.io/part-of: berkay
+    environment: development

@@ -1,0 +1,16 @@
+spring:
+  application:
+    name: api
+  profiles:
+    default: local
+  config:
+    import: "optional:configserver:${CONFIG_SERVER_URI:http://127.0.0.1:8888}"
+
+server:
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG
+    org.springframework.cloud.gateway: DEBUG

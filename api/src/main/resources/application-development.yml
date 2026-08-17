@@ -1,0 +1,22 @@
+spring:
+  config:
+    import: "optional:configserver:http://config-server:8888"
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://discovery-service:8761/eureka/
+
+berkay:
+  cors:
+    public-allowed-origins: "*"
+    # personnel-allowed-origins is centrally managed for this profile by config-server
+    # (config-repo/api-development.yml); this is only the fallback if it's unreachable.
+    personnel-allowed-origins:
+      - http://localhost:5173
+      - http://localhost:4174
+
+logging:
+  level:
+    root: INFO
+    com.berkay: DEBUG

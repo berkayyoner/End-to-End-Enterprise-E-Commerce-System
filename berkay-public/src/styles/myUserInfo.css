@@ -1,0 +1,99 @@
+.my-user-info-container {
+  max-width: 600px;
+  margin: 2rem auto;
+  padding: 0 1rem;
+}
+
+.my-user-info-container h1 {
+  font-size: 2rem;
+  margin-bottom: 2rem;
+  color: var(--text-primary);
+}
+
+.info-section {
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.info-row {
+  display: grid;
+  grid-template-columns: 150px 1fr;
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+  align-items: center;
+}
+
+.info-row:last-child {
+  border-bottom: none;
+}
+
+.info-row .label {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.info-row .value {
+  color: var(--text-primary);
+  word-break: break-word;
+}
+
+.verification-status.verified {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.verification-status.not-verified {
+  color: #d32f2f;
+  font-weight: 600;
+}
+
+.action-row {
+  padding: 1rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.btn-verify {
+  padding: 0.75rem 1.5rem;
+  background: var(--accent);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-verify:hover {
+  background: var(--accent-hover);
+}
+
+.page-actions {
+  text-align: center;
+}
+
+.btn-back {
+  padding: 0.75rem 1.5rem;
+  background: var(--bg-secondary);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.btn-back:hover {
+  background: var(--bg-hover);
+}
+
+@media (max-width: 768px) {
+  .info-row {
+    grid-template-columns: 1fr;
+    gap: 0.5rem;
+  }
+
+  .info-row .label::after {
+    content: ":";
+  }
+}
