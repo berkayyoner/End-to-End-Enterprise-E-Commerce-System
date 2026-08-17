@@ -60,7 +60,7 @@ CRITICAL RULE: Do NOT ask for confirmation, permission, or feedback between task
 ## How to get the project up
 For createing all of the containers in your Docker application at once:
 > CMD: `cd [project directory]` <br />
-> CMD: `docker-compose up` <br />
+> CMD: `docker-compose up --build` <br />
 
 ## How to get project builds
 > CMD: `cd [project directory]` <br />

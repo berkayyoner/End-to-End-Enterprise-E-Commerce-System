@@ -65,7 +65,7 @@ public class SecurityConfig {
 		provider.setPasswordEncoder(passwordEncoder);
 
 		http
-				.securityMatcher("/register", "/login", "/logout", "/csrf-token", "/me", "/id-verifications",
+				.securityMatcher("/register", "/api/auth/register", "/login", "/logout", "/csrf-token", "/me", "/id-verifications",
 						"/id-verifications/me", "/seller-applications", "/seller-applications/me", "/sellers/me",
 						"/sellers/me/store-name")
 				.authenticationProvider(provider)
