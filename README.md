@@ -50,7 +50,8 @@ or <br/>
     3. Search for, create, or modify ALL necessary files across the full-stack architecture to make this specific feature 100% production-ready.
     4. If you encounter compilation, dependency, or runtime errors during implementation, read the logs, debug the issue, and apply the fix autonomously without asking for my input.
     5. Once the feature is fully implemented and stable, append a specific, single-line summary of what you just built to DONE.md.
-    6. Immediately move to the next uncompleted task in ANALYSIS.md and repeat this process from step 1.
+    6. Use Haiku 4.5 as a background agent for coding to keep the process echonomic as possible.
+    7. Immediately move to the next uncompleted task in ANALYSIS.md and repeat this process from step 1.
 CRITICAL RULE: Do NOT ask for confirmation, permission, or feedback between tasks. Do NOT stop to explain what you are doing. Simply execute, update DONE.md, and proceed to the next task autonomously until the project is finished.
 
 ## How it works
