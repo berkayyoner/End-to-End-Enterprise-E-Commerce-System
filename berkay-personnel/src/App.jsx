@@ -6,6 +6,7 @@ import { HomePage } from './pages/HomePage.jsx'
 import { LoginPage } from './pages/auth/LoginPage.jsx'
 import { CategoriesPage } from './pages/CategoriesPage.jsx'
 import { CategoryChangeRequestsPage } from './pages/CategoryChangeRequestsPage.jsx'
+import { ProductsPage } from './pages/ProductsPage.jsx'
 
 function App() {
   return (
@@ -33,6 +34,14 @@ function App() {
           element={
             <RequireAuth>
               <CategoryChangeRequestsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/products"
+          element={
+            <RequireAuth>
+              <ProductsPage />
             </RequireAuth>
           }
         />

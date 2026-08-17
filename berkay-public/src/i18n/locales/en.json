@@ -98,6 +98,64 @@
     "rejected": "Rejected"
   },
   "search": {
-    "placeholder": "Search page coming soon."
+    "placeholder": "Search page coming soon.",
+    "title": "Search Results",
+    "noResults": "No products found.",
+    "tryDifferentFilters": "Try different filters.",
+    "loading": "Loading products...",
+    "error": "An error occurred while searching.",
+    "sort": {
+      "label": "Sort by",
+      "suggestedRanking": "Suggested Ranking",
+      "mostExpensive": "The Most Expensive",
+      "cheapest": "The Cheapest",
+      "newest": "Newest",
+      "mostSelling": "The Most Selling",
+      "mostFavorited": "The Most Favorited",
+      "mostRated": "The Most Rated"
+    },
+    "filter": {
+      "title": "Filters",
+      "categories": "Categories",
+      "mainCategory": "Main Category",
+      "subType": "Sub Type",
+      "innerType": "Inner Type",
+      "priceRange": "Price Range",
+      "minPrice": "Min Price",
+      "maxPrice": "Max Price",
+      "apply": "Apply"
+    }
+  },
+  "productDetail": {
+    "notFound": "Product not found",
+    "loadingError": "Failed to load product",
+    "price": "Price",
+    "stock": "Stock",
+    "stockLabel": "In Stock",
+    "outOfStock": "Out of Stock",
+    "description": "Description",
+    "showMore": "Show More",
+    "showLess": "Show Less",
+    "keyFeatures": "Key Features",
+    "ratings": "Ratings",
+    "noRatings": "No ratings yet",
+    "ratingCount": "{count} ratings",
+    "qnaSection": "Questions & Answers",
+    "noQna": "No questions yet",
+    "campaignsSection": "Campaigns",
+    "noCampaigns": "No active campaigns",
+    "buyNow": "Buy Now",
+    "addToBasket": "Add to Basket",
+    "followSeller": "Follow Seller",
+    "followingSeller": "Following",
+    "idVerificationRequired": "You need to verify your identity to perform this action",
+    "similarProducts": "Similar Products",
+    "recommendedProducts": "Recommended Products",
+    "boughtTogether": "Bought Together",
+    "mightInterest": "You Might Also Like",
+    "popularBrands": "Popular Sellers",
+    "popularPages": "Popular Products",
+    "estimatedDelivery": "Estimated Delivery Time",
+    "comingSoon": "Coming Soon"
   }
 }

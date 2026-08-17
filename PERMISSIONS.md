@@ -20,6 +20,7 @@ session side); auth-service's own personnel endpoints check the session authorit
 | P2 | Seller Applications (accept/deny seller applications) | auth-service | task 1.5 |
 | P3 | Users (ban action now; full list/view/edit/soft-delete added in Phase 7.2) | auth-service | task 1.6 |
 | P4 | Categories (Main/Sub/Inner category management) | product-service | task 2.1 |
+| P5 | Products (list/edit/soft-delete seller products) | product-service | task 3.6 |
 
 Not yet assigned (RULES.md names these pages; codes are assigned when each is actually built):
-Personnel, Products, User Logs, Personnel Logs, Campaigns (Phase 7).
+Personnel, User Logs, Personnel Logs, Campaigns (Phase 7).

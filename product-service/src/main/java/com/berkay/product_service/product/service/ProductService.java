@@ -65,6 +65,17 @@ public class ProductService {
 				.toList();
 	}
 
+	/**
+	 * Personnel endpoint: list all products without ownership checks.
+	 * Used by the personnel admin panel to browse and edit any seller's products.
+	 */
+	@Transactional(readOnly = true)
+	public List<ProductResponse> listAllForPersonnel(String locale) {
+		return productRepository.findAllActive().stream()
+				.map(p -> ProductResponse.from(p, locale))
+				.toList();
+	}
+
 	@Transactional
 	public ProductResponse create(Long sellerId, ProductRequest request) {
 		InnerType innerType = findInnerTypeOrThrow(request.innerTypeId());
@@ -116,6 +127,52 @@ public class ProductService {
 	public void delete(Long id, Long sellerId) {
 		Product product = findActiveOrThrow(id);
 		enforceOwnership(product, sellerId);
+		product.softDelete();
+		productRepository.save(product);
+
+		// Remove from Elasticsearch (best-effort, don't fail the product deletion if indexing fails)
+		try {
+			searchService.deleteProduct(id);
+		} catch (Exception e) {
+			logger.warn("Failed to delete product {} from Elasticsearch: {}", id, e.getMessage(), e);
+		}
+	}
+
+	/**
+	 * Personnel endpoint: update a product without ownership checks.
+	 * Used by the personnel admin panel to edit any seller's product.
+	 */
+	@Transactional
+	public ProductResponse updateForPersonnel(Long id, ProductRequest request) {
+		Product product = findActiveOrThrow(id);
+
+		InnerType innerType = findInnerTypeOrThrow(request.innerTypeId());
+		product.setPrice(request.price());
+		product.setStock(request.stock());
+		applyTranslations(product, request.translations());
+		applyKeyFeatures(product, request.keyFeatures());
+		applyPhotos(product, request.photos());
+
+		Product saved = productRepository.save(product);
+
+		// Update in Elasticsearch (best-effort, don't fail the product update if indexing fails)
+		try {
+			ProductDocument document = buildProductDocument(saved);
+			searchService.indexProduct(document);
+		} catch (Exception e) {
+			logger.warn("Failed to update product {} in Elasticsearch: {}", saved.getId(), e.getMessage(), e);
+		}
+
+		return ProductResponse.from(saved, "tr");
+	}
+
+	/**
+	 * Personnel endpoint: soft-delete a product without ownership checks.
+	 * Used by the personnel admin panel to delete any seller's product.
+	 */
+	@Transactional
+	public void deleteForPersonnel(Long id) {
+		Product product = findActiveOrThrow(id);
 		product.softDelete();
 		productRepository.save(product);
 

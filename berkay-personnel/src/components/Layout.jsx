@@ -64,6 +64,13 @@ export function Layout() {
                     </Link>
                   </li>
                 )}
+                {hasPermission('P5') && (
+                  <li>
+                    <Link to="/products" className={`menu-link ${location.pathname === '/products' ? 'active' : ''}`}>
+                      {t('products.title')}
+                    </Link>
+                  </li>
+                )}
               </ul>
             </nav>
           </aside>

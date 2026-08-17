@@ -8,6 +8,8 @@ import { LoginPage } from './pages/auth/LoginPage.jsx'
 import { ProfilePage } from './pages/auth/ProfilePage.jsx'
 import { IdVerificationPage } from './pages/auth/IdVerificationPage.jsx'
 import { SearchPage } from './pages/SearchPage.jsx'
+import { ProductDetailPage } from './pages/ProductDetailPage.jsx'
+import { ComingSoonPage } from './pages/ComingSoonPage.jsx'
 
 function App() {
   return (
@@ -15,6 +17,8 @@ function App() {
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
         <Route path="/search" element={<SearchPage />} />
+        <Route path="/products/:id" element={<ProductDetailPage />} />
+        <Route path="/coming-soon" element={<ComingSoonPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route

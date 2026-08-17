@@ -87,5 +87,26 @@
     "errorRejecting": "Talep reddedilirken hata oluştu",
     "confirmApprove": "Talebi onaylamak istediğinize emin misiniz?",
     "reasonRequired": "Red nedeni gereklidir"
+  },
+  "products": {
+    "title": "Ürünler",
+    "price": "Fiyat",
+    "stock": "Stok",
+    "sellerId": "Satıcı ID",
+    "noProducts": "Hiçbir ürün bulunamadı",
+    "loading": "Ürünler yükleniyor...",
+    "error": "Ürünler yüklenirken hata oluştu",
+    "deleteConfirm": "Bu ürünü silmek istediğinize emin misiniz?",
+    "editProduct": "Ürünü Düzenle",
+    "selectCategory": "Kategori Seç",
+    "selectMainCategory": "Ana Kategori Seç",
+    "selectSubType": "Alt Tür Seç",
+    "selectInnerType": "İç Tür Seç",
+    "shortDescTr": "Kısa Açıklama (Türkçe)",
+    "shortDescEn": "Kısa Açıklama (İngilizce)",
+    "longDescTr": "Uzun Açıklama (Türkçe)",
+    "longDescEn": "Uzun Açıklama (İngilizce)",
+    "keyFeatures": "Temel Özellikler",
+    "addFeature": "Özellik ekle..."
   }
 }

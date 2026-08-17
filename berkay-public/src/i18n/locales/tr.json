@@ -98,6 +98,64 @@
     "rejected": "Reddedildi"
   },
   "search": {
-    "placeholder": "Arama sayfası yakında burada olacak."
+    "placeholder": "Arama sayfası yakında burada olacak.",
+    "title": "Arama Sonuçları",
+    "noResults": "Aradığınız ürün bulunamadı.",
+    "tryDifferentFilters": "Farklı filtreler denemeyi deneyin.",
+    "loading": "Ürünler yükleniyor...",
+    "error": "Arama sırasında bir hata oluştu.",
+    "sort": {
+      "label": "Sırala",
+      "suggestedRanking": "Önerilen Sıralama",
+      "mostExpensive": "En Pahalı",
+      "cheapest": "En Ucuz",
+      "newest": "En Yeni",
+      "mostSelling": "En Çok Satan",
+      "mostFavorited": "En Çok Beğenilen",
+      "mostRated": "En Çok Puan Alan"
+    },
+    "filter": {
+      "title": "Filtreler",
+      "categories": "Kategoriler",
+      "mainCategory": "Ana Kategori",
+      "subType": "Alt Tip",
+      "innerType": "İç Tip",
+      "priceRange": "Fiyat Aralığı",
+      "minPrice": "En Düşük Fiyat",
+      "maxPrice": "En Yüksek Fiyat",
+      "apply": "Uygula"
+    }
+  },
+  "productDetail": {
+    "notFound": "Ürün bulunamadı",
+    "loadingError": "Ürün yüklenirken hata oluştu",
+    "price": "Fiyat",
+    "stock": "Stok",
+    "stockLabel": "Stokta",
+    "outOfStock": "Stok Yok",
+    "description": "Açıklama",
+    "showMore": "Daha Fazla Göster",
+    "showLess": "Daha Az Göster",
+    "keyFeatures": "Öne Çıkan Özellikler",
+    "ratings": "Puanlar",
+    "noRatings": "Henüz puan yok",
+    "ratingCount": "{count} puan",
+    "qnaSection": "Sorular ve Cevaplar",
+    "noQna": "Henüz soru bulunmuyor",
+    "campaignsSection": "Kampanyalar",
+    "noCampaigns": "Aktif kampanya bulunmuyor",
+    "buyNow": "Hemen Satın Al",
+    "addToBasket": "Sepete Ekle",
+    "followSeller": "Satıcıyı Takip Et",
+    "followingSeller": "Takip Ediliyor",
+    "idVerificationRequired": "Bu işlemi yapmak için kimliğinizi doğrulamanız gerekir",
+    "similarProducts": "Benzer Ürünler",
+    "recommendedProducts": "Önerilen Ürünler",
+    "boughtTogether": "Birlikte Satın Alınanlar",
+    "mightInterest": "Sizi İlgilendirebilecek Ürünler",
+    "popularBrands": "Popüler Satıcılar",
+    "popularPages": "Popüler Ürünler",
+    "estimatedDelivery": "Tahmini Teslimat Süresi",
+    "comingSoon": "Yakında"
   }
 }
