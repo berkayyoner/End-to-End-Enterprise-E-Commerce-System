@@ -79,6 +79,8 @@ export function CategoryNav() {
 
   const handleMenuMouseEnter = () => {
     setIsMenuOpen(true)
+    // RULES.md: "The first main category should open automatically when the menu hovers."
+    setHoveredMain((current) => current ?? mainCategories[0] ?? null)
   }
 
   const handleMenuMouseLeave = () => {
