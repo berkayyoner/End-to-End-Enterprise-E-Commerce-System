@@ -1,4 +1,4 @@
-const PRODUCTS_API_BASE = import.meta.env.VITE_PRODUCTS_API_BASE_URL ?? 'http://localhost:8080/api/products'
+const PRODUCTS_API_BASE = import.meta.env.VITE_PRODUCTS_API_BASE_URL ?? 'http://localhost:8085/api/products'
 
 async function productApiRequest(path, headers = {}) {
   const response = await fetch(`${PRODUCTS_API_BASE}${path}`, {
