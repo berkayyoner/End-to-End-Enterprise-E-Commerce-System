@@ -117,8 +117,9 @@ services:
     container_name: berkay-api
     environment:
       SPRING_PROFILES_ACTIVE: development
+      SERVER_PORT: "8085"
     ports:
-      - "8080:8080"
+      - "8085:8085"
     depends_on:
       discovery-service:
         condition: service_healthy
