@@ -205,5 +205,100 @@
     "noProducts": "This seller has no products",
     "qnaSection": "Seller's Q&A",
     "noQna": "No questions yet"
+  },
+  "myAccount": {
+    "title": "My Account",
+    "myOrders": "All My Orders",
+    "myReviews": "My Reviews",
+    "myCoupons": "My Discount Coupons",
+    "sellerMessages": "Seller Messages",
+    "myUserInfo": "My User Information"
+  },
+  "basket": {
+    "title": "My Basket",
+    "empty": "Your basket is empty",
+    "addItems": "Add items to your basket to get started",
+    "items": "Items",
+    "subtotal": "Subtotal",
+    "total": "Total",
+    "checkout": "Proceed to Checkout",
+    "continueShopping": "Continue Shopping",
+    "quantity": "Quantity",
+    "price": "Price",
+    "remove": "Remove",
+    "update": "Update",
+    "removeConfirm": "Are you sure you want to remove this item from your basket?"
+  },
+  "checkout": {
+    "title": "Checkout",
+    "paymentInfo": "Payment Information",
+    "cardNumber": "Card Number",
+    "expiryMonth": "Month",
+    "expiryYear": "Year",
+    "cvv": "CVV",
+    "cardHolderName": "Card Holder Name",
+    "saveCard": "Save this card for future purchases",
+    "orderSummary": "Order Summary",
+    "coupon": "Coupon Code (Optional)",
+    "subtotal": "Subtotal",
+    "discount": "Discount",
+    "total": "Total",
+    "placeOrder": "Place Order",
+    "processing": "Processing...",
+    "success": "Your order was placed successfully",
+    "error": "An error occurred during payment",
+    "backToBasket": "Back to Basket",
+    "autofilled": "Your saved card has been automatically filled"
+  },
+  "myOrders": {
+    "title": "My Orders",
+    "empty": "You haven't placed any orders yet",
+    "startShopping": "Start shopping",
+    "orderNumber": "Order #",
+    "date": "Date",
+    "total": "Total",
+    "status": "Status",
+    "viewDetails": "View Details",
+    "orderStatus": {
+      "pending": "Pending",
+      "paid": "Paid"
+    }
+  },
+  "orderDetails": {
+    "title": "Order Details",
+    "orderId": "Order #",
+    "date": "Order Date",
+    "status": "Status",
+    "total": "Total",
+    "items": "Items",
+    "quantity": "Quantity",
+    "unitPrice": "Unit Price",
+    "backToOrders": "Back to Orders"
+  },
+  "myReviews": {
+    "title": "My Reviews",
+    "empty": "You haven't written any reviews yet",
+    "comingSoon": "This feature will be available soon"
+  },
+  "myCoupons": {
+    "title": "My Discount Coupons",
+    "empty": "You don't have any coupons yet",
+    "comingSoon": "This feature will be available soon"
+  },
+  "sellerMessages": {
+    "title": "Seller Messages",
+    "comingSoon": "This feature will be available soon"
+  },
+  "myUserInfo": {
+    "title": "My User Information",
+    "email": "Email",
+    "phone": "Phone",
+    "memberSince": "Member Since",
+    "accountType": "Account Type",
+    "idVerification": "Identity Verification",
+    "verified": "Verified",
+    "notVerified": "Not Verified",
+    "verifyNow": "Verify Now",
+    "backToAccount": "Back to Account"
   }
 }

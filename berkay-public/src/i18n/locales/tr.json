@@ -205,5 +205,100 @@
     "noProducts": "Bu satıcının ürünü bulunmuyor",
     "qnaSection": "Satıcının Sorular ve Cevapları",
     "noQna": "Henüz soru bulunmuyor"
+  },
+  "myAccount": {
+    "title": "Hesabım",
+    "myOrders": "Tüm Siparişlerim",
+    "myReviews": "Yorumlarım",
+    "myCoupons": "İndirim Kuponlarım",
+    "sellerMessages": "Satıcı Mesajları",
+    "myUserInfo": "Kullanıcı Bilgilerim"
+  },
+  "basket": {
+    "title": "Sepetim",
+    "empty": "Sepetiniz boş",
+    "addItems": "Alışverişe başlamak için ürün ekleyin",
+    "items": "Ürün",
+    "subtotal": "Ara Toplam",
+    "total": "Toplam",
+    "checkout": "Ödemeye Devam Et",
+    "continueShopping": "Alışverişe Devam Et",
+    "quantity": "Miktar",
+    "price": "Fiyat",
+    "remove": "Kaldır",
+    "update": "Güncelle",
+    "removeConfirm": "Bu ürünü sepetten kaldırmak istediğinize emin misiniz?"
+  },
+  "checkout": {
+    "title": "Ödeme",
+    "paymentInfo": "Ödeme Bilgileri",
+    "cardNumber": "Kart Numarası",
+    "expiryMonth": "Ay",
+    "expiryYear": "Yıl",
+    "cvv": "CVV",
+    "cardHolderName": "Kart Sahibinin Adı",
+    "saveCard": "Gelecek alışverişlerde bu kartı kaydet",
+    "orderSummary": "Sipariş Özeti",
+    "coupon": "Kupon Kodu (İsteğe bağlı)",
+    "subtotal": "Ara Toplam",
+    "discount": "İndirim",
+    "total": "Toplam",
+    "placeOrder": "Siparişi Onayla",
+    "processing": "İşlem yapılıyor...",
+    "success": "Siparişiniz başarıyla oluşturuldu",
+    "error": "Ödeme sırasında hata oluştu",
+    "backToBasket": "Sepete Dön",
+    "autofilled": "Kayıtlı kartınız otomatik olarak dolduruldu"
+  },
+  "myOrders": {
+    "title": "Siparişlerim",
+    "empty": "Henüz siparişiniz bulunmuyor",
+    "startShopping": "Alışverişe başlayın",
+    "orderNumber": "Sipariş No",
+    "date": "Tarih",
+    "total": "Toplam",
+    "status": "Durum",
+    "viewDetails": "Detayları Gör",
+    "orderStatus": {
+      "pending": "Beklemede",
+      "paid": "Ödendi"
+    }
+  },
+  "orderDetails": {
+    "title": "Sipariş Detayları",
+    "orderId": "Sipariş No",
+    "date": "Sipariş Tarihi",
+    "status": "Durum",
+    "total": "Toplam",
+    "items": "Ürünler",
+    "quantity": "Miktar",
+    "unitPrice": "Birim Fiyatı",
+    "backToOrders": "Siparişlere Dön"
+  },
+  "myReviews": {
+    "title": "Yorumlarım",
+    "empty": "Henüz yorum yazmadınız",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "myCoupons": {
+    "title": "İndirim Kuponlarım",
+    "empty": "Henüz kuponunuz bulunmuyor",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "sellerMessages": {
+    "title": "Satıcı Mesajları",
+    "comingSoon": "Bu özellik yakında kullanılabilir olacak"
+  },
+  "myUserInfo": {
+    "title": "Kullanıcı Bilgilerim",
+    "email": "E-posta",
+    "phone": "Telefon",
+    "memberSince": "Üyelik Tarihi",
+    "accountType": "Hesap Türü",
+    "idVerification": "Kimlik Doğrulama",
+    "verified": "Doğrulandı",
+    "notVerified": "Doğrulanmadı",
+    "verifyNow": "Şimdi Doğrula",
+    "backToAccount": "Hesaba Dön"
   }
 }

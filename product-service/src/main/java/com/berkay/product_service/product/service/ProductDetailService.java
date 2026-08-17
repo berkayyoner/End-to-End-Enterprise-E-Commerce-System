@@ -9,6 +9,9 @@ import com.berkay.product_service.product.dto.SimpleProductDTO;
 import com.berkay.product_service.product.entity.Product;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
 import com.berkay.product_service.product.repository.ProductRepository;
+import com.berkay.product_service.qna.dto.QnaQuestionResponse;
+import com.berkay.product_service.qna.service.QnaService;
+import com.berkay.product_service.review.service.ReviewService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +36,16 @@ public class ProductDetailService {
 	private static final String DELIVERY_ESTIMATE = "3-7 days";
 
 	private final ProductRepository productRepository;
+	private final ReviewService reviewService;
+	private final QnaService qnaService;
 
-	public ProductDetailService(ProductRepository productRepository) {
+	public ProductDetailService(
+			ProductRepository productRepository,
+			ReviewService reviewService,
+			QnaService qnaService) {
 		this.productRepository = productRepository;
+		this.reviewService = reviewService;
+		this.qnaService = qnaService;
 	}
 
 	@Transactional(readOnly = true)
@@ -77,10 +87,13 @@ public class ProductDetailService {
 		// Build "popular pages" (product names + IDs from same category)
 		List<ProductNameDTO> popularPages = buildProductNameList(categoryProducts, productId, MAX_POPULAR_PAGES);
 
-		// Placeholders for Phase 6.1/6.2 (ratings and Q&A)
-		double averageRating = 0.0;
-		int ratingCount = 0;
-		List<Object> qna = List.of();
+		// Real Phase 6.1 data: ratings and Q&A
+		double averageRating = reviewService.getAverageRating(productId);
+		long ratingCountLong = reviewService.getRatingCount(productId);
+		int ratingCount = (int) ratingCountLong;
+		List<Object> qna = qnaService.getProductQuestions(productId).stream()
+				.map(q -> (Object) q)
+				.toList();
 
 		// Placeholder for Phase 6.4 (campaigns)
 		List<Object> campaigns = List.of();

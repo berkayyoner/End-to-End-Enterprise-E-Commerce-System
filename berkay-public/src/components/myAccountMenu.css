@@ -1,0 +1,101 @@
+.my-account-menu {
+  position: relative;
+}
+
+.account-trigger {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+.account-trigger:hover {
+  color: var(--accent);
+}
+
+.account-dropdown {
+  position: absolute;
+  top: 100%;
+  right: 0;
+  background: var(--bg-secondary);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  min-width: 220px;
+  margin-top: 0.5rem;
+  z-index: 1000;
+  animation: slideDown 0.2s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.account-header {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.user-email {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  word-break: break-word;
+}
+
+.account-menu-items {
+  display: flex;
+  flex-direction: column;
+}
+
+.menu-item {
+  background: none;
+  border: none;
+  color: var(--text-primary);
+  cursor: pointer;
+  padding: 0.75rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+  transition: background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.menu-item:hover:not(.logout) {
+  background-color: var(--bg-hover);
+}
+
+.menu-item.logout {
+  border-top: 1px solid var(--border);
+  color: #d32f2f;
+}
+
+.menu-item.logout:hover {
+  background-color: #ffebee;
+}
+
+.menu-divider {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 0.5rem 0;
+  height: 0;
+}
+
+@media (max-width: 768px) {
+  .account-dropdown {
+    right: auto;
+    left: 0;
+    min-width: 200px;
+  }
+}

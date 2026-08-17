@@ -116,7 +116,7 @@ Goal: a baseline of automated checks, not full coverage. Skip if budget runs out
 Goal: make sure what exists is coherent, not add anything new.
 
 9.1. Verify responsive layout works at a basic mobile/tablet breakpoint on the pages built in Phases 2–7 (fix only actual breakage, don't do a dedicated redesign pass).
-9.2. Footer component (Who Are We/Contact/Security/Campaigns/Sell on Berkay/Live Support/How May I Return links, payment network icons, social icons, copyright/legal links) and final top-nav assembly — build once, reuse; this was deferred from Phase 2 only because it needs pages from later phases to link to.
+9.2. Footer component (Who Are We/Contact/Security/Campaigns/Sell on Berkay/Live Support/How May I Return links, payment network icons, social icons, copyright/legal links) and final top-nav assembly — build once, reuse; this was deferred from Phase 2 only because it needs pages from later phases to link to. Per RULES.md's login-gate clarification, the "Sell on Berkay" footer link must route through the existing `RequireAuth`-guarded seller-application flow (task 1.8) so an unauthenticated click lands on `/login`, not a dead link or an unguarded form.
 9.3. Skip Kubernetes/Jenkins/observability expansion entirely — Phase 0.11's skeleton is the deliverable for deployment. Only touch it if something in Phases 2–8 broke it (e.g. a new service needs a Dockerfile).
 
 ---

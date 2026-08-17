@@ -10,6 +10,8 @@ import com.berkay.product_service.product.entity.ProductPhoto;
 import com.berkay.product_service.product.entity.ProductTranslation;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
 import com.berkay.product_service.product.repository.ProductRepository;
+import com.berkay.product_service.qna.service.QnaService;
+import com.berkay.product_service.review.service.ReviewService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,6 +34,12 @@ class ProductDetailServiceTest {
 	@Mock
 	private ProductRepository productRepository;
 
+	@Mock
+	private ReviewService reviewService;
+
+	@Mock
+	private QnaService qnaService;
+
 	private ProductDetailService service;
 	private MainCategory mainCategory;
 	private SubType subType;
@@ -39,7 +47,7 @@ class ProductDetailServiceTest {
 
 	@BeforeEach
 	void setUp() {
-		service = new ProductDetailService(productRepository);
+		service = new ProductDetailService(productRepository, reviewService, qnaService);
 		mainCategory = new MainCategory("Electronics");
 		subType = new SubType(mainCategory, "Computers");
 		innerType = new InnerType(subType, "Laptops");

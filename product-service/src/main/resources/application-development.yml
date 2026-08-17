@@ -28,6 +28,9 @@ eureka:
     service-url:
       defaultZone: http://discovery-service:8761/eureka/
 
+order-service:
+  url: http://order-service:8084
+
 logging:
   level:
     root: INFO

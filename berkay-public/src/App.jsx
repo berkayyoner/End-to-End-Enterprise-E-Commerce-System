@@ -13,6 +13,14 @@ import { ComingSoonPage } from './pages/ComingSoonPage.jsx'
 import { AddProductPage } from './pages/AddProductPage.jsx'
 import { MyProductsPage } from './pages/MyProductsPage.jsx'
 import { SellerProfilePage } from './pages/SellerProfilePage.jsx'
+import { BasketPage } from './pages/BasketPage.jsx'
+import { CheckoutPage } from './pages/CheckoutPage.jsx'
+import { MyOrdersPage } from './pages/MyOrdersPage.jsx'
+import { OrderDetailsPage } from './pages/OrderDetailsPage.jsx'
+import { MyReviewsPage } from './pages/MyReviewsPage.jsx'
+import { MyCouponsPage } from './pages/MyCouponsPage.jsx'
+import { SellerMessagesPage } from './pages/SellerMessagesPage.jsx'
+import { MyUserInfoPage } from './pages/MyUserInfoPage.jsx'
 
 function App() {
   return (
@@ -57,6 +65,70 @@ function App() {
           }
         />
         <Route path="/sellers/:id" element={<SellerProfilePage />} />
+        <Route
+          path="/basket"
+          element={
+            <RequireAuth>
+              <BasketPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/checkout"
+          element={
+            <RequireAuth>
+              <CheckoutPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-orders"
+          element={
+            <RequireAuth>
+              <MyOrdersPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/order-details/:orderId"
+          element={
+            <RequireAuth>
+              <OrderDetailsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-reviews"
+          element={
+            <RequireAuth>
+              <MyReviewsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-coupons"
+          element={
+            <RequireAuth>
+              <MyCouponsPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/seller-messages"
+          element={
+            <RequireAuth>
+              <SellerMessagesPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/my-user-info"
+          element={
+            <RequireAuth>
+              <MyUserInfoPage />
+            </RequireAuth>
+          }
+        />
       </Route>
     </Routes>
   )

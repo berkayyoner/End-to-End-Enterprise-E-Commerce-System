@@ -28,6 +28,9 @@ eureka:
     service-url:
       defaultZone: http://127.0.0.1:8761/eureka/
 
+order-service:
+  url: http://localhost:8084
+
 logging:
   level:
     org.hibernate.SQL: DEBUG

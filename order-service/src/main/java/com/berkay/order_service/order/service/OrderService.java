@@ -124,6 +124,15 @@ public class OrderService {
 			.map(this::mapToResponse);
 	}
 
+	/**
+	 * Check if the buyer has a PAID order containing the specified product.
+	 * Used by product-service to verify review submission eligibility (fail-closed).
+	 */
+	@Transactional(readOnly = true)
+	public boolean hasPurchasedProduct(String buyerId, Long productId) {
+		return orderRepository.hasPaidOrder(buyerId, productId, OrderStatus.PAID);
+	}
+
 	private OrderResponse mapToResponse(Order order) {
 		return new OrderResponse(
 			order.getId(),

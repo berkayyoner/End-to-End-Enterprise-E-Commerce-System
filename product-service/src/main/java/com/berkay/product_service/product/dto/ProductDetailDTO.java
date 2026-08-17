@@ -7,8 +7,11 @@ import java.util.List;
  * Comprehensive product detail response aggregating core product data with related recommendations,
  * reviews, campaigns, and marketplace information.
  *
- * Placeholder fields (with zero/empty values) that will be populated by Phase 6.1/6.2:
- * - averageRating, ratingCount, qna: Real Review/Q&A entities will populate these without reshaping.
+ * Phase 6.1 real data:
+ * - averageRating, ratingCount: Computed from Review entities.
+ * - qna: List of QnaQuestionResponse objects with optional answers.
+ *
+ * Placeholder fields:
  * - campaigns: Campaign entity association, populated by Phase 6.4.
  *
  * Simple-query fields (same-category or random):
@@ -30,10 +33,10 @@ public record ProductDetailDTO(
 		List<String> keyFeatures,
 		List<ProductPhotoDTO> photos,
 
-		// Phase 6.1/6.2 placeholders: zero/empty values, real entities will populate these
+		// Phase 6.1 real data: ratings and Q&A from Review/Qna entities
 		double averageRating,
 		int ratingCount,
-		List<Object> qna,  // Will be replaced with real QnaDTO list in Phase 6.2
+		List<Object> qna,  // QnaQuestionResponse list
 
 		// Phase 6.4 placeholder
 		List<Object> campaigns,  // Will be replaced with real CampaignDTO list in Phase 6.4

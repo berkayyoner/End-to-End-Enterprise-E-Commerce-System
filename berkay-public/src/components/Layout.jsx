@@ -3,11 +3,12 @@ import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth.js'
 import { CategoryNav } from './CategoryNav.jsx'
 import { MyStoreMenu } from './MyStoreMenu.jsx'
+import { MyAccountMenu } from './MyAccountMenu.jsx'
 import './Layout.css'
 
 export function Layout() {
   const { t, language, changeLanguage, supportedLanguages } = useTranslation()
-  const { isAuthenticated, status, logout, user } = useAuth()
+  const { isAuthenticated, status, user } = useAuth()
 
   return (
     <>
@@ -22,10 +23,10 @@ export function Layout() {
           {status === 'loading' ? null : isAuthenticated ? (
             <>
               {user?.seller && <MyStoreMenu />}
-              <Link to="/profile">{t('common.profile')}</Link>
-              <button type="button" className="link-button" onClick={logout}>
-                {t('common.logout')}
-              </button>
+              <Link to="/basket" className="basket-link" aria-label={t('basket.title')}>
+                🛒 {t('basket.title')}
+              </Link>
+              <MyAccountMenu />
             </>
           ) : (
             <>

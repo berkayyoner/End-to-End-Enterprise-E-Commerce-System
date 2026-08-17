@@ -28,6 +28,9 @@ eureka:
     service-url:
       defaultZone: ${EUREKA_URI}
 
+order-service:
+  url: ${ORDER_SERVICE_URI}
+
 logging:
   level:
     root: WARN

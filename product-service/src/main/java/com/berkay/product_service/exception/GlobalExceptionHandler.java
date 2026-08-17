@@ -5,6 +5,10 @@ import com.berkay.product_service.category.changerequest.exception.CategoryChang
 import com.berkay.product_service.category.changerequest.exception.CategoryChangeRequestAlreadyReviewedException;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
 import com.berkay.product_service.product.exception.ProductOwnershipException;
+import com.berkay.product_service.review.exception.DuplicateReviewException;
+import com.berkay.product_service.review.exception.PurchaseVerificationException;
+import com.berkay.product_service.qna.exception.QuestionNotFoundException;
+import com.berkay.product_service.qna.exception.SellerOwnershipException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -65,6 +69,30 @@ public class GlobalExceptionHandler {
 
 	@ExceptionHandler(ProductOwnershipException.class)
 	public ResponseEntity<Map<String, Object>> handleProductOwnership(ProductOwnershipException ex) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(errorBody(HttpStatus.FORBIDDEN, ex.getMessage()));
+	}
+
+	@ExceptionHandler(DuplicateReviewException.class)
+	public ResponseEntity<Map<String, Object>> handleDuplicateReview(DuplicateReviewException ex) {
+		return ResponseEntity.status(HttpStatus.CONFLICT)
+				.body(errorBody(HttpStatus.CONFLICT, ex.getMessage()));
+	}
+
+	@ExceptionHandler(PurchaseVerificationException.class)
+	public ResponseEntity<Map<String, Object>> handlePurchaseVerification(PurchaseVerificationException ex) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(errorBody(HttpStatus.FORBIDDEN, ex.getMessage()));
+	}
+
+	@ExceptionHandler(QuestionNotFoundException.class)
+	public ResponseEntity<Map<String, Object>> handleQuestionNotFound(QuestionNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
+	}
+
+	@ExceptionHandler(SellerOwnershipException.class)
+	public ResponseEntity<Map<String, Object>> handleSellerOwnership(SellerOwnershipException ex) {
 		return ResponseEntity.status(HttpStatus.FORBIDDEN)
 				.body(errorBody(HttpStatus.FORBIDDEN, ex.getMessage()));
 	}

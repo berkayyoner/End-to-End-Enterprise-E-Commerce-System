@@ -3,13 +3,14 @@ import { useParams, useNavigate } from 'react-router-dom'
 import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth'
 import { getProductDetail } from '../api/productDetailApi'
+import { addToBasket } from '../api/orderApi'
 import '../styles/productDetail.css'
 
 export function ProductDetailPage() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { t, language } = useTranslation()
-  const { isAuthenticated } = useAuth()
+  const { isAuthenticated, user } = useAuth()
 
   const [product, setProduct] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -17,6 +18,7 @@ export function ProductDetailPage() {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0)
   const [expandedDescription, setExpandedDescription] = useState(false)
   const [followingState, setFollowingState] = useState({})
+  const [addingToBasket, setAddingToBasket] = useState(false)
 
   // Fetch product details
   useEffect(() => {
@@ -53,22 +55,49 @@ export function ProductDetailPage() {
     setCurrentPhotoIndex(index)
   }
 
-  const handleBuyNow = () => {
+  const handleBuyNow = async () => {
     if (!isAuthenticated) {
       navigate('/login')
       return
     }
-    // Placeholder: navigate to checkout
-    navigate('/coming-soon')
+
+    if (!user?.idVerified) {
+      navigate('/id-verification')
+      return
+    }
+
+    // Add to basket with quantity 1, then proceed to checkout
+    try {
+      setAddingToBasket(true)
+      await addToBasket(product.id, 1)
+      navigate('/checkout')
+    } catch (err) {
+      console.error('Error adding to basket:', err)
+    } finally {
+      setAddingToBasket(false)
+    }
   }
 
-  const handleAddToBasket = () => {
+  const handleAddToBasket = async () => {
     if (!isAuthenticated) {
       navigate('/login')
       return
     }
-    // Placeholder: add to basket
-    navigate('/coming-soon')
+
+    if (!user?.idVerified) {
+      navigate('/id-verification')
+      return
+    }
+
+    try {
+      setAddingToBasket(true)
+      await addToBasket(product.id, 1)
+      navigate('/basket')
+    } catch (err) {
+      console.error('Error adding to basket:', err)
+    } finally {
+      setAddingToBasket(false)
+    }
   }
 
   const handleFollowSeller = () => {
@@ -272,11 +301,11 @@ export function ProductDetailPage() {
 
           {/* Action Buttons */}
           <div className="action-buttons">
-            <button className="btn-buy-now" onClick={handleBuyNow}>
-              {t('productDetail.buyNow')}
+            <button className="btn-buy-now" onClick={handleBuyNow} disabled={addingToBasket || product.stock === 0}>
+              {addingToBasket ? t('common.loading') : t('productDetail.buyNow')}
             </button>
-            <button className="btn-add-basket" onClick={handleAddToBasket}>
-              {t('productDetail.addToBasket')}
+            <button className="btn-add-basket" onClick={handleAddToBasket} disabled={addingToBasket || product.stock === 0}>
+              {addingToBasket ? t('common.loading') : t('productDetail.addToBasket')}
             </button>
             <button className={`btn-follow-seller ${isFollowing ? 'following' : ''}`} onClick={handleFollowSeller}>
               {isFollowing ? t('productDetail.followingSeller') : t('productDetail.followSeller')}

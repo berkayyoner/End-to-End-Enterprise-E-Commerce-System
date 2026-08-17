@@ -2,6 +2,7 @@ package com.berkay.order_service.order.controller;
 
 import com.berkay.order_service.order.dto.CheckoutRequest;
 import com.berkay.order_service.order.dto.OrderResponse;
+import com.berkay.order_service.order.dto.PurchaseVerificationResponse;
 import com.berkay.order_service.order.service.OrderService;
 import com.berkay.order_service.payment.service.PaymentService;
 import jakarta.validation.Valid;
@@ -64,5 +65,20 @@ public class OrderController {
 		String buyerId = authentication.getName();
 		Page<OrderResponse> orders = orderService.getMyOrders(buyerId, pageable);
 		return ResponseEntity.ok(orders);
+	}
+
+	/**
+	 * Check if the authenticated buyer has a PAID order containing the specified product.
+	 * Used by product-service to verify review submission eligibility.
+	 * Fails closed: if order-service is unreachable, the caller will get a 5xx error.
+	 */
+	@GetMapping("/has-purchased")
+	public ResponseEntity<PurchaseVerificationResponse> hasPurchasedProduct(
+		Authentication authentication,
+		@RequestParam Long productId
+	) {
+		String buyerId = authentication.getName();
+		boolean hasPurchased = orderService.hasPurchasedProduct(buyerId, productId);
+		return ResponseEntity.ok(new PurchaseVerificationResponse(hasPurchased));
 	}
 }
