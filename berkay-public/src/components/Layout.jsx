@@ -1,6 +1,7 @@
 import { Link, Outlet } from 'react-router-dom'
 import { useTranslation } from '../i18n'
 import { useAuth } from '../auth/useAuth.js'
+import { CategoryNav } from './CategoryNav.jsx'
 import './Layout.css'
 
 export function Layout() {
@@ -44,6 +45,10 @@ export function Layout() {
           </select>
         </nav>
       </header>
+
+      <div className="category-nav-bar">
+        <CategoryNav />
+      </div>
 
       <main className="site-main">
         <Outlet />

@@ -58,7 +58,7 @@ public class GlobalExceptionHandler {
 	}
 
 	@ExceptionHandler({IdVerificationApplicationNotFoundException.class, SellerApplicationNotFoundException.class,
-			AppUserNotFoundException.class, UsernameNotFoundException.class})
+			AppUserNotFoundException.class, PersonnelNotFoundException.class, UsernameNotFoundException.class})
 	public ResponseEntity<Map<String, Object>> handleNotFound(RuntimeException ex) {
 		return ResponseEntity.status(HttpStatus.NOT_FOUND).body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
 	}

@@ -14,7 +14,9 @@
   },
   "nav": {
     "login": "Log in",
-    "signUp": "Sign up"
+    "signUp": "Sign up",
+    "categories": "Categories",
+    "showMore": "Show More"
   },
   "auth": {
     "signUp": {
@@ -94,5 +96,8 @@
     "pending": "Pending",
     "approved": "Approved",
     "rejected": "Rejected"
+  },
+  "search": {
+    "placeholder": "Search page coming soon."
   }
 }

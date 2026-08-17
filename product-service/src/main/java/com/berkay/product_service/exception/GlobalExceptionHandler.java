@@ -3,6 +3,8 @@ package com.berkay.product_service.exception;
 import com.berkay.product_service.category.exception.CategoryNotFoundException;
 import com.berkay.product_service.category.changerequest.exception.CategoryChangeRequestNotFoundException;
 import com.berkay.product_service.category.changerequest.exception.CategoryChangeRequestAlreadyReviewedException;
+import com.berkay.product_service.product.exception.ProductNotFoundException;
+import com.berkay.product_service.product.exception.ProductOwnershipException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -53,6 +55,18 @@ public class GlobalExceptionHandler {
 	public ResponseEntity<Map<String, Object>> handleIllegalArgument(IllegalArgumentException ex) {
 		return ResponseEntity.status(HttpStatus.BAD_REQUEST)
 				.body(errorBody(HttpStatus.BAD_REQUEST, ex.getMessage()));
+	}
+
+	@ExceptionHandler(ProductNotFoundException.class)
+	public ResponseEntity<Map<String, Object>> handleProductNotFound(ProductNotFoundException ex) {
+		return ResponseEntity.status(HttpStatus.NOT_FOUND)
+				.body(errorBody(HttpStatus.NOT_FOUND, ex.getMessage()));
+	}
+
+	@ExceptionHandler(ProductOwnershipException.class)
+	public ResponseEntity<Map<String, Object>> handleProductOwnership(ProductOwnershipException ex) {
+		return ResponseEntity.status(HttpStatus.FORBIDDEN)
+				.body(errorBody(HttpStatus.FORBIDDEN, ex.getMessage()));
 	}
 
 	private Map<String, Object> errorBody(HttpStatus status, Object message) {

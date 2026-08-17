@@ -25,8 +25,9 @@ public class SecurityConfig {
 				.sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
 				.csrf(csrf -> csrf.disable())
 				.authorizeHttpRequests(authorize -> authorize
-						// All GET requests on categories are public
+						// All GET requests on categories and products are public
 						.requestMatchers(HttpMethod.GET, "/categories/**").permitAll()
+						.requestMatchers(HttpMethod.GET, "/products/**").permitAll()
 						// All other requests require authentication (permission validation via @PreAuthorize)
 						.anyRequest().authenticated());
 

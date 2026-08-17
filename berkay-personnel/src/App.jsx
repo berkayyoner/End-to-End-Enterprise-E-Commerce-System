@@ -1,30 +1,43 @@
+import { Route, Routes } from 'react-router-dom'
 import './App.css'
-import { useTranslation } from './i18n'
+import { Layout } from './components/Layout.jsx'
+import { RequireAuth } from './auth/RequireAuth.jsx'
+import { HomePage } from './pages/HomePage.jsx'
+import { LoginPage } from './pages/auth/LoginPage.jsx'
+import { CategoriesPage } from './pages/CategoriesPage.jsx'
+import { CategoryChangeRequestsPage } from './pages/CategoryChangeRequestsPage.jsx'
 
 function App() {
-  const { t, language, changeLanguage, supportedLanguages } = useTranslation()
-
   return (
-    <section id="center">
-      <div>
-        <h1>{t('home.title')}</h1>
-        <p>{t('home.subtitle')}</p>
-        <p>{t('home.comingSoon')}</p>
-      </div>
-      <div className="ticks">
-        {supportedLanguages.map((code) => (
-          <button
-            key={code}
-            type="button"
-            className="counter"
-            disabled={code === language}
-            onClick={() => changeLanguage(code)}
-          >
-            {code.toUpperCase()}
-          </button>
-        ))}
-      </div>
-    </section>
+    <Routes>
+      <Route element={<Layout />}>
+        <Route path="/login" element={<LoginPage />} />
+        <Route
+          path="/"
+          element={
+            <RequireAuth>
+              <HomePage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/categories"
+          element={
+            <RequireAuth>
+              <CategoriesPage />
+            </RequireAuth>
+          }
+        />
+        <Route
+          path="/category-change-requests"
+          element={
+            <RequireAuth>
+              <CategoryChangeRequestsPage />
+            </RequireAuth>
+          }
+        />
+      </Route>
+    </Routes>
   )
 }
 

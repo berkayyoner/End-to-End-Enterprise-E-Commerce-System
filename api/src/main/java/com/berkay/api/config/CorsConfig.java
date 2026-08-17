@@ -23,7 +23,9 @@ public class CorsConfig implements WebMvcConfigurer {
 
 	@Override
 	public void addCorsMappings(CorsRegistry registry) {
-		registry.addMapping("/api/personnel/**")
+		// Personnel endpoints across all services (auth-service, product-service, etc.)
+		// Pattern: /api/*/personnel/** catches both /api/auth/personnel/** and /api/products/personnel/**
+		registry.addMapping("/api/*/personnel/**")
 				.allowedOrigins(corsProperties.getPersonnelAllowedOrigins().toArray(String[]::new))
 				.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS")
 				.allowedHeaders("*")

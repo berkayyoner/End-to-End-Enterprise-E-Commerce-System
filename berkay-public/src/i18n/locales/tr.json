@@ -14,7 +14,9 @@
   },
   "nav": {
     "login": "Giriş Yap",
-    "signUp": "Kayıt Ol"
+    "signUp": "Kayıt Ol",
+    "categories": "Kategoriler",
+    "showMore": "Tümünü Gör"
   },
   "auth": {
     "signUp": {
@@ -94,5 +96,8 @@
     "pending": "İncelemede",
     "approved": "Onaylandı",
     "rejected": "Reddedildi"
+  },
+  "search": {
+    "placeholder": "Arama sayfası yakında burada olacak."
   }
 }

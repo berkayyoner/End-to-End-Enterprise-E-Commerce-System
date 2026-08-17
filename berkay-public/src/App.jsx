@@ -7,12 +7,14 @@ import { SignUpPage } from './pages/auth/SignUpPage.jsx'
 import { LoginPage } from './pages/auth/LoginPage.jsx'
 import { ProfilePage } from './pages/auth/ProfilePage.jsx'
 import { IdVerificationPage } from './pages/auth/IdVerificationPage.jsx'
+import { SearchPage } from './pages/SearchPage.jsx'
 
 function App() {
   return (
     <Routes>
       <Route element={<Layout />}>
         <Route path="/" element={<HomePage />} />
+        <Route path="/search" element={<SearchPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route

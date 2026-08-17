@@ -52,6 +52,14 @@
   color: var(--accent);
 }
 
+.category-nav-bar {
+  display: flex;
+  align-items: center;
+  padding: 12px 24px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+
 .site-main {
   display: flex;
   flex-direction: column;
