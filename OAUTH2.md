@@ -72,7 +72,7 @@ values from — building it against fake data now would just be rewritten there.
 Because browsers and resource servers only ever see the gateway's public origin (never
 `auth-service`'s internal `host:port`), `auth-service`'s
 `spring.security.oauth2.authorizationserver.issuer` must be set to the gateway's externally
-visible base URL per environment (e.g. `http://localhost:8080` locally, the real domain in
+visible base URL per environment (e.g. `http://localhost:8085` locally, the real domain in
 production) — **not** `http://localhost:8081`/`http://auth-service:8081`. Every resource
 server's `spring.security.oauth2.resourceserver.jwt.issuer-uri` must match exactly, since token
 validation checks the `iss` claim against it. `auth-service` additionally needs

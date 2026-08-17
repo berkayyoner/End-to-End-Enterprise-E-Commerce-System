@@ -19,7 +19,7 @@ eureka:
 
 berkay:
   oauth2:
-    issuer-uri: http://localhost:8080/api/auth
+    issuer-uri: http://localhost:8085/api/auth
     public-client:
       redirect-uris:
         - http://localhost:5173/oauth2/callback
