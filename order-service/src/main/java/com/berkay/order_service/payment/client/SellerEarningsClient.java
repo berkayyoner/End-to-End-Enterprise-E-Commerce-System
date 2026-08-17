@@ -10,8 +10,8 @@ public class SellerEarningsClient {
 
 	private final RestClient restClient;
 
-	public SellerEarningsClient(RestClient.Builder restClientBuilder) {
-		this.restClient = restClientBuilder.baseUrl("http://auth-service:8081").build();
+	public SellerEarningsClient() {
+		this.restClient = RestClient.builder().baseUrl("http://auth-service:8081").build();
 	}
 
 	public void creditEarnings(String sellerId, BigDecimal amount) {
