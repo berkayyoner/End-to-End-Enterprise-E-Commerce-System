@@ -99,6 +99,10 @@ services:
     container_name: berkay-log-service
     environment:
       SPRING_PROFILES_ACTIVE: development
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@berkay-oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-berkay}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1234}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
     ports:
       - "8083:8083"
     depends_on:
@@ -118,6 +122,10 @@ services:
     environment:
       SPRING_PROFILES_ACTIVE: development
       SERVER_PORT: "8085"
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@berkay-oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-berkay}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1234}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
     ports:
       - "8085:8085"
     depends_on:
@@ -143,6 +151,10 @@ services:
     container_name: berkay-auth-service
     environment:
       SPRING_PROFILES_ACTIVE: development
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@berkay-oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-berkay}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1234}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
     ports:
       - "8081:8081"
     depends_on:
@@ -162,6 +174,10 @@ services:
     container_name: berkay-product-service
     environment:
       SPRING_PROFILES_ACTIVE: development
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@berkay-oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-berkay}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1234}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
     ports:
       - "8082:8082"
     depends_on:
@@ -185,6 +201,11 @@ services:
     container_name: berkay-order-service
     environment:
       SPRING_PROFILES_ACTIVE: development
+      SPRING_DATASOURCE_URL: jdbc:oracle:thin:@berkay-oracle-db:1521/XEPDB1
+      SPRING_DATASOURCE_USERNAME: ${DB_USER:-berkay}
+      SPRING_DATASOURCE_PASSWORD: ${DB_PASSWORD:-1234}
+      SPRING_JPA_DATABASE_PLATFORM: org.hibernate.dialect.OracleDialect
+      SPRING_MAIN_ALLOW_BEAN_DEFINITION_OVERRIDING: "true"
     ports:
       - "8084:8084"
     depends_on:
