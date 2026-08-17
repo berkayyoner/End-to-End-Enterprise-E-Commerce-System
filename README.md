@@ -57,10 +57,14 @@ or <br/>
     7. Immediately move to the next uncompleted task in ANALYSIS.md and repeat this process from step 1.
 CRITICAL RULE: Do NOT ask for confirmation, permission, or feedback between tasks. Do NOT stop to explain what you are doing. Simply execute, update DONE.md, and proceed to the next task autonomously until the project is finished.
 
-## To Get The Project Up
+## How To Get The Project Up
 For createing all of the containers in your Docker application at once:
 > CMD: `cd [project directory]` <br />
 > CMD: `docker-compose up` <br />
+
+## How To Get Project Builts
+> CMD: `cd [project directory]` <br />
+> CMD: `mvnv` <br />
 
 ## How it works
 * I have completely manually created a `RULES.md` file which includes the projects all of the expectations and the technologiles which will be used.
