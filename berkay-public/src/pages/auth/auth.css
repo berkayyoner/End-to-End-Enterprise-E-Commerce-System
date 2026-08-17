@@ -39,6 +39,7 @@
   flex-direction: column;
   gap: 6px;
   text-align: left;
+  min-width: 0; /* 🔧 allow shrinking */
 }
 
 .form-field-label {
@@ -56,6 +57,7 @@
   background: var(--bg);
   color: var(--text-h);
   box-sizing: border-box;
+  width: 100%; /* 🔧 fill container */
 }
 
 .form-field input:focus,
@@ -78,10 +80,12 @@
 .form-row {
   display: flex;
   gap: 12px;
+  flex-wrap: wrap; /* 🔧 wrap on small screens if needed */
 }
 
 .form-row .form-field {
-  flex: 1;
+  flex: 1 1 0; /* 🔧 allow equal distribution and shrinking */
+  min-width: 0; /* 🔧 allow shrinking */
 }
 
 .auth-submit {

@@ -51,8 +51,8 @@ export function SignUpPage() {
         {formError ? <p className="auth-error-banner">{formError}</p> : null}
 
         <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-row">
-            <FormField label={t('auth.signUp.firstName')} error={fieldErrors.firstName}>
+          <div className="form-row" style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
+            <FormField label={t('auth.signUp.firstName')} error={fieldErrors.firstName} style={{ flex: '1 0 150px', minWidth: 0 }}>
               <input
                 type="text"
                 required
@@ -61,7 +61,7 @@ export function SignUpPage() {
                 onChange={(event) => updateField('firstName', event.target.value)}
               />
             </FormField>
-            <FormField label={t('auth.signUp.lastName')} error={fieldErrors.lastName}>
+            <FormField label={t('auth.signUp.lastName')} error={fieldErrors.lastName} style={{ flex: '1 0 150px', minWidth: 0 }}>
               <input
                 type="text"
                 required
