@@ -18,8 +18,7 @@ application. Nothing generic (`backend/`, `frontend/`, `common/`, `shared/`) liv
 | `log-service`       | Spring Boot (infra, Phase 0.9+) | Centralized, immutable user/personnel activity log store (RULES.md's "Log every user and personnel activity"). Every other service POSTs activity events to it over REST instead of writing its own log table — the one deliberate exception to per-service table ownership below. |
 | `auth-service`      | Spring Boot       | Identity: users, personnel, permission groups, OAuth2 authorization server, ID verification, seller applications, bans. |
 | `product-service`   | Spring Boot       | Catalog: products, categories, Elasticsearch indexing/search, Q&A, ratings/reviews. |
-| `order-service`     | Spring Boot (Phase 5) | Basket, orders, dummy payment/card vault. |
-| `campaign-service`  | Spring Boot (Phase 6) | Campaigns, discount coupons. |
+| `order-service`     | Spring Boot (Phase 5) | Basket, orders, dummy payment/card vault, discount coupons (folded in per the Phase 2+ scope pivot in `ANALYSIS.md` — no separate `campaign-service`). |
 | `berkay-public`     | React (Vite)      | Public storefront: customers, sellers, anonymous visitors. |
 | `berkay-personnel`  | React (Vite)      | Internal admin/moderator panel. Never bundled with or routed through `berkay-public`. |
 | `common-lib`        | Java library (Phase 0.4+) | Cross-cutting Java code shared by Spring Boot services only (base auditable/soft-delete entity, translation base classes, standard error response DTOs). Published to the local Maven repo and declared as a normal `<dependency>` — never a source copy-paste. Contains no business logic, no controllers, no service-specific entities. |
@@ -66,9 +65,9 @@ inside it (e.g. `product-service` will hold both `catalog` and `search` domain p
   * `auth-service`: `app_user`, `personnel`, `permission_group`, `id_verification`,
     `seller_application`, `banned_user`.
   * `product-service`: `product`, `product_translation`, `category` (+ translations),
-    `category_change_request`, `review`, `qna`.
-  * `order-service` (Phase 5): `basket`, `basket_item`, `order`, `order_item`, `saved_card`.
-  * `campaign-service` (Phase 6): `campaign`, `coupon`.
+    `category_change_request`, `review`, `qna`, `favorite`, `campaign`.
+  * `order-service` (Phase 5): `basket`, `basket_item`, `order`, `order_item`, `saved_card`,
+    `coupon`.
 * All tables include soft-delete (`is_deleted`, `deleted_at`) and audit (`created_at`,
   `updated_at`, `created_by`, `updated_by`) columns via the shared `common-lib` base entity —
   see task 0.4. No table ever performs a hard `DELETE`.
@@ -76,6 +75,28 @@ inside it (e.g. `product-service` will hold both `catalog` and `search` domain p
   `application-production.yml` (task 0.3); `local` uses `localhost` values for Oracle/Redis/
   Elasticsearch, matching the `RULES.md` requirement that development environments default to
   localhost.
+
+## 3a. Backend security testing (learned the hard way — see DONE.md's Phase 2/3.1 bug-fix entries)
+
+* `@WebMvcTest(SomeController.class)` does **not** component-scan arbitrary user
+  `@Configuration` classes (only `@Controller`/`@ControllerAdvice`/etc. are auto-included). A
+  service's own `SecurityConfig` (its `@PreAuthorize` wiring, `authorizeHttpRequests` rules,
+  `oauth2ResourceServer` JWT converter) is silently **not loaded** unless the test class adds
+  `@Import(SecurityConfig.class)`. Without it, Spring Boot's own fallback
+  `jwtSecurityFilterChain` (bare `anyRequest().authenticated()`) silently stands in, and a test
+  can pass for a completely unrelated reason while verifying nothing about the real
+  authorization logic. Every `@WebMvcTest` that exercises a protected endpoint must
+  `@Import` that service's `SecurityConfig`.
+* Prefer a real `Jwt` + Spring Security Test's `jwt().authorities(<the real
+  PermissionAuthoritiesConverter instance>)` over `@WithMockUser(authorities = "...")` for at
+  least one test per protected controller — `@WithMockUser` injects an authority string
+  directly and never exercises the claim-to-authority conversion, so it can't catch a mismatch
+  between what the converter emits and what `@PreAuthorize` checks for.
+* After changing `common-lib`, a single-module `./mvnw -pl <service> test` (no `-am`) resolves
+  `common-lib` from whatever jar is already sitting in the local `~/.m2` repo — not from the
+  edited source — and will silently pass against stale code. Run `./mvnw -pl common-lib
+  install` (or a full `./mvnw clean verify` reactor build) before trusting any test result for
+  a change that touches `common-lib`.
 
 ## 4. Front-end module boundaries
 

@@ -83,9 +83,16 @@ when reached through the gateway's reverse proxy.
 
 This part has no dependency on real user data existing yet, so it ships now in `common-lib`:
 `com.berkay.common.security.PermissionAuthoritiesConverter` implements
-`Converter<Jwt, Collection<GrantedAuthority>>`, reading the `permissions` claim (§3) and mapping
-each code to a `SimpleGrantedAuthority("PERM_" + code)` (e.g. `PERM_P2ED`), plus mapping
-`account_type` to `SimpleGrantedAuthority("ACCOUNT_" + accountType)`. Every resource server
+`Converter<Jwt, Collection<GrantedAuthority>>`, reading the `permissions` claim (§3) and decomposing
+each compact code into individual authorities matching RULES.md's capability scheme:
+- Each code (e.g. `"P0AED"`) is parsed as (P\d+)([AED]*) — page code + optional capability suffix
+- Always emits `PERM_<pageCode>_VIEW` (presence of the code implies view access)
+- Conditionally emits `PERM_<pageCode>_ADD/EDIT/DELETE` if those letters appear in the suffix
+- Example: `"P0AED"` → `PERM_P0_VIEW`, `PERM_P0_ADD`, `PERM_P0_EDIT`, `PERM_P0_DELETE` (4 authorities)
+- Example: `"P2ED"` → `PERM_P2_VIEW`, `PERM_P2_EDIT`, `PERM_P2_DELETE` (3 authorities, no ADD)
+- Example: `"P3"` → `PERM_P3_VIEW` (1 authority, view-only)
+
+Plus maps `account_type` to `SimpleGrantedAuthority("ACCOUNT_" + accountType)`. Every resource server
 wires it once via `JwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(...)` when it
 adds `spring-boot-starter-oauth2-resource-server` (task 1.8+) — this keeps the claim-to-authority
 mapping identical across every service instead of each one reimplementing it.

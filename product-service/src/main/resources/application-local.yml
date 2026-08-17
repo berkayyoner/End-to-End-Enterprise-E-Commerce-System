@@ -15,6 +15,11 @@ spring:
       port: 6379
   elasticsearch:
     uris: http://localhost:9200
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/api/auth
 
 eureka:
   instance:

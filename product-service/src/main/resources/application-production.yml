@@ -17,6 +17,11 @@ spring:
     uris: ${ELASTICSEARCH_URIS}
   config:
     import: "configserver:${CONFIG_SERVER_URI}"
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${OAUTH2_ISSUER_URI}
 
 eureka:
   client:

@@ -1,6 +1,7 @@
 package com.berkay.product_service.product.service;
 
 import com.berkay.product_service.category.entity.InnerType;
+import com.berkay.product_service.category.entity.SubType;
 import com.berkay.product_service.category.exception.CategoryNotFoundException;
 import com.berkay.product_service.category.repository.InnerTypeRepository;
 import com.berkay.product_service.product.dto.ProductRequest;
@@ -13,6 +14,10 @@ import com.berkay.product_service.product.entity.ProductTranslation;
 import com.berkay.product_service.product.exception.ProductNotFoundException;
 import com.berkay.product_service.product.exception.ProductOwnershipException;
 import com.berkay.product_service.product.repository.ProductRepository;
+import com.berkay.product_service.product.search.document.ProductDocument;
+import com.berkay.product_service.product.search.service.ProductSearchService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,16 +26,23 @@ import java.util.List;
 
 /**
  * Service layer for Product CRUD operations.
+ * Syncs Elasticsearch index on create/update/delete with best-effort error handling
+ * (search-index write failures do not block product operations).
  */
 @Service
 public class ProductService {
 
+	private static final Logger logger = LoggerFactory.getLogger(ProductService.class);
+
 	private final ProductRepository productRepository;
 	private final InnerTypeRepository innerTypeRepository;
+	private final ProductSearchService searchService;
 
-	public ProductService(ProductRepository productRepository, InnerTypeRepository innerTypeRepository) {
+	public ProductService(ProductRepository productRepository, InnerTypeRepository innerTypeRepository,
+			ProductSearchService searchService) {
 		this.productRepository = productRepository;
 		this.innerTypeRepository = innerTypeRepository;
+		this.searchService = searchService;
 	}
 
 	@Transactional(readOnly = true)
@@ -63,6 +75,15 @@ public class ProductService {
 		applyPhotos(product, request.photos());
 
 		Product saved = productRepository.save(product);
+
+		// Index in Elasticsearch (best-effort, don't fail the product creation if indexing fails)
+		try {
+			ProductDocument document = buildProductDocument(saved);
+			searchService.indexProduct(document);
+		} catch (Exception e) {
+			logger.warn("Failed to index product {} in Elasticsearch: {}", saved.getId(), e.getMessage(), e);
+		}
+
 		return ProductResponse.from(saved, "tr");
 	}
 
@@ -79,6 +100,15 @@ public class ProductService {
 		applyPhotos(product, request.photos());
 
 		Product saved = productRepository.save(product);
+
+		// Update in Elasticsearch (best-effort, don't fail the product update if indexing fails)
+		try {
+			ProductDocument document = buildProductDocument(saved);
+			searchService.indexProduct(document);
+		} catch (Exception e) {
+			logger.warn("Failed to update product {} in Elasticsearch: {}", saved.getId(), e.getMessage(), e);
+		}
+
 		return ProductResponse.from(saved, "tr");
 	}
 
@@ -88,6 +118,13 @@ public class ProductService {
 		enforceOwnership(product, sellerId);
 		product.softDelete();
 		productRepository.save(product);
+
+		// Remove from Elasticsearch (best-effort, don't fail the product deletion if indexing fails)
+		try {
+			searchService.deleteProduct(id);
+		} catch (Exception e) {
+			logger.warn("Failed to delete product {} from Elasticsearch: {}", id, e.getMessage(), e);
+		}
 	}
 
 	private void applyTranslations(Product product, List<ProductTranslationInput> translations) {
@@ -143,5 +180,39 @@ public class ProductService {
 		if (!product.getSellerId().equals(sellerId)) {
 			throw new ProductOwnershipException("You can only modify your own products");
 		}
+	}
+
+	/**
+	 * Build a ProductDocument from a Product entity.
+	 * Walks the category hierarchy (InnerType -> SubType -> MainCategory)
+	 * to extract all category IDs needed for filtering.
+	 */
+	private ProductDocument buildProductDocument(Product product) {
+		InnerType innerType = product.getInnerType();
+		SubType subType = innerType.getSubType();
+		Long mainCategoryId = subType.getMainCategory().getId();
+
+		String nameTr = null;
+		String nameEn = null;
+		for (ProductTranslation trans : product.getTranslations()) {
+			if ("tr".equals(trans.getLocaleCode())) {
+				nameTr = trans.getName();
+			} else if ("en".equals(trans.getLocaleCode())) {
+				nameEn = trans.getName();
+			}
+		}
+
+		return new ProductDocument(
+				product.getId(),
+				product.getSellerId(),
+				innerType.getId(),
+				subType.getId(),
+				mainCategoryId,
+				product.getPrice(),
+				product.getStock(),
+				nameEn != null ? nameEn : "",
+				nameTr != null ? nameTr : "",
+				product.getCreatedAt()
+		);
 	}
 }
