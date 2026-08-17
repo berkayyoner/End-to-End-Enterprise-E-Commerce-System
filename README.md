@@ -6,7 +6,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * Due to the request of GTech Developer team, main start and deadline of the project was `14.08.2026 18:00` and `17.08.2026 09:00`. 
 * Main goal is using AI models/agents to develope a project almost fully automated.
 * I am using my own experiences and the education from GTech Academy.
-* **Important Note:** Project has started from scratch for the third time on `16.08.2026` because of local `Qwen 2.5 Coder` model, API `Gemini`, `DeepSeek`, `Nvidia` models' terrible failures. Moved forward with `Claude` API key.
+* **Important Note:** Project has started from scratch for the third time on `16.08.2026 18:00` because of local `Qwen 2.5 Coder` model, `Gemini`, `DeepSeek`, `Nvidia` API models' terrible failures. Moved forward with `Claude` API key.
     * All `Qwen 2.5 Coder`, `Llama 3.1`, `Gemini 3.1 Pro`, `DeepSeek V3/4` models started to halucinate and delete project files/codes on long term use.
     * Proceeding with `Claude Sonnet 5` for main tasking and `Haiku 4.5` for coding agent now for a more echonomical prototyping.
 
