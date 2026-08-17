@@ -8,7 +8,7 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 * I am using my own experiences and the education from GTech Academy.
 * **Important Note:** Project has started from scratch for the third time on `16.08.2026 18:00` because of local `Qwen 2.5 Coder` model, `Gemini`, `DeepSeek`, `Nvidia` API models' terrible failures. Moved forward with `Claude` API key.
     * All `Qwen 2.5 Coder`, `Llama 3.1`, `Gemini 3.1 Pro`, `DeepSeek V3/4` models started to halucinate and delete project files/codes on long term use.
-    * Proceeding with `Claude Sonnet 5` for main tasking and `Haiku 4.5` for coding agent now for a more echonomical processing.
+    * Proceeding with `Claude Sonnet 5` for main tasking and `Haiku 4.5` for coding agent now for a more echonomical processing. Also still using local `Qwen 2.5 Coder` model for small tasks only.
 
 ## Technologies
 * **Front-end:** React.Js
@@ -40,6 +40,9 @@ This project has started due to GTech 2026 Academy project assignment. It will b
 or <br/>
 > CMD: `npx @anthropic-ai/claude-code --dangerously-skip-permissions`
 8. Giving the 4 prompts below to AI to understand the project and start working.
+9. After making a project base, use local Qwen model for smaller tasks.
+> CMD: `ollama run qwen2.5-coder:14b` use once to download the model and then you can close <br />
+> CMD: `python -m aider --model ollama/qwen2.5-coder:14b` <br />
 
 ## Prompts
 1. Read the added RULES.md file. Divide the project into logical Phases. Create a detailed roadmap in a new file named ANALYSIS.md specifying microservices, React front-ends, and database integration phases. Also, create an empty DONE.md file containing exactly 'Project Start Date: August 16, 2026'. Do not ask for confirmation or explain what you will do, just use the tools to create the files immediately.`
@@ -53,6 +56,11 @@ or <br/>
     6. Use Haiku 4.5 as a background agent for coding to keep the process echonomic as possible.
     7. Immediately move to the next uncompleted task in ANALYSIS.md and repeat this process from step 1.
 CRITICAL RULE: Do NOT ask for confirmation, permission, or feedback between tasks. Do NOT stop to explain what you are doing. Simply execute, update DONE.md, and proceed to the next task autonomously until the project is finished.
+
+## To Get The Project Up
+For createing all of the containers in your Docker application at once:
+> CMD: `cd [project directory]` <br />
+> CMD: `docker-compose up` <br />
 
 ## How it works
 * I have completely manually created a `RULES.md` file which includes the projects all of the expectations and the technologiles which will be used.
